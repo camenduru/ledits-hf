@@ -4,7 +4,7 @@ import requests
 from io import BytesIO
 from diffusers import StableDiffusionPipeline
 from diffusers import DDIMScheduler
-from .utils import hi 
+from utils import hi 
 
 def greet(name):
     # return "Hello " + name + "!!"

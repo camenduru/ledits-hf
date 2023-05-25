@@ -22,7 +22,7 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
   sd_pipe.scheduler.set_timesteps(num_diffusion_steps)
 
   # vae encode image
-  w0 = (sd_pipe.vae.encode(pil_to_tensor(x0).astype(torch.float16)).latent_dist.mode() * 0.18215).float()
+  w0 = (sd_pipe.vae.encode(x0).latent_dist.mode() * 0.18215).float()
 
   # find Zs and wts - forward process
   wt, zs, wts = inversion_forward_process(sd_pipe, w0, etas=eta, prompt=prompt_src, cfg_scale=cfg_scale_src, prog_bar=True, num_inference_steps=num_diffusion_steps)
@@ -55,6 +55,7 @@ def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='',
          edit_guidance_scale=8, guidance_scale=15, skip=36, num_diffusion_steps=100,
          ):
     offsets=(0,0,0,0)
+    input_image = pil_to_tensor(input_image).type(torch.float16))
     x0 = load_512(input_image, *offsets, device)
 
 
@@ -91,7 +92,7 @@ inputs = [
     gr.Textbox(label="target prompt"),
     gr.Textbox(label="SEGA edit concept"),
     gr.Checkbox(label="SEGA negative_guidance"),
-    gr.Slider(label="warmup steps", minimum=7, maximum=18, value=15),
+    gr.Slider(label="warmup steps", minimum=1, maximum=30, value=5),
     gr.Slider(label="edit guidance scale", minimum=0, maximum=15, value=3.5),
     gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
     gr.Slider(label="skip", minimum=0, maximum=40, value=36),

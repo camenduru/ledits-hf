@@ -96,8 +96,7 @@ inputs = [
     gr.Slider(label="edit guidance scale", minimum=0, maximum=15, value=3.5),
     gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
     gr.Slider(label="skip", minimum=0, maximum=40, value=36),
-    gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100),
-   ,
+    gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100)
    
    
 ]

@@ -52,9 +52,9 @@ sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "schedule
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
 
-def edit(input_image, input_image_prompt, target_prompt, edit_prompt,
-         guidance_scale=15, skip=36, num_diffusion_steps=100,
-         negative_guidance = False):
+def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='', negative_guidance = False, edit_warmup_steps=5,
+         edit_guidance_scale=8, guidance_scale=15, skip=36, num_diffusion_steps=100,
+         ):
     offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 
@@ -72,8 +72,8 @@ def edit(input_image, input_image_prompt, target_prompt, edit_prompt,
     editing_args = dict(
     editing_prompt = [edit_prompt],
     reverse_editing_direction = [negative_guidance],
-    edit_warmup_steps=[5],
-    edit_guidance_scale=[8], 
+    edit_warmup_steps=[edit_warmup_steps],
+    edit_guidance_scale=[edit_guidance_scale], 
     edit_threshold=[.93],
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
@@ -90,11 +90,14 @@ inputs = [
     gr.Image(label="input image", shape=(512, 512)),
     gr.Textbox(label="input prompt"),
     gr.Textbox(label="target prompt"),
-    gr.Textbox(label="SEGA edit prompt"),
+    gr.Textbox(label="SEGA edit concept"),
+    gr.Checkbox(label="SEGA negative_guidance"),
+    gr.Slider(label="warmup steps", minimum=7, maximum=18, value=15),
+    gr.Slider(label="edit guidance scale", minimum=0, maximum=15, value=3.5),
     gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
     gr.Slider(label="skip", minimum=0, maximum=40, value=36),
     gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100),
-    gr.Checkbox(label="SEGA negative_guidance"),
+   ,
    
    
 ]

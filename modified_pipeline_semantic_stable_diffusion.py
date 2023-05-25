@@ -725,7 +725,7 @@ class SemanticStableDiffusionPipeline(DiffusionPipeline):
         image = self.decode_latents(latents)
 
         # 9. Run safety checker
-        image, has_nsfw_concept = self.run_safety_checker(image, device, text_embeddings.dtype)
+        image, has_nsfw_concept = self.run_safety_checker(image, self.device, text_embeddings.dtype)
 
         # 10. Convert to PIL
         if output_type == "pil":

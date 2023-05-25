@@ -136,7 +136,7 @@ def inversion_forward_process(model, x0,
 
     if not prompt=="":
         text_embeddings = encode_text(model, prompt)
-    uncond_embedding = encode_text(model, "")).type(torch.float16)
+    uncond_embedding = encode_text(model, "").type(torch.float16)
     timesteps = model.scheduler.timesteps.to(model.device)
     variance_noise_shape = (
         num_inference_steps,

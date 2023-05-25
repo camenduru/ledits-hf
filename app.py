@@ -79,8 +79,7 @@ def edit(input_image, input_image_prompt, target_prompt, edit_prompt,
     edit_mom_beta=0.6 
   )
     sega_out = sem_pipe(prompt=target_prompt,eta=eta, latents=latnets, 
-                        num_images_per_prompt=1, 
-                        guidance_scale=edit_guidance_scale, 
+                        num_images_per_prompt=1,  
                         num_inference_steps=num_diffusion_steps_pure_ddpm, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
     return pure_ddpm_out,sega_out.images[0]

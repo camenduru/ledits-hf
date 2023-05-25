@@ -6,11 +6,7 @@ from diffusers import StableDiffusionPipeline
 from diffusers import DDIMScheduler
 from utils import *
 from inversion_utils import *
-
-model_id = "CompVis/stable-diffusion-v1-4"
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sd_pipe = StableDiffusionPipeline.from_pretrained(model_id).to(device)
-sd_pipe.scheduler = DDIMScheduler.from_config(model_id, subfolder = "scheduler")
+from modified_pipeline_semantic_stable_diffusion import SemanticStableDiffusionPipeline
 from torch import autocast, inference_mode
 
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
@@ -48,10 +44,17 @@ def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
     img = image_grid(x0_dec)
     return img
 
+# load pipelines
+sd_model_id = "runwayml/stable-diffusion-v1-5"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+sd_pipe = StableDiffusionPipeline.from_pretrained(model_id).to(device)
+sd_pipe.scheduler = DDIMScheduler.from_config(model_id, subfolder = "scheduler")
+sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
 
-
-def edit(input_image, input_image_prompt, target_prompt, guidance_scale=15, skip=36, num_diffusion_steps=100):
+def edit(input_image, input_image_prompt, target_prompt, edit_prompt,
+         guidance_scale=15, skip=36, num_diffusion_steps=100,
+         negative_guidance = False):
     offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 
@@ -65,7 +68,22 @@ def edit(input_image, input_image_prompt, target_prompt, guidance_scale=15, skip
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=target_prompt, 
                            cfg_scale_tar=guidance_scale, skip=skip, 
                            eta = eta)
-    return pure_ddpm_out
+    
+    editing_args = dict(
+    editing_prompt = [edit_prompt],
+    reverse_editing_direction = [negative_guidance],
+    edit_warmup_steps=[5],
+    edit_guidance_scale=[8], 
+    edit_threshold=[.93],
+    edit_momentum_scale=0.5, 
+    edit_mom_beta=0.6 
+  )
+    sega_out = sem_pipe(prompt=target_prompt,eta=eta, latents=latnets, 
+                        num_images_per_prompt=1, 
+                        guidance_scale=edit_guidance_scale, 
+                        num_inference_steps=num_diffusion_steps_pure_ddpm, 
+                        use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
+    return pure_ddpm_out,sega_out.images[0]
 
 
 # See the gradio docs for the types of inputs and outputs available
@@ -73,13 +91,15 @@ inputs = [
     gr.Image(label="input image", shape=(512, 512)),
     gr.Textbox(label="input prompt"),
     gr.Textbox(label="target prompt"),
-    gr.Slider(label="guidance_scale", minimum=7, maximum=18, value=15),
+    gr.Textbox(label="SEGA edit prompt"),
+    gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
     gr.Slider(label="skip", minimum=0, maximum=40, value=36),
-    gr.Slider(label="num_diffusion_steps", minimum=0, maximum=300, value=100),
-
+    gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100),
+    gr.Checkbox(label="SEGA negative_guidance"),
+   
    
 ]
-outputs = gr.Image(label="result")
+outputs = [gr.Image(label="DDPM"),gr.Image(label="DDPM+SEGA")]
 
 # And the minimal interface
 demo = gr.Interface(
@@ -87,5 +107,4 @@ demo = gr.Interface(
     inputs=inputs,
     outputs=outputs,
 )
-
-demo.launch()
+demo.launch()  # debug=True allows you to see errors and output in Colab

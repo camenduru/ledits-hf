@@ -45,9 +45,9 @@ def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
 # load pipelines
 sd_model_id = "runwayml/stable-diffusion-v1-5"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id, torch_dtype=torch.float16).to(device)
+sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
-sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id,torch_dtype=torch.float16).to(device)
+sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
 
 def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='', 
@@ -55,7 +55,7 @@ def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='',
          edit_guidance_scale=8, guidance_scale=15, skip=36, num_diffusion_steps=100,
          ):
     offsets=(0,0,0,0)
-    x0 = load_512(input_image, *offsets, device).type(torch.float16)
+    x0 = load_512(input_image, *offsets, device)
 
 
     # invert

@@ -48,7 +48,7 @@ def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
 sd_model_id = "runwayml/stable-diffusion-v1-5"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sd_pipe = StableDiffusionPipeline.from_pretrained(model_id).to(device)
-sd_pipe.scheduler = DDIMScheduler.from_config(model_id, subfolder = "scheduler")
+sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
 

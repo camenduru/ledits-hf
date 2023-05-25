@@ -47,7 +47,7 @@ sd_model_id = "runwayml/stable-diffusion-v1-5"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
-sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
+sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id, torch_dtype=torch.float16).to(device)
 
 
 def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='', 

@@ -55,8 +55,7 @@ def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='',
          edit_guidance_scale=8, guidance_scale=15, skip=36, num_diffusion_steps=100,
          ):
     offsets=(0,0,0,0)
-    input_image = pil_to_tensor(input_image).type(torch.float16)
-    x0 = load_512(input_image, *offsets, device)
+    x0 = pil_to_tensor(load_512(input_image, *offsets, device)).type(torch.float16)
 
 
     # invert

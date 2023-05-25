@@ -52,7 +52,8 @@ sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "schedule
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
 
-def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='', negative_guidance = False, edit_warmup_steps=5,
+def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='', 
+         negative_guidance = False, edit_warmup_steps=5,
          edit_guidance_scale=8, guidance_scale=15, skip=36, num_diffusion_steps=100,
          ):
     offsets=(0,0,0,0)

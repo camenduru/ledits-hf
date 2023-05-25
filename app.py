@@ -22,7 +22,7 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
   sd_pipe.scheduler.set_timesteps(num_diffusion_steps)
 
   # vae encode image
-  w0 = (sd_pipe.vae.encode(x0).latent_dist.mode() * 0.18215).float()
+  w0 = (sd_pipe.vae.encode(pil_to_tensor(x0).astype(torch.float16)).latent_dist.mode() * 0.18215).float()
 
   # find Zs and wts - forward process
   wt, zs, wts = inversion_forward_process(sd_pipe, w0, etas=eta, prompt=prompt_src, cfg_scale=cfg_scale_src, prog_bar=True, num_inference_steps=num_diffusion_steps)

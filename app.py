@@ -52,41 +52,119 @@ sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "schedule
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
 
-def edit(input_image, input_image_prompt='', target_prompt='', edit_prompt='', 
-         negative_guidance = False, edit_warmup_steps=5,
-         edit_guidance_scale=8, guidance_scale=15, skip=36, num_diffusion_steps=100,
-         ):
+def edit(input_image, 
+                    src_prompt, 
+                    tar_prompt, 
+                    steps,
+                    src_cfg_scale,
+                    skip,
+                    tar_cfg_scale,
+                    edit_concept,
+                    sega_edit_guidance,
+                    warm_up,
+                    neg_guidance):
     offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 
 
     # invert
-    wt, zs, wts = invert(x0 =x0 , prompt_src=input_image_prompt, num_diffusion_steps=num_diffusion_steps)
+    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
     latnets = wts[skip].expand(1, -1, -1, -1)
 
     eta = 1 
     #pure DDPM output
-    pure_ddpm_out = sample(wt, zs, wts, prompt_tar=target_prompt, 
-                           cfg_scale_tar=guidance_scale, skip=skip, 
+    pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
+                           cfg_scale_tar=tar_cfg_scale, skip=skip, 
                            eta = eta)
     
     editing_args = dict(
-    editing_prompt = [edit_prompt],
-    reverse_editing_direction = [negative_guidance],
-    edit_warmup_steps=[edit_warmup_steps],
-    edit_guidance_scale=[edit_guidance_scale], 
+    editing_prompt = [edit_concept],
+    reverse_editing_direction = [neg_guidance],
+    edit_warmup_steps=[warm_up],
+    edit_guidance_scale=[sega_edit_guidance], 
     edit_threshold=[.93],
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
   )
-    sega_out = sem_pipe(prompt=target_prompt,eta=eta, latents=latnets, 
+    sega_out = sem_pipe(prompt=tar_prompt,eta=eta, latents=latnets, 
                         num_images_per_prompt=1,  
-                        num_inference_steps=num_diffusion_steps, 
+                        num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
     return pure_ddpm_out,sega_out.images[0]
 
 
-# See the gradio docs for the types of inputs and outputs available
+####################################3
+
+ with gr.Blocks() as demo:
+        gr.HTML("""<h1 style="font-weight: 900; margin-bottom: 7px;">
+   Edit Friendly DDPM X Semantic Guidance: Editing Real Images
+</h1>
+<p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
+<br/>
+<a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
+<img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
+<p/>""")
+        with gr.Row():
+            with gr.Column(scale=1, min_width=100):
+                generate_button = gr.Button("Generate")
+            # with gr.Column(scale=1, min_width=100):
+            #     reset_button = gr.Button("Reset")
+            # with gr.Column(scale=3):
+            #     instruction = gr.Textbox(lines=1, label="Edit Instruction", interactive=True)
+
+        with gr.Row():
+            input_image = gr.Image(label="Input Image", type="pil", interactive=True)
+            ddpm_edited_image = gr.Image(label=f"Reconstructed Image", type="pil", interactive=False)
+            sega_edited_image = gr.Image(label=f"Edited Image", type="pil", interactive=False)
+            input_image.style(height=512, width=512)
+            ddpm_edited_image.style(height=512, width=512)
+            sega_edited_image.style(height=512, width=512)
+            
+         with gr.Row():
+            src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
+            #edit
+            tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
+
+        with gr.Row():
+            #inversion
+            steps = gr.Number(value=100, precision=0, label="Steps", interactive=True)
+            src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
+            # reconstruction
+            skip = gr.Number(value=100, precision=0, label="Skip", interactive=True)
+            tar_cfg_scale = gr.Number(value=15, label=f"Reconstruction CFG", interactive=True)
+            # edit
+            edit_concept = gr.Textbox(lines=1, label="Edit Concept", interactive=True)
+            sega_edit_guidance = gr.Number(value=5, label=f"SEGA CFG", interactive=True)
+            warm_up = gr.Number(value=5, label=f"Warm-up Steps", interactive=True)
+            neg_guidance = gr.Checkbox(label="SEGA negative_guidance")
+      
+
+        gr.Markdown(help_text)
+
+        generate_button.click(
+            fn=edit,
+            inputs=[input_image, 
+                    src_prompt, 
+                    tar_prompt, 
+                    steps,
+                    src_cfg_scale,
+                    skip,
+                    tar_cfg_scale,
+                    edit_concept,
+                    sega_edit_guidance,
+                    warm_up,
+                    neg_guidance     
+            ],
+            outputs=[input_image, ddpm_edited_image, sega_edited_image],
+        )
+
+
+    demo.queue(concurrency_count=1)
+    demo.launch(share=False)
+######################################################
+
+
+
 inputs = [
     gr.Image(label="input image", shape=(512, 512)),
     gr.Textbox(label="input prompt"),
@@ -110,3 +188,5 @@ demo = gr.Interface(
     outputs=outputs,
 )
 demo.launch()  # debug=True allows you to see errors and output in Colab
+
+

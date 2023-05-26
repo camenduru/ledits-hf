@@ -116,7 +116,9 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
-            generate_button = gr.Button("Generate")
+            generate_button = gr.Button("Invert")
+        with gr.Column(scale=1, min_width=100):
+            edit_button = gr.Button("Edit")
         # with gr.Column(scale=1, min_width=100):
         #     reset_button = gr.Button("Reset")
         # with gr.Column(scale=3):
@@ -132,7 +134,7 @@ with gr.Blocks() as demo:
         steps = gr.Number(value=100, precision=0, label="Steps", interactive=True)
         src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
         # reconstruction
-        skip = gr.Number(value=100, precision=0, label="Skip", interactive=True)
+        skip = gr.Number(value=36, precision=0, label="Skip", interactive=True)
         tar_cfg_scale = gr.Number(value=15, label=f"Reconstruction CFG", interactive=True)
         # edit
         edit_concept = gr.Textbox(lines=1, label="Edit Concept", interactive=True)
@@ -157,7 +159,7 @@ with gr.Blocks() as demo:
                 warm_up,
                 neg_guidance     
         ],
-        outputs=[input_image, ddpm_edited_image, sega_edited_image],
+        outputs=[ddpm_edited_image, sega_edited_image],
     )
 
 

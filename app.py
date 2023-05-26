@@ -53,16 +53,16 @@ sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(devic
 
 
 def edit(input_image, 
-                    src_prompt, 
-                    tar_prompt, 
-                    steps,
+                    src_prompt ="", 
+                    tar_prompt="", 
+                    steps=100,
                     # src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    edit_concept,
-                    sega_edit_guidance,
-                    warm_up,
-                    neg_guidance):
+                    skip=36,
+                    tar_cfg_scale=15,
+                    edit_concept="",
+                    sega_edit_guidance=0,
+                    warm_up=7,
+                    neg_guidance=False):
     offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 

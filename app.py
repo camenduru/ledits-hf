@@ -93,9 +93,9 @@ def edit(input_image,
     return pure_ddpm_out,sega_out.images[0]
 
 
-####################################3
+####################################
 
- with gr.Blocks() as demo:
+with gr.Blocks() as demo:
         gr.HTML("""<h1 style="font-weight: 900; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
@@ -159,34 +159,34 @@ def edit(input_image,
         )
 
 
-    demo.queue(concurrency_count=1)
-    demo.launch(share=False)
+demo.queue(concurrency_count=1)
+demo.launch(share=False)
 ######################################################
 
 
 
-inputs = [
-    gr.Image(label="input image", shape=(512, 512)),
-    gr.Textbox(label="input prompt"),
-    gr.Textbox(label="target prompt"),
-    gr.Textbox(label="SEGA edit concept"),
-    gr.Checkbox(label="SEGA negative_guidance"),
-    gr.Slider(label="warmup steps", minimum=1, maximum=30, value=5),
-    gr.Slider(label="edit guidance scale", minimum=0, maximum=15, value=3.5),
-    gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
-    gr.Slider(label="skip", minimum=0, maximum=40, value=36),
-    gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100)
+# inputs = [
+#     gr.Image(label="input image", shape=(512, 512)),
+#     gr.Textbox(label="input prompt"),
+#     gr.Textbox(label="target prompt"),
+#     gr.Textbox(label="SEGA edit concept"),
+#     gr.Checkbox(label="SEGA negative_guidance"),
+#     gr.Slider(label="warmup steps", minimum=1, maximum=30, value=5),
+#     gr.Slider(label="edit guidance scale", minimum=0, maximum=15, value=3.5),
+#     gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
+#     gr.Slider(label="skip", minimum=0, maximum=40, value=36),
+#     gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100)
    
    
-]
-outputs = [gr.Image(label="DDPM"),gr.Image(label="DDPM+SEGA")]
+# ]
+# outputs = [gr.Image(label="DDPM"),gr.Image(label="DDPM+SEGA")]
 
-# And the minimal interface
-demo = gr.Interface(
-    fn=edit,
-    inputs=inputs,
-    outputs=outputs,
-)
-demo.launch()  # debug=True allows you to see errors and output in Colab
+# # And the minimal interface
+# demo = gr.Interface(
+#     fn=edit,
+#     inputs=inputs,
+#     outputs=outputs,
+# )
+# demo.launch()  # debug=True allows you to see errors and output in Colab
 
 

@@ -1,4 +1,5 @@
 diffusers
+accelerate
 transformers
 torch
 torchvision

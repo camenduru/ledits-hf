@@ -22,7 +22,8 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
   sd_pipe.scheduler.set_timesteps(num_diffusion_steps)
 
   # vae encode image
-  w0 = (sd_pipe.vae.encode(x0).latent_dist.mode() * 0.18215).float()
+  with autocast("cuda"), inference_mode():
+      w0 = (sd_pipe.vae.encode(x0).latent_dist.mode() * 0.18215).float()
 
   # find Zs and wts - forward process
   wt, zs, wts = inversion_forward_process(sd_pipe, w0, etas=eta, prompt=prompt_src, cfg_scale=cfg_scale_src, prog_bar=True, num_inference_steps=num_diffusion_steps)
@@ -36,7 +37,8 @@ def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
     w0, _ = inversion_reverse_process(sd_pipe, xT=wts[skip], etas=eta, prompts=[prompt_tar], cfg_scales=[cfg_scale_tar], prog_bar=True, zs=zs[skip:])
     
     # vae decode image
-    x0_dec = sd_pipe.vae.decode(1 / 0.18215 * w0).sample
+    with autocast("cuda"), inference_mode():
+        x0_dec = sd_pipe.vae.decode(1 / 0.18215 * w0).sample
     if x0_dec.dim()<4:
         x0_dec = x0_dec[None,:,:,:]
     img = image_grid(x0_dec)

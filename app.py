@@ -108,7 +108,7 @@ with gr.Blocks() as demo:
    
 
     with gr.Row():
-        input_image = gr.Image(label="Input Image",interactive=False)
+        input_image = gr.Image(label="Input Image")
         ddpm_edited_image = gr.Image(label=f"Reconstructed Image", interactive=False)
         sega_edited_image = gr.Image(label=f"Edited Image", interactive=False)
         input_image.style(height=512, width=512)
@@ -147,12 +147,16 @@ with gr.Blocks() as demo:
     generate_button.click(
         fn=edit,
         inputs=[input_image, 
-                src_prompt, 
-                tar_prompt, 
-                steps,
-                # src_cfg_scale,
-                skip,
-                tar_cfg_scale    
+                    src_prompt, 
+                    tar_prompt, 
+                    steps,
+                    # src_cfg_scale,
+                    skip,
+                    tar_cfg_scale,
+                    edit_concept,
+                    sega_edit_guidance,
+                    warm_up,
+                    neg_guidance   
         ],
         outputs=[ddpm_edited_image],
     )

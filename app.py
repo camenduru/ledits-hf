@@ -50,15 +50,19 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
-latents, wts, zs = None, None, None 
 
-def invert_and_reconstruct(input_image, 
+
+def edit(input_image, 
                     src_prompt, 
                     tar_prompt, 
                     steps,
                     # src_cfg_scale,
                     skip,
-                    tar_cfg_scale):
+                    tar_cfg_scale,
+                    edit_concept,
+                    sega_edit_guidance,
+                    warm_up,
+                    neg_guidance):
     offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 
@@ -73,16 +77,7 @@ def invert_and_reconstruct(input_image,
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip, 
                            eta = eta)
-    return pure_ddpm_out
-
-def edit( input_image,
-         tar_prompt, 
-         steps,
-         edit_concept,
-         sega_edit_guidance,
-                    warm_up,
-                    neg_guidance):
-   
+    
     editing_args = dict(
     editing_prompt = [edit_concept],
     reverse_editing_direction = [neg_guidance],
@@ -96,48 +91,7 @@ def edit( input_image,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
-    return sega_out.images[0]
-
-# def edit(input_image, 
-#                     src_prompt, 
-#                     tar_prompt, 
-#                     steps,
-#                     # src_cfg_scale,
-#                     skip,
-#                     tar_cfg_scale,
-#                     edit_concept,
-#                     sega_edit_guidance,
-#                     warm_up,
-#                     neg_guidance):
-#     offsets=(0,0,0,0)
-#     x0 = load_512(input_image, *offsets, device)
-
-
-#     # invert
-#     # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-#     wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)                    
-#     latnets = wts[skip].expand(1, -1, -1, -1)
-
-#     eta = 1 
-#     #pure DDPM output
-#     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
-#                            cfg_scale_tar=tar_cfg_scale, skip=skip, 
-#                            eta = eta)
-    
-#     editing_args = dict(
-#     editing_prompt = [edit_concept],
-#     reverse_editing_direction = [neg_guidance],
-#     edit_warmup_steps=[warm_up],
-#     edit_guidance_scale=[sega_edit_guidance], 
-#     edit_threshold=[.93],
-#     edit_momentum_scale=0.5, 
-#     edit_mom_beta=0.6 
-#   )
-#     sega_out = sem_pipe(prompt=tar_prompt,eta=eta, latents=latnets, 
-#                         num_images_per_prompt=1,  
-#                         num_inference_steps=steps, 
-#                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
-#     return pure_ddpm_out,sega_out.images[0]
+    return pure_ddpm_out,sega_out.images[0]
 
 
 ####################################
@@ -163,9 +117,7 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
-            generate_button = gr.Button("Invert")
-        with gr.Column(scale=1, min_width=100):
-            edit_button = gr.Button("Edit")
+            generate_button = gr.Button("Generate")
         # with gr.Column(scale=1, min_width=100):
         #     reset_button = gr.Button("Reset")
         # with gr.Column(scale=3):
@@ -193,7 +145,7 @@ with gr.Blocks() as demo:
     # gr.Markdown(help_text)
 
     generate_button.click(
-        fn=invert_and_reconstruct,
+        fn=edit,
         inputs=[input_image, 
                 src_prompt, 
                 tar_prompt, 
@@ -205,19 +157,6 @@ with gr.Blocks() as demo:
         outputs=[ddpm_edited_image],
     )
 
-    edit_button.click(
-        fn=edit,
-        inputs=[
-            input_image,
-            tar_prompt, 
-                steps,
-                edit_concept,
-                sega_edit_guidance,
-                warm_up,
-                neg_guidance     
-        ],
-        outputs=[sega_edited_image],
-    )
 
 
 demo.queue(concurrency_count=1)

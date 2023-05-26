@@ -87,7 +87,7 @@ def edit(input_image,
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
   )
-    sega_out = sem_pipe(prompt=tar_prompt,eta=eta, latents=latnets, 
+    sega_out = sem_pipe(prompt=tar_prompt,eta=eta, latents=latnets, guidance_scale = tar_cfg_scale
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)

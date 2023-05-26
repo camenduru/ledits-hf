@@ -75,7 +75,8 @@ def invert_and_reconstruct(input_image,
                            eta = eta)
     return pure_ddpm_out
 
-def edit( tar_prompt, 
+def edit( input_image,
+         tar_prompt, 
          steps,
          edit_concept,
          sega_edit_guidance,
@@ -206,7 +207,9 @@ with gr.Blocks() as demo:
 
     edit_button.click(
         fn=edit,
-        inputs=[tar_prompt, 
+        inputs=[
+            input_image,
+            tar_prompt, 
                 steps,
                 edit_concept,
                 sega_edit_guidance,

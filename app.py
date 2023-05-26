@@ -104,6 +104,16 @@ intro = """<h1 style="font-weight: 900; margin-bottom: 7px;">
 <p/>"""
 with gr.Blocks() as demo:
     gr.HTML(intro)
+   
+
+    with gr.Row():
+        input_image = gr.Image(label="Input Image",interactive=True)
+        ddpm_edited_image = gr.Image(label=f"Reconstructed Image", interactive=False)
+        sega_edited_image = gr.Image(label=f"Edited Image", interactive=False)
+        input_image.style(height=512, width=512)
+        ddpm_edited_image.style(height=512, width=512)
+        sega_edited_image.style(height=512, width=512)
+
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
             generate_button = gr.Button("Generate")
@@ -111,15 +121,7 @@ with gr.Blocks() as demo:
         #     reset_button = gr.Button("Reset")
         # with gr.Column(scale=3):
         #     instruction = gr.Textbox(lines=1, label="Edit Instruction", interactive=True)
-
-    with gr.Row():
-        input_image = gr.Image(label="Input Image", type="pil", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"Reconstructed Image", type="pil", interactive=False)
-        sega_edited_image = gr.Image(label=f"Edited Image", type="pil", interactive=False)
-        input_image.style(height=512, width=512)
-        ddpm_edited_image.style(height=512, width=512)
-        sega_edited_image.style(height=512, width=512)
-        
+            
     with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
         #edit

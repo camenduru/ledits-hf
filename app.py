@@ -109,8 +109,8 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"Reconstructed Image", interactive=False)
-        sega_edited_image = gr.Image(label=f"Edited Image", interactive=False)
+        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False)
+        sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
         input_image.style(height=512, width=512)
         ddpm_edited_image.style(height=512, width=512)
         sega_edited_image.style(height=512, width=512)
@@ -130,14 +130,14 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         #inversion
-        steps = gr.Number(value=100, precision=0, label="Steps", interactive=True)
+        steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
         # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
         # reconstruction
-        skip = gr.Number(value=36, precision=0, label="Skip", interactive=True)
-        tar_cfg_scale = gr.Number(value=15, label=f"Reconstruction CFG", interactive=True)
+        skip = gr.Number(value=36, precision=0, label="Skip Steps", interactive=True)
+        tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
         # edit
         edit_concept = gr.Textbox(lines=1, label="Edit Concept", interactive=True)
-        sega_edit_guidance = gr.Number(value=5, label=f"SEGA CFG", interactive=True)
+        sega_edit_guidance = gr.Number(value=5, label=f"Edit Guidance Scale", interactive=True)
         warm_up = gr.Number(value=5, label=f"Warm-up Steps", interactive=True)
         neg_guidance = gr.Checkbox(label="SEGA negative_guidance")
   

@@ -120,7 +120,7 @@ with gr.Blocks() as demo:
         ddpm_edited_image.style(height=512, width=512)
         sega_edited_image.style(height=512, width=512)
         
-     with gr.Row():
+    with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
         #edit
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
@@ -139,7 +139,7 @@ with gr.Blocks() as demo:
         neg_guidance = gr.Checkbox(label="SEGA negative_guidance")
   
 
-    gr.Markdown(help_text)
+    # gr.Markdown(help_text)
 
     generate_button.click(
         fn=edit,

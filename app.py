@@ -108,7 +108,7 @@ with gr.Blocks() as demo:
    
 
     with gr.Row():
-        input_image = gr.Image(label="Input Image")
+        input_image = gr.Image(label="Input Image", interactive=True)
         ddpm_edited_image = gr.Image(label=f"Reconstructed Image", interactive=False)
         sega_edited_image = gr.Image(label=f"Edited Image", interactive=False)
         input_image.style(height=512, width=512)

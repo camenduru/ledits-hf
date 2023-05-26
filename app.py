@@ -94,69 +94,69 @@ def edit(input_image,
 
 
 ####################################
-
-with gr.Blocks() as demo:
-        gr.HTML("""<h1 style="font-weight: 900; margin-bottom: 7px;">
+intro = """<h1 style="font-weight: 900; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
 <p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
 <br/>
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
-<p/>""")
-        with gr.Row():
-            with gr.Column(scale=1, min_width=100):
-                generate_button = gr.Button("Generate")
-            # with gr.Column(scale=1, min_width=100):
-            #     reset_button = gr.Button("Reset")
-            # with gr.Column(scale=3):
-            #     instruction = gr.Textbox(lines=1, label="Edit Instruction", interactive=True)
+<p/>"""
+with gr.Blocks() as demo:
+    gr.HTML(intro)
+    with gr.Row():
+        with gr.Column(scale=1, min_width=100):
+            generate_button = gr.Button("Generate")
+        # with gr.Column(scale=1, min_width=100):
+        #     reset_button = gr.Button("Reset")
+        # with gr.Column(scale=3):
+        #     instruction = gr.Textbox(lines=1, label="Edit Instruction", interactive=True)
 
-        with gr.Row():
-            input_image = gr.Image(label="Input Image", type="pil", interactive=True)
-            ddpm_edited_image = gr.Image(label=f"Reconstructed Image", type="pil", interactive=False)
-            sega_edited_image = gr.Image(label=f"Edited Image", type="pil", interactive=False)
-            input_image.style(height=512, width=512)
-            ddpm_edited_image.style(height=512, width=512)
-            sega_edited_image.style(height=512, width=512)
-            
-         with gr.Row():
-            src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
-            #edit
-            tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
+    with gr.Row():
+        input_image = gr.Image(label="Input Image", type="pil", interactive=True)
+        ddpm_edited_image = gr.Image(label=f"Reconstructed Image", type="pil", interactive=False)
+        sega_edited_image = gr.Image(label=f"Edited Image", type="pil", interactive=False)
+        input_image.style(height=512, width=512)
+        ddpm_edited_image.style(height=512, width=512)
+        sega_edited_image.style(height=512, width=512)
+        
+     with gr.Row():
+        src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
+        #edit
+        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
 
-        with gr.Row():
-            #inversion
-            steps = gr.Number(value=100, precision=0, label="Steps", interactive=True)
-            src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
-            # reconstruction
-            skip = gr.Number(value=100, precision=0, label="Skip", interactive=True)
-            tar_cfg_scale = gr.Number(value=15, label=f"Reconstruction CFG", interactive=True)
-            # edit
-            edit_concept = gr.Textbox(lines=1, label="Edit Concept", interactive=True)
-            sega_edit_guidance = gr.Number(value=5, label=f"SEGA CFG", interactive=True)
-            warm_up = gr.Number(value=5, label=f"Warm-up Steps", interactive=True)
-            neg_guidance = gr.Checkbox(label="SEGA negative_guidance")
-      
+    with gr.Row():
+        #inversion
+        steps = gr.Number(value=100, precision=0, label="Steps", interactive=True)
+        src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
+        # reconstruction
+        skip = gr.Number(value=100, precision=0, label="Skip", interactive=True)
+        tar_cfg_scale = gr.Number(value=15, label=f"Reconstruction CFG", interactive=True)
+        # edit
+        edit_concept = gr.Textbox(lines=1, label="Edit Concept", interactive=True)
+        sega_edit_guidance = gr.Number(value=5, label=f"SEGA CFG", interactive=True)
+        warm_up = gr.Number(value=5, label=f"Warm-up Steps", interactive=True)
+        neg_guidance = gr.Checkbox(label="SEGA negative_guidance")
+  
 
-        gr.Markdown(help_text)
+    gr.Markdown(help_text)
 
-        generate_button.click(
-            fn=edit,
-            inputs=[input_image, 
-                    src_prompt, 
-                    tar_prompt, 
-                    steps,
-                    src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    edit_concept,
-                    sega_edit_guidance,
-                    warm_up,
-                    neg_guidance     
-            ],
-            outputs=[input_image, ddpm_edited_image, sega_edited_image],
-        )
+    generate_button.click(
+        fn=edit,
+        inputs=[input_image, 
+                src_prompt, 
+                tar_prompt, 
+                steps,
+                src_cfg_scale,
+                skip,
+                tar_cfg_scale,
+                edit_concept,
+                sega_edit_guidance,
+                warm_up,
+                neg_guidance     
+        ],
+        outputs=[input_image, ddpm_edited_image, sega_edited_image],
+    )
 
 
 demo.queue(concurrency_count=1)

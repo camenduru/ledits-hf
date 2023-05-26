@@ -197,7 +197,7 @@ with gr.Blocks() as demo:
                 src_prompt, 
                 tar_prompt, 
                 steps,
-                src_cfg_scale,
+                # src_cfg_scale,
                 skip,
                 tar_cfg_scale    
         ],

@@ -134,15 +134,15 @@ with gr.Blocks() as demo:
 
     # with gr.Row():
     with gr.Accordion("Advanced Options"):
-        with gr.Column(scale=1, min_width=100):
+        with gr.Column(scale=1):
             #inversion
             steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
         # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
-        with gr.Column(scale=1, min_width=100):
+        with gr.Column(scale=1):
             # reconstruction
             skip = gr.Number(value=36, precision=0, label="Skip Steps", interactive=True)
             tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
-        with gr.Column(scale=1, min_width=100):
+        with gr.Column(scale=1):
             # edit
             sega_edit_guidance = gr.Number(value=5, label=f"SEGA Edit Guidance Scale", interactive=True)
             warm_up = gr.Number(value=5, label=f"SEGA Warm-up Steps", interactive=True)

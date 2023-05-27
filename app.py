@@ -132,7 +132,8 @@ with gr.Blocks() as demo:
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
         edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
 
-    with gr.Row():
+    # with gr.Row():
+    with gr.Accordion("Advanced Options"):
         #inversion
         steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
         # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)

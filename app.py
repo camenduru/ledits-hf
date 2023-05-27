@@ -95,9 +95,7 @@ def edit(input_image,
 
 
 # demo
-intro = 
-
-"""
+intro = """
 <div style="text-align: center; max-width: 1200px; margin: 20px auto;">
 <h1 style="font-weight: 900; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images

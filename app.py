@@ -56,12 +56,12 @@ cache_examples = True
 def get_example():
     case = [
         [
-            'examples/.jpg', 
-            '',
-            '',
-            '',
-            'examples/.png', 
-            'examples/.png'
+            'examples/source_a_man_wearing_a_brown_hoodie_in_a_crowded_street.jpeg', 
+            'a man wearing a brown hoodie in a crowded street',
+            'a robot wearing a brown hoodie in a crowded street',
+            '+painting',
+            'examples/ddpm_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png', 
+            'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
              ]]
     return case
     
@@ -181,12 +181,12 @@ with gr.Blocks() as demo:
         outputs=[ddpm_edited_image, sega_edited_image],
     )
 
-    # gr.Examples(
-    #     label='Examples', 
-    #     examples=get_example(), 
-    #     inputs=[img_input, src_prompt, tar_prompt, edit_concept,
-    #             ddpm_output, ddpm_sega_output],
-    #     outputs=[img_output])
+    gr.Examples(
+        label='Examples', 
+        examples=get_example(), 
+        inputs=[input_image, src_prompt, tar_prompt, edit_concept,
+                ddpm_output, ddpm_sega_output],
+        outputs=[ddpm_edited_image, sega_edited_image])
 
 
 

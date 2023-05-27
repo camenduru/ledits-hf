@@ -139,11 +139,11 @@ with gr.Blocks() as demo:
             # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
   
             # reconstruction
-            skip = gr.Number(value=36, precision=0, label="Skip Steps", interactive=True)
-            tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
+            skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
+            tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
 
             # edit
-            sega_edit_guidance = gr.Number(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
+            sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
             warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)
             neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
           

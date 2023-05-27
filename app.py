@@ -77,6 +77,7 @@ def edit(input_image,
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip, 
                            eta = eta)
+    yield pure_ddpm_out
     
     editing_args = dict(
     editing_prompt = [edit_concept],
@@ -91,7 +92,7 @@ def edit(input_image,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
-    return pure_ddpm_out,sega_out.images[0]
+    yield pure_ddpm_out,sega_out.images[0]
 
 
 # demo

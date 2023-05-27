@@ -59,7 +59,7 @@ def get_example():
             'examples/source_a_man_wearing_a_brown_hoodie_in_a_crowded_street.jpeg', 
             'a man wearing a brown hoodie in a crowded street',
             'a robot wearing a brown hoodie in a crowded street',
-            '+painting',
+            'painting',
             'examples/ddpm_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png', 
             'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
              ]]

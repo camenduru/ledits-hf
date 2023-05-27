@@ -94,7 +94,7 @@ def edit(input_image,
     return pure_ddpm_out,sega_out.images[0]
 
 
-####################################
+# demo
 intro = """<h1 style="font-weight: 900; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
@@ -127,6 +127,7 @@ with gr.Blocks() as demo:
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
         #edit
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
 
     with gr.Row():
         #inversion
@@ -136,7 +137,6 @@ with gr.Blocks() as demo:
         skip = gr.Number(value=36, precision=0, label="Skip Steps", interactive=True)
         tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
         # edit
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
         sega_edit_guidance = gr.Number(value=5, label=f"SEGA Edit Guidance Scale", interactive=True)
         warm_up = gr.Number(value=5, label=f"SEGA Warm-up Steps", interactive=True)
         neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
@@ -165,32 +165,6 @@ with gr.Blocks() as demo:
 
 demo.queue(concurrency_count=1)
 demo.launch(share=False)
-######################################################
 
-
-
-# inputs = [
-#     gr.Image(label="input image", shape=(512, 512)),
-#     gr.Textbox(label="input prompt"),
-#     gr.Textbox(label="target prompt"),
-#     gr.Textbox(label="SEGA edit concept"),
-#     gr.Checkbox(label="SEGA negative_guidance"),
-#     gr.Slider(label="warmup steps", minimum=1, maximum=30, value=5),
-#     gr.Slider(label="edit guidance scale", minimum=0, maximum=15, value=3.5),
-#     gr.Slider(label="guidance scale", minimum=7, maximum=18, value=15),
-#     gr.Slider(label="skip", minimum=0, maximum=40, value=36),
-#     gr.Slider(label="num diffusion steps", minimum=0, maximum=300, value=100)
-   
-   
-# ]
-# outputs = [gr.Image(label="DDPM"),gr.Image(label="DDPM+SEGA")]
-
-# # And the minimal interface
-# demo = gr.Interface(
-#     fn=edit,
-#     inputs=inputs,
-#     outputs=outputs,
-# )
-# demo.launch()  # debug=True allows you to see errors and output in Colab
 
 

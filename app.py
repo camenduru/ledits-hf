@@ -51,7 +51,20 @@ sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 
+cache_examples = True
 
+def get_example():
+    case = [
+        [
+            'examples/.jpg', 
+            '',
+            '',
+            '',
+            'examples/.png', 
+            'examples/.png'
+             ]]
+    return case
+    
 def edit(input_image, 
                     src_prompt ="", 
                     tar_prompt="", 
@@ -167,6 +180,13 @@ with gr.Blocks() as demo:
         ],
         outputs=[ddpm_edited_image, sega_edited_image],
     )
+
+    # gr.Examples(
+    #     label='Examples', 
+    #     examples=get_example(), 
+    #     inputs=[img_input, src_prompt, tar_prompt, edit_concept,
+    #             ddpm_output, ddpm_sega_output],
+    #     outputs=[img_output])
 
 
 

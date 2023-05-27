@@ -108,7 +108,12 @@ For faster inference without waiting in queue, you may duplicate the space and u
 with gr.Blocks() as demo:
     gr.HTML(intro)
    
-
+    with gr.Row():
+        src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
+        #edit
+        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
+         
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
         ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False)
@@ -125,11 +130,7 @@ with gr.Blocks() as demo:
         # with gr.Column(scale=3):
         #     instruction = gr.Textbox(lines=1, label="Edit Instruction", interactive=True)
             
-    with gr.Row():
-        src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
-        #edit
-        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
+   
 
     # with gr.Row():
     with gr.Accordion("Advanced Options", open=False):

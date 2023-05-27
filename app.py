@@ -134,7 +134,7 @@ with gr.Blocks() as demo:
 
     # with gr.Row():
     with gr.Accordion("Advanced Options"):
-         with gr.Column(scale=1, min_width=100):
+        with gr.Column(scale=1, min_width=100):
             #inversion
             steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
         # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)

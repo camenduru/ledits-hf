@@ -77,7 +77,7 @@ def edit(input_image,
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip, 
                            eta = eta)
-    yield pure_ddpm_out
+    yield pure_ddpm_out, pure_ddpm_out
     
     editing_args = dict(
     editing_prompt = [edit_concept],

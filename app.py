@@ -96,10 +96,9 @@ def edit(input_image,
 
 # demo
 intro = """
-<h1 style="font-weight: 1200; text-align: center; margin-bottom: 7px;">
+<h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
-<br/>
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
 For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">

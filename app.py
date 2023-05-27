@@ -95,7 +95,11 @@ def edit(input_image,
 
 
 # demo
-intro = """<h1 style="font-weight: 900; margin-bottom: 7px;">
+intro = 
+
+"""
+<div style="text-align: center; max-width: 1200px; margin: 20px auto;">
+<h1 style="font-weight: 900; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
 <p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.

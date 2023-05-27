@@ -143,8 +143,8 @@ with gr.Blocks() as demo:
             tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
 
             # edit
-            sega_edit_guidance = gr.Number(value=5, label=f"SEGA Edit Guidance Scale", interactive=True)
-            warm_up = gr.Number(value=5, label=f"SEGA Warm-up Steps", interactive=True)
+            sega_edit_guidance = gr.Number(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
+            warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)
             neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
           
 

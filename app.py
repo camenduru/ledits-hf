@@ -96,8 +96,8 @@ def edit(input_image,
 
 # demo
 intro = """
-<div style="text-align: center; max-width: 1200px; margin: 20px auto;">
-<h1 style="font-weight: 900; margin-bottom: 7px;">
+# <div style="text-align: center; max-width: 1200px; margin: 20px auto;">
+<h1 style="font-weight: 1200; text-align: center; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
@@ -120,7 +120,7 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
-            generate_button = gr.Button("Generate")
+            generate_button = gr.Button("Run")
         # with gr.Column(scale=1, min_width=100):
         #     reset_button = gr.Button("Reset")
         # with gr.Column(scale=3):
@@ -134,17 +134,20 @@ with gr.Blocks() as demo:
 
     # with gr.Row():
     with gr.Accordion("Advanced Options"):
-        #inversion
-        steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
+         with gr.Column(scale=1, min_width=100):
+            #inversion
+            steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
         # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
-        # reconstruction
-        skip = gr.Number(value=36, precision=0, label="Skip Steps", interactive=True)
-        tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
-        # edit
-        sega_edit_guidance = gr.Number(value=5, label=f"SEGA Edit Guidance Scale", interactive=True)
-        warm_up = gr.Number(value=5, label=f"SEGA Warm-up Steps", interactive=True)
-        neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
-  
+        with gr.Column(scale=1, min_width=100):
+            # reconstruction
+            skip = gr.Number(value=36, precision=0, label="Skip Steps", interactive=True)
+            tar_cfg_scale = gr.Number(value=15, label=f"Guidance Scale", interactive=True)
+        with gr.Column(scale=1, min_width=100):
+            # edit
+            sega_edit_guidance = gr.Number(value=5, label=f"SEGA Edit Guidance Scale", interactive=True)
+            warm_up = gr.Number(value=5, label=f"SEGA Warm-up Steps", interactive=True)
+            neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
+      
 
     # gr.Markdown(help_text)
 

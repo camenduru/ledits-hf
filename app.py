@@ -99,9 +99,9 @@ intro = """
 <h1 style="font-weight: 1200; text-align: center; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
+<br/>
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
 For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
-<br/>
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
 <p/>"""
@@ -169,7 +169,7 @@ with gr.Blocks() as demo:
 
 
 
-demo.queue(concurrency_count=1)
+demo.queue()
 demo.launch(share=False)
 
 

@@ -132,7 +132,7 @@ with gr.Blocks() as demo:
         edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
 
     # with gr.Row():
-    with gr.Accordion("Advanced Options"):
+    with gr.Accordion("Advanced Options", open=False):
         with gr.Row():
             #inversion
             steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)

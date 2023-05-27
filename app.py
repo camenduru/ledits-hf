@@ -100,8 +100,8 @@ intro = """
 <h1 style="font-weight: 900; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
-<div style="text-align: left; max-width: 200px; margin: 20px auto;">
-<p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
+<p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
+For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
 <br/>
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>

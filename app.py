@@ -85,11 +85,10 @@ def edit(input_image,
     wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)                    
     latnets = wts[skip].expand(1, -1, -1, -1)
 
-    eta = 1 
+
     #pure DDPM output
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
-                           cfg_scale_tar=tar_cfg_scale, skip=skip, 
-                           eta = eta)
+                           cfg_scale_tar=tar_cfg_scale, skip=skip)
     yield pure_ddpm_out, pure_ddpm_out
     
     editing_args = dict(

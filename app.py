@@ -100,7 +100,7 @@ def edit(input_image,
                            cfg_scale_tar=tar_cfg_scale, skip=skip)
 
     if not edit_concept or not sega_edit_guidance:
-        return pure_ddpm_out,pure_ddpm_out
+        return pure_ddpm_out, pure_ddpm_out
     # SEGA
     edit_concepts = edit_concept.split(",")
     neg_guidance =[] 
@@ -126,7 +126,7 @@ def edit(input_image,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
-    yield pure_ddpm_out,sega_out.images[0]
+    return pure_ddpm_out,sega_out.images[0]
 
 ########
 # demo #

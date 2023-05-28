@@ -157,10 +157,8 @@ intro = """
    Edit Friendly DDPM X Semantic Guidance
 </h1>
 <p style="font-size: 0.9rem; text-align: center; margin: 0rem; line-height: 1.2em; margin-top:1em">
-edit real images by using the ddpm edit friendly inversion 
 (<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">An Edit Friendly DDPM Noise Space:
 Inversion and Manipulations </a>) \n
-and iteracting with semantic concepts during the diffusion process 
 (<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">SEGA: Instructing Diffusion using Semantic Dimensions</a>).
 <p/>
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
@@ -170,11 +168,14 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <p/>"""
 with gr.Blocks() as demo:
     gr.HTML(intro)
-   
+    gr.Markdown(
+    """
+    edit real images by using the ddpm edit friendly inversion and iteracting with semantic concepts during the diffusion process 
+    """)
     with gr.Row():
-        src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
-        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True)
+        src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="optional: describe the original image")
+        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="optional: describe the target image to edit with DDPM")
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True, placeholder="optional: write a comma seperate list of concepts to add/remove with SEGA\n e.g. +dog,-cat,+oil painting")
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)

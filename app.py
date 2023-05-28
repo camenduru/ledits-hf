@@ -60,7 +60,8 @@ def get_example():
             'examples/source_a_man_wearing_a_brown_hoodie_in_a_crowded_street.jpeg', 
             'a man wearing a brown hoodie in a crowded street',
             'a robot wearing a brown hoodie in a crowded street',
-            'painting',
+            '+painting',
+            '1'
             'examples/ddpm_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png', 
             'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
              ]]
@@ -226,7 +227,7 @@ with gr.Blocks() as demo:
     gr.Examples(
         label='Examples', 
         examples=get_example(), 
-        inputs=[input_image, src_prompt, tar_prompt, edit_concept, ddpm_edited_image, sega_edited_image],
+        inputs=[input_image, src_prompt, tar_prompt, edit_concept, warm_up, ddpm_edited_image, sega_edited_image],
         outputs=[ddpm_edited_image, sega_edited_image])
 
 

@@ -90,11 +90,23 @@ def edit(input_image,
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip)
     yield pure_ddpm_out, pure_ddpm_out
-    
+
+    # SEGA
+    edit_concepts = edit_concept.split(",")
+    neg_guidance =[] 
+    for edit_concept in edit_concepts:
+        if edit_concept.startswith("-"):
+            neg_guidance.append(True)
+        else:
+            neg_guidance.append(False)
+    edit_concepts = [concept.strip("+|-") for concept in edit_concepts]
+
+    default_warm_up = [1]*len(edit_concepts)
+
     editing_args = dict(
-    editing_prompt = [edit_concept],
-    reverse_editing_direction = [neg_guidance],
-    edit_warmup_steps=[warm_up],
+    editing_prompt = edit_concepts,
+    reverse_editing_direction = neg_guidance,
+    edit_warmup_steps=default_warm_up,
     edit_guidance_scale=[sega_edit_guidance], 
     edit_threshold=[.93],
     edit_momentum_scale=0.5, 
@@ -106,8 +118,10 @@ def edit(input_image,
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
     yield pure_ddpm_out,sega_out.images[0]
 
-
-# demo
+########
+# demo #
+########
+                        
 intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
@@ -122,9 +136,8 @@ with gr.Blocks() as demo:
    
     with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True)
-        #edit
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True)
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concept", interactive=True)
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True)
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
@@ -137,14 +150,7 @@ with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
             generate_button = gr.Button("Run")
-        # with gr.Column(scale=1, min_width=100):
-        #     reset_button = gr.Button("Reset")
-        # with gr.Column(scale=3):
-        #     instruction = gr.Textbox(lines=1, label="Edit Instruction", interactive=True)
-            
-   
 
-    # with gr.Row():
     with gr.Accordion("Advanced Options", open=False):
         with gr.Row():
             #inversion
@@ -157,8 +163,8 @@ with gr.Blocks() as demo:
 
             # edit
             sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
-            warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)
-            neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
+            # warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)
+            # neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
           
 
     # gr.Markdown(help_text)
@@ -173,9 +179,9 @@ with gr.Blocks() as demo:
                     skip,
                     tar_cfg_scale,
                     edit_concept,
-                    sega_edit_guidance,
-                    warm_up,
-                    neg_guidance   
+                    sega_edit_guidance
+                    # warm_up,
+                    # neg_guidance   
         ],
         outputs=[ddpm_edited_image, sega_edited_image],
     )

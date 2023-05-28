@@ -99,7 +99,7 @@ def edit(input_image,
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip)
 
-    if not edit_concepts or not sega_edit_guidance:
+    if not edit_concept or not sega_edit_guidance:
         return pure_ddpm_out,pure_ddpm_out
     # SEGA
     edit_concepts = edit_concept.split(",")

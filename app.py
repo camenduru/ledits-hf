@@ -79,7 +79,8 @@ def edit(input_image,
                     flip=False,
                     h_shift=0,
                     v_shift=0):
-    offsets=(0,0,0,0)
+    left=0, right=200, top=0, bottom=0
+    # offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 
 
@@ -87,7 +88,7 @@ def edit(input_image,
     # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
     wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
     if flip:
-        wt, zs, wts = torch.flip(wt, [0, 1]),torch.flip(zs, [0, 1]),torch.flip(wts, [0, 1])
+        wt, zs, wts = torch.flip(wt, [2, 3]),torch.flip(zs, [2, 3]),torch.flip(wts, [2, 3])
 
     latnets = wts[skip].expand(1, -1, -1, -1)
 

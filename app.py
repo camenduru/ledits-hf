@@ -8,6 +8,7 @@ from utils import *
 from inversion_utils import *
 from modified_pipeline_semantic_stable_diffusion import SemanticStableDiffusionPipeline
 from torch import autocast, inference_mode
+import re
 
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
 
@@ -74,7 +75,7 @@ def edit(input_image,
                     tar_cfg_scale=15,
                     edit_concept="",
                     sega_edit_guidance=0,
-                    # warm_up=1,
+                    warm_up=None,
                     # neg_guidance=False,
                     left = 0,
                     right = 0,
@@ -98,8 +99,11 @@ def edit(input_image,
 
     if not edit_concept or not sega_edit_guidance:
         return pure_ddpm_out, pure_ddpm_out
+        
     # SEGA
+    # parse concepts and neg guidance 
     edit_concepts = edit_concept.split(",")
+    num_concepts = len(edit_concepts)
     neg_guidance =[] 
     for edit_concept in edit_concepts:
         if edit_concept.startswith("-"):
@@ -107,15 +111,25 @@ def edit(input_image,
         else:
             neg_guidance.append(False)
     edit_concepts = [concept.strip("+|-") for concept in edit_concepts]
-
-    default_warm_up = [1]*len(edit_concepts)
-
+                        
+    # parse warm-up steps
+    default_warm_up_steps = [1]*num_concepts
+    if warm_up:
+        digit_pattern = re.compile(r"^\d+$")
+        warm_up_steps_str = warm_up.split(",")
+        for i,num_steps in enumerate(warm_up_steps[:num_concepts]):
+            if not digit_pattern.match(num_steps):
+                raise gr.Error("Invalid value for warm-up steps, using 1 instead")
+            else:
+                default_warm_up_steps[i] = int(num_steps)
+        
+        
     editing_args = dict(
     editing_prompt = edit_concepts,
     reverse_editing_direction = neg_guidance,
-    edit_warmup_steps=default_warm_up,
-    edit_guidance_scale=[sega_edit_guidance], 
-    edit_threshold=[.93],
+    edit_warmup_steps=default_warm_up_steps,
+    edit_guidance_scale=[sega_edit_guidance]*num_concepts, 
+    edit_threshold=[.93]*num_concepts,
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
   )

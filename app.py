@@ -74,8 +74,8 @@ def edit(input_image,
                     tar_cfg_scale=15,
                     edit_concept="",
                     sega_edit_guidance=0,
-                    warm_up=1,
-                    neg_guidance=False,
+                    # warm_up=1,
+                    # neg_guidance=False,
                     flip=False,
                     left = 0,
                     right = 0,
@@ -98,8 +98,9 @@ def edit(input_image,
     #pure DDPM output
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip)
-    yield pure_ddpm_out, pure_ddpm_out
 
+    if not edit_concepts or not sega_edit_guidance:
+        return pure_ddpm_out,pure_ddpm_out
     # SEGA
     edit_concepts = edit_concept.split(",")
     neg_guidance =[] 

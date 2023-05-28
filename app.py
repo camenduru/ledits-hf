@@ -168,10 +168,6 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <p/>"""
 with gr.Blocks() as demo:
     gr.HTML(intro)
-    gr.Markdown(
-    """
-    ## edit real images by using the ddpm edit friendly inversion and iteracting with semantic concepts during the diffusion process 
-    """)
     with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="optional: describe the original image")
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="optional: describe the target image to edit with DDPM")

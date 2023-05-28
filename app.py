@@ -157,9 +157,9 @@ intro = """
    Edit Friendly DDPM X Semantic Guidance
 </h1>
 <p style="font-size: 0.9rem; text-align: center; margin: 0rem; line-height: 1.2em; margin-top:1em">
-(<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">An Edit Friendly DDPM Noise Space:
-Inversion and Manipulations </a>) \n
-(<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">SEGA: Instructing Diffusion using Semantic Dimensions</a>).
+<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">An Edit Friendly DDPM Noise Space:
+Inversion and Manipulations </a> X
+<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">SEGA: Instructing Diffusion using Semantic Dimensions</a>
 <p/>
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
 For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
@@ -170,7 +170,7 @@ with gr.Blocks() as demo:
     gr.HTML(intro)
     gr.Markdown(
     """
-    edit real images by using the ddpm edit friendly inversion and iteracting with semantic concepts during the diffusion process 
+    ## edit real images by using the ddpm edit friendly inversion and iteracting with semantic concepts during the diffusion process 
     """)
     with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="optional: describe the original image")

@@ -117,7 +117,7 @@ def edit(input_image,
     if warm_up:
         digit_pattern = re.compile(r"^\d+$")
         warm_up_steps_str = warm_up.split(",")
-        for i,num_steps in enumerate(warm_up_steps[:num_concepts]):
+        for i,num_steps in enumerate(warm_up_steps_str[:num_concepts]):
             if not digit_pattern.match(num_steps):
                 raise gr.Error("Invalid value for warm-up steps, using 1 instead")
             else:

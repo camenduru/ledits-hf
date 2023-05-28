@@ -154,11 +154,12 @@ def edit(input_image,
                         
 intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
-   Edit Friendly DDPM X Semantic Guidance: Editing Real Images
+   Edit Friendly DDPM X Semantic Guidance
 </h1>
-<p Edit real images by using an alternative inversion method
+<p style="font-size: 0.9rem; text-align: center; margin: 0rem; line-height: 1.2em; margin-top:1em">
+edit real images by using an alternative inversion method
 (<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">An Edit Friendly DDPM Noise Space:
-Inversion and Manipulations</a>)
+Inversion and Manipulations </a>)
 and iteracting with semantic concepts during the diffusion process 
 (<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">SEGA: Instructing Diffusion using Semantic Dimensions</a>).
 <p/>

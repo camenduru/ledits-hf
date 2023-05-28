@@ -76,7 +76,6 @@ def edit(input_image,
                     sega_edit_guidance=0,
                     # warm_up=1,
                     # neg_guidance=False,
-                    flip=False,
                     left = 0,
                     right = 0,
                     top = 0,
@@ -89,8 +88,6 @@ def edit(input_image,
     # invert
     # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
     wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
-    if flip:
-        wt, zs, wts = torch.flip(wt, [2, 3]),torch.flip(zs, [2, 3]),torch.flip(wts, [2, 3])
 
     latnets = wts[skip].expand(1, -1, -1, -1)
 
@@ -170,7 +167,7 @@ with gr.Blocks() as demo:
             # reconstruction
             skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
             tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-            flip = gr.Checkbox(label="Flip")
+            
             left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
             right = gr.Number(value=0, precision=0, label="Right Shift", interactive=True)
             top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
@@ -196,7 +193,6 @@ with gr.Blocks() as demo:
                     sega_edit_guidance,
                     # warm_up,
                     # neg_guidance,
-                    flip,
                     left,
                     right,
                     top,

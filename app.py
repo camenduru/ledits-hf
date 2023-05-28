@@ -64,6 +64,15 @@ def get_example():
             '1'
             'examples/ddpm_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png', 
             'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
+             ],
+    [
+            'examples/source_wall_with_framed_photos.jpeg', 
+            '',
+            '',
+            '+pink drawings of muffins',
+            '1'
+            'examples/ddpm_wall_with_framed_photos.png', 
+            'examples/ddpm_sega_plus_pink_drawings_of_muffins.png'
              ]]
     return case
     

@@ -74,15 +74,21 @@ def edit(input_image,
                     tar_cfg_scale=15,
                     edit_concept="",
                     sega_edit_guidance=0,
-                    warm_up=7,
-                    neg_guidance=False):
+                    warm_up=1,
+                    neg_guidance=False,
+                    flip=False,
+                    h_shift=0,
+                    v_shift=0):
     offsets=(0,0,0,0)
     x0 = load_512(input_image, *offsets, device)
 
 
     # invert
     # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)                    
+    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
+    if flip:
+        wt, zs, wts = torch.flip(wt, [0, 1]),torch.flip(zs, [0, 1]),torch.flip(wts, [0, 1])
+
     latnets = wts[skip].expand(1, -1, -1, -1)
 
 
@@ -112,7 +118,7 @@ def edit(input_image,
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
   )
-    sega_out = sem_pipe(prompt=tar_prompt,eta=eta, latents=latnets, guidance_scale = tar_cfg_scale,
+    sega_out = sem_pipe(prompt=tar_prompt,eta=1, latents=latnets, guidance_scale = tar_cfg_scale,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
@@ -160,7 +166,9 @@ with gr.Blocks() as demo:
             # reconstruction
             skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
             tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-
+            flip = gr.Checkbox(label="Flip")
+            h_shift = gr.Number(value=0, precision=0, label="Horizontal Shift", interactive=True)
+            v_shift =  gr.Number(value=0, precision=0, label="Vertical Shift", interactive=True)
             # edit
             sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
             # warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)
@@ -179,9 +187,12 @@ with gr.Blocks() as demo:
                     skip,
                     tar_cfg_scale,
                     edit_concept,
-                    sega_edit_guidance
+                    sega_edit_guidance,
                     # warm_up,
-                    # neg_guidance   
+                    # neg_guidance,
+                    flip,
+                    h_shift,
+                    v_shift
         ],
         outputs=[ddpm_edited_image, sega_edited_image],
     )

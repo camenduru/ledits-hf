@@ -175,7 +175,7 @@ with gr.Blocks() as demo:
     with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="optional: describe the original image")
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="optional: describe the target image to edit with DDPM")
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True, placeholder="optional: write a comma seperate list of concepts to add/remove with SEGA\n e.g. +dog,-cat,+oil painting")
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True, placeholder="optional: type a list of concepts to add/remove with SEGA\n (e.g. +dog,-cat,+oil painting)")
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
@@ -202,7 +202,7 @@ with gr.Blocks() as demo:
                 
             with gr.Column():    
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
-                warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True)
+                warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
 
             #shift
             with gr.Column():

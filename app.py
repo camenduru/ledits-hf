@@ -79,9 +79,9 @@ def edit(input_image,
                     flip=False,
                     h_shift=0,
                     v_shift=0):
-    left=0, right=200, top=0, bottom=0
+    left,right, top, bottom=0,200,0,0
     # offsets=(0,0,0,0)
-    x0 = load_512(input_image, *offsets, device)
+    x0 = load_512(input_image, left,right, top, bottom, device)
 
 
     # invert

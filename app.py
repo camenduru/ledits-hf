@@ -168,8 +168,11 @@ with gr.Blocks() as demo:
                 # reconstruction
                 skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
                 tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-
+                
+            with gr.Column():    
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
+                warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True)
+
             #shift
             with gr.Column():
                 left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
@@ -178,7 +181,7 @@ with gr.Blocks() as demo:
                 top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
                 bottom = gr.Number(value=0, precision=0, label="Bottom Shift", interactive=True)
 
-            # warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)
+            
             # neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
           
 
@@ -195,7 +198,7 @@ with gr.Blocks() as demo:
                     tar_cfg_scale,
                     edit_concept,
                     sega_edit_guidance,
-                    # warm_up,
+                    warm_up,
                     # neg_guidance,
                     left,
                     right,

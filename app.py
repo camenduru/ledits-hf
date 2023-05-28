@@ -61,7 +61,6 @@ def get_example():
             'a man wearing a brown hoodie in a crowded street',
             'a robot wearing a brown hoodie in a crowded street',
             '+painting',
-            '1'
             'examples/ddpm_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png', 
             'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
              ],
@@ -70,7 +69,6 @@ def get_example():
             '',
             '',
             '+pink drawings of muffins',
-            '1'
             'examples/ddpm_wall_with_framed_photos.png', 
             'examples/ddpm_sega_plus_pink_drawings_of_muffins.png'
              ]]
@@ -236,7 +234,7 @@ with gr.Blocks() as demo:
     gr.Examples(
         label='Examples', 
         examples=get_example(), 
-        inputs=[input_image, src_prompt, tar_prompt, edit_concept, warm_up, ddpm_edited_image, sega_edited_image],
+        inputs=[input_image, src_prompt, tar_prompt, edit_concept, ddpm_edited_image, sega_edited_image],
         outputs=[ddpm_edited_image, sega_edited_image])
 
 

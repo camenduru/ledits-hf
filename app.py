@@ -106,6 +106,7 @@ def edit(input_image,
     num_concepts = len(edit_concepts)
     neg_guidance =[] 
     for edit_concept in edit_concepts:
+        edit_concept=edit_concept.strip(" ")
         if edit_concept.startswith("-"):
             neg_guidance.append(True)
         else:

@@ -167,10 +167,10 @@ with gr.Blocks() as demo:
             # reconstruction
             skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
             tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-            with gr.Colmn():
+            with gr.Column():
                 left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
                 right = gr.Number(value=0, precision=0, label="Right Shift", interactive=True)
-            with gr.Colmn():
+            with gr.Column():
                 top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
                 bottom = gr.Number(value=0, precision=0, label="Bottom Shift", interactive=True)
             # edit

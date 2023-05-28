@@ -167,11 +167,12 @@ with gr.Blocks() as demo:
             # reconstruction
             skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
             tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-            
-            left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
-            right = gr.Number(value=0, precision=0, label="Right Shift", interactive=True)
-            top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
-            bottom = gr.Number(value=0, precision=0, label="Bottom Shift", interactive=True)
+            with gr.Colmn():
+                left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
+                right = gr.Number(value=0, precision=0, label="Right Shift", interactive=True)
+            with gr.Colmn():
+                top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
+                bottom = gr.Number(value=0, precision=0, label="Bottom Shift", interactive=True)
             # edit
             sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
             # warm_up = gr.Number(value=1, label=f"SEGA Warm-up Steps", interactive=True)

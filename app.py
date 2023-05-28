@@ -156,6 +156,12 @@ intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance: Editing Real Images
 </h1>
+<p Edit real images by using an alternative inversion method
+(<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">An Edit Friendly DDPM Noise Space:
+Inversion and Manipulations</a>)
+and iteracting with semantic concepts during the diffusion process 
+(<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">SEGA: Instructing Diffusion using Semantic Dimensions</a>).
+<p/>
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
 For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">

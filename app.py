@@ -245,8 +245,7 @@ with gr.Blocks() as demo:
         label='Examples', 
         examples=get_example(), 
         inputs=[input_image, src_prompt, tar_prompt, edit_concept, ddpm_edited_image, sega_edited_image],
-        outputs=[ddpm_edited_image, sega_edited_image],
-        cache_examples=True)
+        outputs=[ddpm_edited_image, sega_edited_image])
 
 
 

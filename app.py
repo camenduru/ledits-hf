@@ -270,8 +270,9 @@ with gr.Blocks() as demo:
                     ddpm_edited_image, sega_edited_image
                ],
         outputs=[ddpm_edited_image, sega_edited_image],
-        fn=edit,
-        cache_examples=True)
+        # fn=edit,
+        # cache_examples=True
+    )
 
 
 

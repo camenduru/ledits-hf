@@ -267,6 +267,7 @@ with gr.Blocks() as demo:
                     sega_edit_guidance,
                     warm_up,
                     # neg_guidance,
+                    ddpm_edited_image, sega_edited_image
                ],
         outputs=[ddpm_edited_image, sega_edited_image],
         fn=edit,

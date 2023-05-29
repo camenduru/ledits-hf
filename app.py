@@ -71,6 +71,14 @@ def get_example():
             '+pink drawings of muffins',
             'examples/ddpm_wall_with_framed_photos.png', 
             'examples/ddpm_sega_plus_pink_drawings_of_muffins.png'
+             ],
+    [
+            'examples/source_an_empty room_with_concrete_walls.jpeg', 
+            'an empty room with concrete walls',
+            'glass walls',
+            '+giant elephant',
+            'examples/ddpm_glass_walls.png', 
+            'examples/ddpm_sega_glass_walls_gian_elephant.png'
              ]]
     return case
     
@@ -204,7 +212,6 @@ with gr.Blocks() as demo:
             with gr.Column():
                 left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
                 right = gr.Number(value=0, precision=0, label="Right Shift", interactive=True)
-            with gr.Column():
                 top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
                 bottom = gr.Number(value=0, precision=0, label="Bottom Shift", interactive=True)
 

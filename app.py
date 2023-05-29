@@ -72,7 +72,7 @@ def get_example():
             'examples/ddpm_sega_plus_pink_drawings_of_muffins.png'
              ],
     [
-            'examples/source_an_empty_room_with_concrete_walls.jpeg', 
+            'examples/source_an_empty_room_with_concrete_walls.jpg', 
             'an empty room with concrete walls',
             'glass walls',
             '+giant elephant',

@@ -96,6 +96,42 @@ def get_example():
             'examples/ddpm_sega_glass_walls_gian_elephant.png'
              ]]
     return case
+
+inversion_map = dict()
+
+def invert_and_reconstruct(
+    input_image, 
+                    src_prompt ="", 
+                    tar_prompt="", 
+                    steps=100,
+                    # src_cfg_scale,
+                    skip=36,
+                    tar_cfg_scale=15,
+                    # neg_guidance=False,
+                    left = 0,
+                    right = 0,
+                    top = 0,
+                    bottom = 0
+):
+     # offsets=(0,0,0,0)
+    x0 = load_512(input_image, left,right, top, bottom, device)
+
+
+    # invert
+    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
+
+    latnets = wts[skip].expand(1, -1, -1, -1)
+
+
+    #pure DDPM output
+    pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
+                           cfg_scale_tar=tar_cfg_scale, skip=skip)
+    inversion_map['wt'] = wt
+    inversion_map['zs'] = zs
+    inversion_map['wts'] = wts
+    
+    return pure_ddpm_out
     
 def edit(input_image, 
                     src_prompt ="", 
@@ -113,23 +149,26 @@ def edit(input_image,
                     top = 0,
                     bottom = 0):
 
-    # offsets=(0,0,0,0)
-    x0 = load_512(input_image, left,right, top, bottom, device)
+    # # offsets=(0,0,0,0)
+    # x0 = load_512(input_image, left,right, top, bottom, device)
 
 
-    # invert
-    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
+    # # invert
+    # # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
 
-    latnets = wts[skip].expand(1, -1, -1, -1)
+    # latnets = wts[skip].expand(1, -1, -1, -1)
 
 
-    #pure DDPM output
-    pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
-                           cfg_scale_tar=tar_cfg_scale, skip=skip)
+    # #pure DDPM output
+    # pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
+    #                        cfg_scale_tar=tar_cfg_scale, skip=skip)
 
-    if not edit_concept or not sega_edit_guidance:
-        return pure_ddpm_out, pure_ddpm_out
+    # if not edit_concept or not sega_edit_guidance:
+    #     return pure_ddpm_out, pure_ddpm_out
+    if not bool(inversion_map):
+        raise gr.Error("Must invert before editing")
+    wt, zs, wts = inversion_map['wt'],inversion_map['zs'],inversion_map['wts']
         
     # SEGA
     # parse concepts and neg guidance 
@@ -169,7 +208,7 @@ def edit(input_image,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
-    return pure_ddpm_out,sega_out.images[0]
+    return sega_out.images[0]
 
 ########
 # demo #
@@ -206,7 +245,8 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
-            generate_button = gr.Button("Run")
+            invert_button = gr.Button("Invert")
+            edit_button = gr.Button("Edit")
 
     with gr.Accordion("Advanced Options", open=False):
         with gr.Row():
@@ -236,7 +276,25 @@ with gr.Blocks() as demo:
 
     # gr.Markdown(help_text)
 
-    generate_button.click(
+    invert_button.click(
+        fn=invert,
+        inputs=[input_image, 
+                    src_prompt, 
+                    tar_prompt, 
+                    steps,
+                    # src_cfg_scale,
+                    skip,
+                    tar_cfg_scale,
+                    # neg_guidance,
+                    left,
+                    right,
+                    top,
+                    bottom
+        ],
+        outputs=[ddpm_edited_image],
+    )
+
+    edit_button.click(
         fn=edit,
         inputs=[input_image, 
                     src_prompt, 
@@ -254,7 +312,7 @@ with gr.Blocks() as demo:
                     top,
                     bottom
         ],
-        outputs=[ddpm_edited_image, sega_edited_image],
+        outputs=[sega_edited_image],
     )
 
     gr.Examples(

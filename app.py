@@ -132,6 +132,9 @@ def invert_and_reconstruct(
     inversion_map['wts'] = wts
     
     return pure_ddpm_out
+
+def reset():
+    inversion_map.clear()
     
 def edit(input_image, 
                     src_prompt ="", 
@@ -314,6 +317,10 @@ with gr.Blocks() as demo:
                     bottom
         ],
         outputs=[sega_edited_image],
+    )
+
+    input_image.change(
+        fn = reset
     )
 
     gr.Examples(

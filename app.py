@@ -127,7 +127,7 @@ def invert_and_reconstruct(
     #pure DDPM output
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip)
-    inversion_map['wt'] = wt
+    inversion_map['latnets'] = latnets
     inversion_map['zs'] = zs
     inversion_map['wts'] = wts
     
@@ -168,7 +168,7 @@ def edit(input_image,
     #     return pure_ddpm_out, pure_ddpm_out
     if not bool(inversion_map):
         raise gr.Error("Must invert before editing")
-    wt, zs, wts = inversion_map['wt'],inversion_map['zs'],inversion_map['wts']
+    latnets, zs, wts = inversion_map['latnets'],inversion_map['zs'],inversion_map['wts']
         
     # SEGA
     # parse concepts and neg guidance 

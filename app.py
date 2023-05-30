@@ -246,6 +246,7 @@ with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
             invert_button = gr.Button("Invert")
+        with gr.Column(scale=1, min_width=100):
             edit_button = gr.Button("Edit")
 
     with gr.Accordion("Advanced Options", open=False):
@@ -277,7 +278,7 @@ with gr.Blocks() as demo:
     # gr.Markdown(help_text)
 
     invert_button.click(
-        fn=invert,
+        fn=invert_and_reconstruct,
         inputs=[input_image, 
                     src_prompt, 
                     tar_prompt, 

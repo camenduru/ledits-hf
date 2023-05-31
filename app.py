@@ -121,6 +121,7 @@ def invert_and_reconstruct(
                     skip=36,
                     tar_cfg_scale=15,
                     # neg_guidance=False,
+                    seed =0,
                     left = 0,
                     right = 0,
                     top = 0,
@@ -160,28 +161,9 @@ def edit(input_image,
                     sega_edit_guidance=0,
                     warm_up=None,
                     # neg_guidance=False,
-                    left = 0,
-                    right = 0,
-                    top = 0,
-                    bottom = 0):
+                    seed =0,
+   ):
 
-    # # offsets=(0,0,0,0)
-    # x0 = load_512(input_image, left,right, top, bottom, device)
-
-
-    # # invert
-    # # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
-
-    # latnets = wts[skip].expand(1, -1, -1, -1)
-
-
-    # #pure DDPM output
-    # pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
-    #                        cfg_scale_tar=tar_cfg_scale, skip=skip)
-
-    # if not edit_concept or not sega_edit_guidance:
-    #     return pure_ddpm_out, pure_ddpm_out
     if not bool(inversion_map):
         raise gr.Error("Must invert before editing")
     latnets, zs, wts = inversion_map['latnets'],inversion_map['zs'],inversion_map['wts']
@@ -275,7 +257,7 @@ with gr.Blocks() as demo:
                 # reconstruction
                 skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
                 tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-                
+                seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
             with gr.Column():    
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
                 warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
@@ -303,6 +285,7 @@ with gr.Blocks() as demo:
                     skip,
                     tar_cfg_scale,
                     # neg_guidance,
+                    seed,
                     left,
                     right,
                     top,
@@ -324,10 +307,8 @@ with gr.Blocks() as demo:
                     sega_edit_guidance,
                     warm_up,
                     # neg_guidance,
-                    left,
-                    right,
-                    top,
-                    bottom
+                    seed,
+
         ],
         outputs=[sega_edited_image],
     )

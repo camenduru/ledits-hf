@@ -110,7 +110,6 @@ def get_example():
              ]]
     return case
 
-inversion_map = dict()
 
 def invert_and_reconstruct(
     input_image, 
@@ -142,14 +141,12 @@ def invert_and_reconstruct(
     #pure DDPM output
     pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
                            cfg_scale_tar=tar_cfg_scale, skip=skip)
-    inversion_map['latnets'] = latnets
-    inversion_map['zs'] = zs
-    inversion_map['wts'] = wts
+    # inversion_map['latnets'] = latnets
+    # inversion_map['zs'] = zs
+    # inversion_map['wts'] = wts
     
     return pure_ddpm_out
 
-def reset():
-    inversion_map.clear()
     
 def edit(input_image, 
                     src_prompt ="", 
@@ -165,10 +162,18 @@ def edit(input_image,
                     seed =0,
    ):
     torch.manual_seed(seed)
-    if not bool(inversion_map):
-        raise gr.Error("Must invert before editing")
-    latnets, zs, wts = inversion_map['latnets'],inversion_map['zs'],inversion_map['wts']
-        
+    # if not bool(inversion_map):
+    #     raise gr.Error("Must invert before editing")
+    # latnets, zs, wts = inversion_map['latnets'],inversion_map['zs'],inversion_map['wts']
+
+    x0 = load_512(input_image, left,right, top, bottom, device)
+
+    # invert
+    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
+
+    latnets = wts[skip].expand(1, -1, -1, -1)
+       
     # SEGA
     # parse concepts and neg guidance 
     edit_concepts = edit_concept.split(",")

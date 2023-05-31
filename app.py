@@ -57,6 +57,19 @@ sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(devic
 def get_example():
     case = [
         [
+            'examples/source_a_cat_sitting_next_to_a_mirror.jpeg', 
+            'a cat sitting next to a mirror',
+            'watercolor painting of a cat sitting next to a mirror',
+            100,
+            36,
+            15,
+            '+Schnauzer dog, -cat',
+            5.5,
+            1,
+            'examples/ddpm_watercolor_painting_a_cat_sitting_next_to_a_mirror.png', 
+            'examples/ddpm_sega_watercolor_painting_a_cat_sitting_next_to_a_mirror_plus_dog_minus_cat.png'
+             ],
+        [
             'examples/source_a_man_wearing_a_brown_hoodie_in_a_crowded_street.jpeg', 
             'a man wearing a brown hoodie in a crowded street',
             'a robot wearing a brown hoodie in a crowded street',

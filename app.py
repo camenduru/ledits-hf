@@ -128,6 +128,7 @@ def invert_and_reconstruct(
                     bottom = 0
 ):
      # offsets=(0,0,0,0)
+    torch.manual_seed(seed)
     x0 = load_512(input_image, left,right, top, bottom, device)
 
 
@@ -163,7 +164,7 @@ def edit(input_image,
                     # neg_guidance=False,
                     seed =0,
    ):
-
+    torch.manual_seed(seed)
     if not bool(inversion_map):
         raise gr.Error("Must invert before editing")
     latnets, zs, wts = inversion_map['latnets'],inversion_map['zs'],inversion_map['wts']

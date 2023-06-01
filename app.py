@@ -201,7 +201,7 @@ def edit(input_image,
     reverse_editing_direction = neg_guidance,
     edit_warmup_steps=default_warm_up_steps,
     edit_guidance_scale=[sega_edit_guidance]*num_concepts, 
-    edit_threshold=[.93]*num_concepts,
+    edit_threshold=[.95]*num_concepts,
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
   )

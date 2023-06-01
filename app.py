@@ -319,10 +319,6 @@ with gr.Blocks() as demo:
         outputs=[sega_edited_image],
     )
 
-    input_image.change(
-        fn = reset
-    )
-
     gr.Examples(
         label='Examples', 
         examples=get_example(), 

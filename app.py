@@ -124,7 +124,7 @@ def invert_and_reconstruct(
 ):
     offsets=(0,0,0,0)
     torch.manual_seed(seed)
-    x0 = load_512(input_image, **offsets, device)
+    x0 = load_512(input_image, device=device)
 
 
     # invert
@@ -163,7 +163,7 @@ def edit(input_image,
 
 
     offsets  = (0,0,0,0)
-    x0 = load_512(input_image, **offsets, device)
+    x0 = load_512(input_image, device=device)
 
     # invert
     # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)

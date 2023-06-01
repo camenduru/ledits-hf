@@ -46,8 +46,8 @@ def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
     return img
 
 # load pipelines
-# sd_model_id = "runwayml/stable-diffusion-v1-5"
-sd_model_id = "stabilityai/stable-diffusion-2-base"
+sd_model_id = "runwayml/stable-diffusion-v1-5"
+# sd_model_id = "stabilityai/stable-diffusion-2-base"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")

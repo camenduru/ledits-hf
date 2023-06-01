@@ -120,15 +120,11 @@ def invert_and_reconstruct(
                     skip=36,
                     tar_cfg_scale=15,
                     # neg_guidance=False,
-                    seed =0,
-                    left = 0,
-                    right = 0,
-                    top = 0,
-                    bottom = 0
+                    seed =0
 ):
-     # offsets=(0,0,0,0)
+    offsets=(0,0,0,0)
     torch.manual_seed(seed)
-    x0 = load_512(input_image, left,right, top, bottom, device)
+    x0 = load_512(input_image, **offsets, device)
 
 
     # invert
@@ -164,9 +160,10 @@ def edit(input_image,
     torch.manual_seed(seed)
     # if not bool(inversion_map):
     #     raise gr.Error("Must invert before editing")
-    # latnets, zs, wts = inversion_map['latnets'],inversion_map['zs'],inversion_map['wts']
 
-    x0 = load_512(input_image, left,right, top, bottom, device)
+
+    offsets  = (0,0,0,0)
+    x0 = load_512(input_image, **offsets, device)
 
     # invert
     # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
@@ -268,13 +265,6 @@ with gr.Blocks() as demo:
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
                 warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
 
-            #shift
-            with gr.Column():
-                left = gr.Number(value=0, precision=0, label="Left Shift", interactive=True)
-                right = gr.Number(value=0, precision=0, label="Right Shift", interactive=True)
-                top = gr.Number(value=0, precision=0, label="Top Shift", interactive=True)
-                bottom = gr.Number(value=0, precision=0, label="Bottom Shift", interactive=True)
-
             
             # neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
           
@@ -291,11 +281,7 @@ with gr.Blocks() as demo:
                     skip,
                     tar_cfg_scale,
                     # neg_guidance,
-                    seed,
-                    left,
-                    right,
-                    top,
-                    bottom
+                    seed
         ],
         outputs=[ddpm_edited_image],
     )
@@ -313,7 +299,7 @@ with gr.Blocks() as demo:
                     sega_edit_guidance,
                     warm_up,
                     # neg_guidance,
-                    seed,
+                    seed
 
         ],
         outputs=[sega_edited_image],

@@ -162,7 +162,7 @@ def edit(input_image,
     #     raise gr.Error("Must invert before editing")
 
 
-    offsets  = (0,0,0,0)
+
     x0 = load_512(input_image, device=device)
 
     # invert
@@ -229,7 +229,7 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
 <p/>"""
-with gr.Blocks() as demo:
+with gr.Blocks(css='style.css') as demo:
     gr.HTML(intro)
     with gr.Row():
         src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="optional: describe the original image")

@@ -243,7 +243,7 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        # edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True, placeholder="optional: type a list of concepts to add/remove with SEGA\n (e.g. +dog,-cat,+oil painting)")
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = False, interactive=True)
          
     with gr.Row():
         with gr.Column(scale=1, min_width=100):

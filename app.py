@@ -231,10 +231,7 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <p/>"""
 with gr.Blocks(css='style.css') as demo:
     gr.HTML(intro)
-    with gr.Row():
-        src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="optional: describe the original image")
-        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="optional: describe the target image to edit with DDPM")
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True, placeholder="optional: type a list of concepts to add/remove with SEGA\n (e.g. +dog,-cat,+oil painting)")
+   
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
@@ -245,6 +242,10 @@ with gr.Blocks(css='style.css') as demo:
         sega_edited_image.style(height=512, width=512)
 
     with gr.Row():
+        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
+        # edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", interactive=True, placeholder="optional: type a list of concepts to add/remove with SEGA\n (e.g. +dog,-cat,+oil painting)")
+         
+    with gr.Row():
         with gr.Column(scale=1, min_width=100):
             invert_button = gr.Button("Invert")
         with gr.Column(scale=1, min_width=100):
@@ -254,6 +255,7 @@ with gr.Blocks(css='style.css') as demo:
         with gr.Row():
             with gr.Column():
                 #inversion
+                src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
                 steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
                 # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
       

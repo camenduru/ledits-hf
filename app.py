@@ -32,7 +32,7 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
 
 
 
-def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
+def sample(zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
 
     # reverse process (via Zs and wT)
     w0, _ = inversion_reverse_process(sd_pipe, xT=wts[skip], etas=eta, prompts=[prompt_tar], cfg_scales=[cfg_scale_tar], prog_bar=True, zs=zs[skip:])

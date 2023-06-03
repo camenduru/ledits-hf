@@ -28,7 +28,7 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
 
   # find Zs and wts - forward process
   wt, zs, wts = inversion_forward_process(sd_pipe, w0, etas=eta, prompt=prompt_src, cfg_scale=cfg_scale_src, prog_bar=True, num_inference_steps=num_diffusion_steps)
-  return wt, zs, wts
+  return zs, wts
 
 
 

@@ -196,6 +196,12 @@ def edit(input_image,
                         use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
     return sega_out.images[0]
 
+
+def randomize_seed_fn(seed, randomize_seed):
+    if randomize_seed:
+        seed = random.randint(0, MAX_SEED)
+    return seed
+
 ########
 # demo #
 ########

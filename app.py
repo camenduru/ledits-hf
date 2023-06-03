@@ -260,7 +260,7 @@ with gr.Blocks(css='style.css') as demo:
                 randomize_seed = gr.Checkbox(label='Randomize seed', value=True)
             with gr.Column():    
                 # reconstruction
-                skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
+                skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
                 tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
                 warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")

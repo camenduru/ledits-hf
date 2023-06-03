@@ -47,7 +47,6 @@ def sample(wt, zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
 
 # load pipelines
 sd_model_id = "runwayml/stable-diffusion-v1-5"
-# sd_model_id = "stabilityai/stable-diffusion-2-base"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
@@ -112,64 +111,49 @@ def get_example():
 
 
 def invert_and_reconstruct(
-    input_image, 
+                    input_image, 
+                    do_inversion, 
+                    wts, zs, 
+                    seed,
                     src_prompt ="", 
                     tar_prompt="", 
                     steps=100,
-                    # src_cfg_scale,
+                    src_cfg_scale = 3.5,
                     skip=36,
                     tar_cfg_scale=15,
                     # neg_guidance=False,
-                    seed =0
+                    
 ):
-    offsets=(0,0,0,0)
     torch.manual_seed(seed)
     x0 = load_512(input_image, device=device)
 
+    if do_inversion:
+        # invert and retrieve noise maps and latent
+        zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=cfg_scale_src)
+        wts = gr.State(value=wts_tensor)
+        zs = gr.State(value=zs_tensor)
+        do_inversion = False
 
-    # invert
-    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
+    output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=cfg_scale_tar)
 
-    latnets = wts[skip].expand(1, -1, -1, -1)
+    return output, wts, zs, do_inversion
 
-
-    #pure DDPM output
-    pure_ddpm_out = sample(wt, zs, wts, prompt_tar=tar_prompt, 
-                           cfg_scale_tar=tar_cfg_scale, skip=skip)
-    # inversion_map['latnets'] = latnets
-    # inversion_map['zs'] = zs
-    # inversion_map['wts'] = wts
-    
-    return pure_ddpm_out
 
     
-def edit(input_image, 
-                    src_prompt ="", 
-                    tar_prompt="", 
-                    steps=100,
-                    # src_cfg_scale,
-                    skip=36,
-                    tar_cfg_scale=15,
-                    edit_concept="",
-                    sega_edit_guidance=10,
-                    warm_up=None,
-                    # neg_guidance=False,
-                    seed =0,
+def edit(input_image,
+            do_inversion, 
+            wts, zs, seed,
+            src_prompt ="", 
+            tar_prompt="", 
+            steps=100,
+            skip=36,
+            tar_cfg_scale=15,
+            edit_concept="",
+            sega_edit_guidance=10,
+            warm_up=None,
+            # neg_guidance=False,
+
    ):
-    torch.manual_seed(seed)
-    # if not bool(inversion_map):
-    #     raise gr.Error("Must invert before editing")
-
-
-
-    x0 = load_512(input_image, device=device)
-
-    # invert
-    # wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-    wt, zs, wts = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps)
-
-    latnets = wts[skip].expand(1, -1, -1, -1)
        
     # SEGA
     # parse concepts and neg guidance 
@@ -205,10 +189,11 @@ def edit(input_image,
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6 
   )
+    latnets = wts.value[skip].expand(1, -1, -1, -1)
     sega_out = sem_pipe(prompt=tar_prompt,eta=1, latents=latnets, guidance_scale = tar_cfg_scale,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
-                        use_ddpm=True,  wts=wts, zs=zs[skip:], **editing_args)
+                        use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
     return sega_out.images[0]
 
 ########
@@ -230,8 +215,15 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
 <p/>"""
 with gr.Blocks(css='style.css') as demo:
+    
+    def reset_do_inversion():
+        do_inversion = True
+        return do_inversion
+
     gr.HTML(intro)
-   
+    wts = gr.State()
+    zs = gr.State()
+    do_inversion = gr.State(value=True)
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
@@ -243,7 +235,7 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = False, interactive=True)
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
          
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
@@ -257,13 +249,13 @@ with gr.Blocks(css='style.css') as demo:
                 #inversion
                 src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
                 steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
-                # src_cfg_scale = gr.Number(value=3.5, label=f"Source CFG", interactive=True)
-      
+                src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
+                seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
+                randomize_seed = gr.Checkbox(label='Randomize seed', value=True)
+            with gr.Column():    
                 # reconstruction
                 skip = gr.Slider(minimum=0, maximum=40, value=36, precision=0, label="Skip Steps", interactive=True)
-                tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)
-                seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
-            with gr.Column():    
+                tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
                 warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
 
@@ -274,37 +266,49 @@ with gr.Blocks(css='style.css') as demo:
     # gr.Markdown(help_text)
 
     invert_button.click(
+        fn = randomize_seed_fn,
+        inputs = [seed, randomize_seed],
+        outputs = [seed]
+    ).then(
         fn=invert_and_reconstruct,
         inputs=[input_image, 
-                    src_prompt, 
-                    tar_prompt, 
-                    steps,
-                    # src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    # neg_guidance,
-                    seed
+                do_inversion, 
+                wts, zs, 
+                seed,
+                src_prompt, 
+                tar_prompt, 
+                steps,
+                src_cfg_scale,
+                skip,
+                tar_cfg_scale,          
         ],
-        outputs=[ddpm_edited_image],
+        outputs=[ddpm_edited_image, wts, zs, do_inversion],
     )
 
     edit_button.click(
         fn=edit,
         inputs=[input_image, 
-                    src_prompt, 
-                    tar_prompt, 
-                    steps,
-                    # src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    edit_concept,
-                    sega_edit_guidance,
-                    warm_up,
-                    # neg_guidance,
-                    seed
+                do_inversion, 
+                wts, zs, 
+                seed,
+                src_prompt, 
+                tar_prompt, 
+                steps,
+                skip,
+                tar_cfg_scale,
+                edit_concept,
+                sega_edit_guidance,
+                warm_up,
+                # neg_guidance,
 
         ],
         outputs=[sega_edited_image],
+        
+    )
+
+    input_image.change(
+        fn = reset_do_inversion,
+        outputs = [do_inversion]
     )
 
     gr.Examples(

@@ -129,7 +129,7 @@ def invert_and_reconstruct(
 
     
     x0 = load_512(input_image, device=device)
-    randomize_seed_fn(seed, randomize_seed)
+    seed = randomize_seed_fn(seed, randomize_seed)
 
     if do_inversion:
         # invert and retrieve noise maps and latent
@@ -140,7 +140,7 @@ def invert_and_reconstruct(
 
     output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
 
-    return output, wts, zs, do_inversion
+    return output, wts, zs, do_inversion, seed
 
 
     
@@ -231,7 +231,7 @@ with gr.Blocks(css='style.css') as demo:
         if randomize_seed:
             seed = random.randint(0, np.iinfo(np.int32).max)
         torch.manual_seed(seed)
-        # return seed
+        return seed
 
     gr.HTML(intro)
     wts = gr.State()
@@ -289,7 +289,7 @@ with gr.Blocks(css='style.css') as demo:
         inputs=[input_image, 
                 do_inversion, 
                 wts, zs, 
-                seed, randomize_seed
+                seed, randomize_seed,
                 src_prompt, 
                 tar_prompt, 
                 steps,
@@ -297,7 +297,7 @@ with gr.Blocks(css='style.css') as demo:
                 skip,
                 tar_cfg_scale,          
         ],
-        outputs=[ddpm_edited_image, wts, zs, do_inversion],
+        outputs=[ddpm_edited_image, wts, zs, do_inversion, seed],
     )
 
     edit_button.click(

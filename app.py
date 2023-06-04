@@ -1,5 +1,6 @@
 import gradio as gr
 import torch
+import numpy as np
 import requests
 from io import BytesIO
 from diffusers import StableDiffusionPipeline
@@ -199,7 +200,7 @@ def edit(input_image,
 
 def randomize_seed_fn(seed, randomize_seed):
     if randomize_seed:
-        seed = random.randint(0, MAX_SEED)
+        seed = random.randint(0, np.iinfo(np.int32).max)
     return seed
 
 ########
@@ -244,6 +245,8 @@ with gr.Blocks(css='style.css') as demo:
         with gr.Accordion("SEGA Concepts", open=False, visible=False):
             # with gr.Column(scale=1):
             edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
+            concepts = gr.Dropdown(
+            [], value=[], multiselect=True, label="Concepts" )
 
                 
          

@@ -126,7 +126,7 @@ def invert_and_reconstruct(
                     # neg_guidance=False,
                     
 ):
-    torch.manual_seed(seed)
+
     x0 = load_512(input_image, device=device)
 
     if do_inversion:
@@ -202,6 +202,7 @@ def edit(input_image,
 def randomize_seed_fn(seed, randomize_seed):
     if randomize_seed:
         seed = random.randint(0, np.iinfo(np.int32).max)
+    torch.manual_seed(seed)
     return seed
 
 ########

@@ -289,7 +289,8 @@ with gr.Blocks(css='style.css') as demo:
     invert_button.click(
         fn = randomize_seed_fn,
         inputs = [seed, randomize_seed],
-        outputs = [seed]).then(
+        outputs = [seed], 
+        queue = False).then(
         fn=invert_and_reconstruct,
         inputs=[input_image, 
                 do_inversion, 

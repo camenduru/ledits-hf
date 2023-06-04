@@ -43,50 +43,6 @@ input[type='range'] {
   --tw-ring-opacity: .5;
 }
 
-
-/* .footer {
-  margin-bottom: 45px;
-  margin-top: 35px;
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.footer>p {
-  font-size: .8rem;
-  display: inline-block;
-  padding: 0 10px;
-  transform: translateY(10px);
-  background: white;
-}
-
-.dark .footer {
-  border-color: #303030;
-}
-
-.dark .footer>p {
-  background: #0b0f19;
-}
-
-.acknowledgments h4 {
-  margin: 1.25em 0 .25em 0;
-  font-weight: bold;
-  font-size: 115%;
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-} */
-/* 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-} */
-
 .gr-form {
   flex: 1 1 50%;
   border-top-right-radius: 0;

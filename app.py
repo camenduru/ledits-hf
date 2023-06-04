@@ -233,7 +233,7 @@ with gr.Blocks(css='style.css') as demo:
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False)
+        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
         sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
         input_image.style(height=512, width=512)
         ddpm_edited_image.style(height=512, width=512)
@@ -241,7 +241,11 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
+        with gr.Accordion("SEGA Concepts", open=False):
+            with gr.Column(scale=1, min_width=100):
+                edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
+            # with gr.Column(scale=1, min_width=100):
+                
          
     with gr.Row():
         with gr.Column(scale=1, min_width=100):

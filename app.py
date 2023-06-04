@@ -125,7 +125,6 @@ def invert_and_reconstruct(
                     input_image, 
                     do_inversion, 
                     wts, zs, 
-                    seed, randomize_seed,
                     src_prompt ="", 
                     tar_prompt="", 
                     steps=100,
@@ -138,7 +137,6 @@ def invert_and_reconstruct(
 
     
     x0 = load_512(input_image, device=device)
-    seed = randomize_seed_fn(seed, randomize_seed)
 
     if do_inversion:
         # invert and retrieve noise maps and latent
@@ -149,7 +147,7 @@ def invert_and_reconstruct(
 
     output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
 
-    return output, wts, zs, do_inversion, seed
+    return output, wts, zs, do_inversion
 
 
     
@@ -289,11 +287,13 @@ with gr.Blocks(css='style.css') as demo:
     # gr.Markdown(help_text)
 
     invert_button.click(
+        fn = randomize_seed_fn,
+        inputs = [seed, randomize_seed],
+        outputs = [seed]).then(
         fn=invert_and_reconstruct,
         inputs=[input_image, 
                 do_inversion, 
                 wts, zs, 
-                seed, randomize_seed,
                 src_prompt, 
                 tar_prompt, 
                 steps,
@@ -301,8 +301,24 @@ with gr.Blocks(css='style.css') as demo:
                 skip,
                 tar_cfg_scale,          
         ],
-        outputs=[ddpm_edited_image, wts, zs, do_inversion, seed],
-    )
+        outputs=[ddpm_edited_image, wts, zs, do_inversion],
+    ).success(fn=edit,
+        inputs=[input_image, 
+                do_inversion, 
+                wts, zs, 
+                seed,
+                src_prompt, 
+                tar_prompt, 
+                steps,
+                skip,
+                tar_cfg_scale,
+                edit_concept,
+                sega_edit_guidance,
+                warm_up,
+                # neg_guidance,
+
+        ],
+        outputs=[sega_edited_image])
 
     edit_button.click(
         fn=edit,

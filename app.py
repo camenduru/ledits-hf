@@ -12,6 +12,15 @@ from modified_pipeline_semantic_stable_diffusion import SemanticStableDiffusionP
 from torch import autocast, inference_mode
 import re
 
+
+
+def randomize_seed_fn(seed, randomize_seed):
+    if randomize_seed:
+        seed = random.randint(0, np.iinfo(np.int32).max)
+    torch.manual_seed(seed)
+    return seed
+
+
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
 
   #  inverts a real image according to Algorihm 1 in https://arxiv.org/pdf/2304.06140.pdf, 
@@ -227,11 +236,6 @@ with gr.Blocks(css='style.css') as demo:
         do_inversion = True
         return do_inversion
 
-    def randomize_seed_fn(seed, randomize_seed):
-        if randomize_seed:
-            seed = random.randint(0, np.iinfo(np.int32).max)
-        torch.manual_seed(seed)
-        return seed
 
     gr.HTML(intro)
     wts = gr.State()

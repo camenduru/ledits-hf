@@ -285,7 +285,7 @@ with gr.Blocks(css='style.css') as demo:
         inputs = [seed, randomize_seed],
         outputs = [seed],
         queue=False
-    ).then(
+    ).success(
         fn=invert_and_reconstruct,
         inputs=[input_image, 
                 do_inversion, 

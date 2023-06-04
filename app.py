@@ -241,10 +241,10 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        with gr.Accordion("SEGA Concepts", open=False):
-            with gr.Column(scale=1, min_width=100):
-                edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
-            # with gr.Column(scale=1, min_width=100):
+        edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
+        with gr.Accordion("SEGA Concepts", open=False, visible=False):
+            with gr.Column(scale=1):
+
                 
          
     with gr.Row():

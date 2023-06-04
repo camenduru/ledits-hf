@@ -242,7 +242,7 @@ with gr.Blocks(css='style.css') as demo:
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
+        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False)
         sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
         input_image.style(height=512, width=512)
         ddpm_edited_image.style(height=512, width=512)

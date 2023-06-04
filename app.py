@@ -2,6 +2,7 @@ import gradio as gr
 import torch
 import numpy as np
 import requests
+import random
 from io import BytesIO
 from diffusers import StableDiffusionPipeline
 from diffusers import DDIMScheduler

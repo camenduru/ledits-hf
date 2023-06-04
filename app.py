@@ -303,23 +303,7 @@ with gr.Blocks(css='style.css') as demo:
                 tar_cfg_scale,          
         ],
         outputs=[ddpm_edited_image, wts, zs, do_inversion],
-    ).success(fn=edit,
-        inputs=[input_image, 
-                do_inversion, 
-                wts, zs, 
-                seed,
-                src_prompt, 
-                tar_prompt, 
-                steps,
-                skip,
-                tar_cfg_scale,
-                edit_concept,
-                sega_edit_guidance,
-                warm_up,
-                # neg_guidance,
-
-        ],
-        outputs=[sega_edited_image])
+    )
 
     edit_button.click(
         fn=edit,

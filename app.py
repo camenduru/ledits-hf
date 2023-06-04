@@ -138,12 +138,12 @@ def invert_and_reconstruct(
     
     x0 = load_512(input_image, device=device)
 
-    if do_inversion:
+    # if do_inversion:
         # invert and retrieve noise maps and latent
-        zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-        wts = gr.State(value=wts_tensor)
-        zs = gr.State(value=zs_tensor)
-        do_inversion = False
+    zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+    wts = gr.State(value=wts_tensor)
+    zs = gr.State(value=zs_tensor)
+        # do_inversion = False
 
     output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
 

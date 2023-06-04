@@ -116,7 +116,7 @@ def invert_and_reconstruct(
                     input_image, 
                     do_inversion, 
                     wts, zs, 
-                    seed,
+                    seed, randomize_seed,
                     src_prompt ="", 
                     tar_prompt="", 
                     steps=100,
@@ -127,7 +127,9 @@ def invert_and_reconstruct(
                     
 ):
 
+    
     x0 = load_512(input_image, device=device)
+    randomize_seed_fn(seed, randomize_seed)
 
     if do_inversion:
         # invert and retrieve noise maps and latent
@@ -199,11 +201,7 @@ def edit(input_image,
     return sega_out.images[0]
 
 
-def randomize_seed_fn(seed, randomize_seed):
-    if randomize_seed:
-        seed = random.randint(0, np.iinfo(np.int32).max)
-    torch.manual_seed(seed)
-    return seed
+
 
 ########
 # demo #
@@ -228,6 +226,12 @@ with gr.Blocks(css='style.css') as demo:
     def reset_do_inversion():
         do_inversion = True
         return do_inversion
+
+    def randomize_seed_fn(seed, randomize_seed):
+        if randomize_seed:
+            seed = random.randint(0, np.iinfo(np.int32).max)
+        torch.manual_seed(seed)
+        # return seed
 
     gr.HTML(intro)
     wts = gr.State()
@@ -281,16 +285,11 @@ with gr.Blocks(css='style.css') as demo:
     # gr.Markdown(help_text)
 
     invert_button.click(
-        fn = randomize_seed_fn,
-        inputs = [seed, randomize_seed],
-        outputs = [seed],
-        queue=False
-    ).success(
         fn=invert_and_reconstruct,
         inputs=[input_image, 
                 do_inversion, 
                 wts, zs, 
-                seed,
+                seed, randomize_seed
                 src_prompt, 
                 tar_prompt, 
                 steps,

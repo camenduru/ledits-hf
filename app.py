@@ -335,23 +335,23 @@ with gr.Blocks(css='style.css') as demo:
         outputs=[ddpm_edited_image, wts, zs, do_inversion],
     )
 
-    edit_button.click(
-        fn=edit,
-        inputs=[input_image, 
-                wts, zs, 
-                tar_prompt, 
-                steps,
-                skip,
-                tar_cfg_scale,
-                edit_concept,
-                sega_edit_guidance,
-                warm_up,
-                # neg_guidance,
+    # edit_button.click(
+    #     fn=edit,
+    #     inputs=[input_image, 
+    #             wts, zs, 
+    #             tar_prompt, 
+    #             steps,
+    #             skip,
+    #             tar_cfg_scale,
+    #             edit_concept,
+    #             sega_edit_guidance,
+    #             warm_up,
+    #             # neg_guidance,
 
-        ],
-        outputs=[sega_edited_image],
+    #     ],
+    #     outputs=[sega_edited_image],
         
-    )
+    # )
 
     input_image.change(
         fn = reset_do_inversion,

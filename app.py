@@ -123,7 +123,8 @@ def get_example():
 
 def invert_and_reconstruct(
                     input_image, 
-                    do_inversion, 
+                    do_inversion,
+                    seed, randomize_seed,
                     wts, zs, 
                     src_prompt ="", 
                     tar_prompt="", 
@@ -138,12 +139,12 @@ def invert_and_reconstruct(
     
     x0 = load_512(input_image, device=device)
 
-    # if do_inversion:
-        # invert and retrieve noise maps and latent
+    if do_inversion or randomize_seed:
+        invert and retrieve noise maps and latent
     zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
     wts = gr.State(value=wts_tensor)
     zs = gr.State(value=zs_tensor)
-        # do_inversion = False
+        do_inversion = False
 
     output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
 
@@ -152,9 +153,7 @@ def invert_and_reconstruct(
 
     
 def edit(input_image,
-            do_inversion, 
-            wts, zs, seed,
-            src_prompt ="", 
+            wts, zs, 
             tar_prompt="", 
             steps=100,
             skip=36,
@@ -251,11 +250,16 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
         with gr.Accordion("SEGA Concepts", open=False, visible=False):
-            # with gr.Column(scale=1):
-            edit_concept = gr.Textbox(lines=1, label="SEGA Edit Concepts", visible = True, interactive=True)
-            concepts = gr.Dropdown(
-            [], value=[], multiselect=True, label="Concepts" )
-
+            with gr.Column(scale=1):
+                edit_concept = gr.Textbox(lines=1, label="Enter SEGA Edit Concept", visible = True, interactive=True)
+            with gr.Column(scale=1):
+                neg_guidance = gr.Checkbox(label="Negative Guidance", value=False)
+                submit = gr.Button(label="Add Concept")
+                concepts = gr.Dataframe(
+                                headers=["Concepts", "Negative Guidance"],
+                                datatype=["str", "bool"],
+                                label="SEGA Concepts",
+                            )
                 
          
     with gr.Row():
@@ -267,14 +271,13 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Accordion("Advanced Options", open=False):
         with gr.Row():
             with gr.Column():
-                #inversion
                 src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
                 steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
                 src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
                 seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
-                randomize_seed = gr.Checkbox(label='Randomize seed', value=True)
+                randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
             with gr.Column():    
-                # reconstruction
+
                 skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
                 tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
@@ -293,7 +296,8 @@ with gr.Blocks(css='style.css') as demo:
         queue = False).then(
         fn=invert_and_reconstruct,
         inputs=[input_image, 
-                do_inversion, 
+                do_inversion,
+                seed, randomize_seed,
                 wts, zs, 
                 src_prompt, 
                 tar_prompt, 
@@ -308,10 +312,7 @@ with gr.Blocks(css='style.css') as demo:
     edit_button.click(
         fn=edit,
         inputs=[input_image, 
-                do_inversion, 
                 wts, zs, 
-                seed,
-                src_prompt, 
                 tar_prompt, 
                 steps,
                 skip,

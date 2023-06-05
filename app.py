@@ -314,12 +314,6 @@ with gr.Blocks(css='style.css') as demo:
 
     # gr.Markdown(help_text)
 
-
-    submit_concept.click(
-        fn = update_sega_concept_table,
-        inputs = [edit_concept, neg_guidance, concepts_table],
-        outputs = [concepts_table]
-    )
     
     invert_button.click(
         fn = randomize_seed_fn,

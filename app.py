@@ -138,19 +138,24 @@ def invert_and_reconstruct(
 
     
     x0 = load_512(input_image, device=device)
-
+    
     if do_inversion or randomize_seed:
         invert and retrieve noise maps and latent
-    zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-    wts = gr.State(value=wts_tensor)
-    zs = gr.State(value=zs_tensor)
+        zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+        wts = gr.State(value=wts_tensor)
+        zs = gr.State(value=zs_tensor)
         do_inversion = False
 
     output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
 
     return output, wts, zs, do_inversion
 
-
+def update_sega_concept_table(edit_concept, neg_guidance, concepts_table):
+    if edit_concept:
+        new_rows = concepts_table.value.append([edit_concept, neg_guidance])
+        new_concepts_table = gr.DataFrame(value=new_rows)
+        return new_concepts_table
+    return concepts_table
     
 def edit(input_image,
             wts, zs, 
@@ -249,13 +254,13 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        with gr.Accordion("SEGA Concepts", open=False, visible=False):
+        with gr.Accordion("SEGA Concepts", open=False, visible=True):
             with gr.Column(scale=1):
                 edit_concept = gr.Textbox(lines=1, label="Enter SEGA Edit Concept", visible = True, interactive=True)
             with gr.Column(scale=1):
                 neg_guidance = gr.Checkbox(label="Negative Guidance", value=False)
-                submit = gr.Button(label="Add Concept")
-                concepts = gr.Dataframe(
+                submit_concept = gr.Button(label="Add Concept")
+                concepts_table = gr.Dataframe(
                                 headers=["Concepts", "Negative Guidance"],
                                 datatype=["str", "bool"],
                                 label="SEGA Concepts",
@@ -277,7 +282,6 @@ with gr.Blocks(css='style.css') as demo:
                 seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
                 randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
             with gr.Column():    
-
                 skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
                 tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
                 sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
@@ -289,6 +293,13 @@ with gr.Blocks(css='style.css') as demo:
 
     # gr.Markdown(help_text)
 
+
+    submit_concept.click(
+        fn = update_sega_concept_table,
+        inputs = [edit_concept, neg_guidance, concepts_table],
+        outputs = [concepts_table]
+    )
+    
     invert_button.click(
         fn = randomize_seed_fn,
         inputs = [seed, randomize_seed],

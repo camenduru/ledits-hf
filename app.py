@@ -274,18 +274,39 @@ with gr.Blocks(css='style.css') as demo:
             edit_button = gr.Button("Edit")
 
     with gr.Accordion("Advanced Options", open=False):
-        with gr.Row():
-            with gr.Column():
-                src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
-                steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
-                src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
-                seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
-                randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
-            with gr.Column():    
-                skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
-                tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
-                sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
-                warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
+         with gr.Tabs() as tabs:
+                with gr.TabItem('SEGA Guidance', id=0):
+                    with gr.Row().style(mobile_collapse=False, equal_height=True):
+                        edit_1 = gr.Textbox(
+                            label="Edit Prompt 1",
+                            show_label=False,
+                            max_lines=1,
+                            placeholder="Enter your 1st edit prompt",
+                        ).style(
+                            border=(True, False, True, True),
+                            rounded=(True, False, False, True),
+                            container=False,
+                        )
+                        with gr.Group():
+                            with gr.Row().style(mobile_collapse=False, equal_height=True):
+                                rev_1 = gr.Checkbox(
+                                    label='Negative Guidance')
+                                warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
+                                scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
+                                threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
+                    with gr.TabItem('DDPM Guidance', id=0):
+                        with gr.Row():
+                            with gr.Column():
+                                src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
+                                steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
+                                src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
+                                seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
+                                randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
+                            with gr.Column():    
+                                skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
+                                tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
+                                # sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
+                                # warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
 
             
             # neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")

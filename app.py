@@ -358,23 +358,23 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [do_inversion]
     )
 
-    gr.Examples(
-        label='Examples', 
-        examples=get_example(), 
-        inputs=[input_image, src_prompt, tar_prompt, steps,
-                    # src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    # edit_concept,
-                    sega_edit_guidance,
-                    warm_up,
-                    # neg_guidance,
-                    ddpm_edited_image, sega_edited_image
-               ],
-        outputs=[ddpm_edited_image, sega_edited_image],
-        # fn=edit,
-        # cache_examples=True
-    )
+    # gr.Examples(
+    #     label='Examples', 
+    #     examples=get_example(), 
+    #     inputs=[input_image, src_prompt, tar_prompt, steps,
+    #                 # src_cfg_scale,
+    #                 skip,
+    #                 tar_cfg_scale,
+    #                 # edit_concept,
+    #                 sega_edit_guidance,
+    #                 warm_up,
+    #                 # neg_guidance,
+    #                 ddpm_edited_image, sega_edited_image
+    #            ],
+    #     outputs=[ddpm_edited_image, sega_edited_image],
+    #     # fn=edit,
+    #     # cache_examples=True
+    # )
 
 
 

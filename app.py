@@ -132,7 +132,6 @@ def invert_and_reconstruct(
                     src_cfg_scale = 3.5,
                     skip=36,
                     tar_cfg_scale=15,
-                    # neg_guidance=False,
                     
 ):
 
@@ -146,16 +145,11 @@ def invert_and_reconstruct(
         zs = gr.State(value=zs_tensor)
         do_inversion = False
 
-    output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
+    # output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
 
-    return output, wts, zs, do_inversion
+    # return output, wts, zs, do_inversion
+    return wts, zs, do_inversion
 
-def update_sega_concept_table(edit_concept, neg_guidance, concepts_table):
-    if edit_concept:
-        new_rows = concepts_table.value.append([edit_concept, neg_guidance])
-        new_concepts_table = gr.DataFrame(value=new_rows)
-        return new_concepts_table
-    return concepts_table
     
 def edit(input_image,
             wts, zs, 
@@ -163,49 +157,29 @@ def edit(input_image,
             steps=100,
             skip=36,
             tar_cfg_scale=15,
-            edit_concept="",
-            sega_edit_guidance=10,
-            warm_up=None,
-            # neg_guidance=False,
+            edit_concept_1 = "",
+            guidnace_scale_1 = 10,
+            warmup_1 = 1,
+            neg_guidance_1 = False,
+            threshold_1 = 0.95
 
    ):
        
     # SEGA
     # parse concepts and neg guidance 
-    edit_concepts = edit_concept.split(",")
-    num_concepts = len(edit_concepts)
-    neg_guidance =[] 
-    for edit_concept in edit_concepts:
-        edit_concept=edit_concept.strip(" ")
-        if edit_concept.startswith("-"):
-            neg_guidance.append(True)
-        else:
-            neg_guidance.append(False)
-    edit_concepts = [concept.strip("+|-") for concept in edit_concepts]
-                        
-    # parse warm-up steps
-    default_warm_up_steps = [1]*num_concepts
-    if warm_up:
-        digit_pattern = re.compile(r"^\d+$")
-        warm_up_steps_str = warm_up.split(",")
-        for i,num_steps in enumerate(warm_up_steps_str[:num_concepts]):
-            if not digit_pattern.match(num_steps):
-                raise gr.Error("Invalid value for warm-up steps, using 1 instead")
-            else:
-                default_warm_up_steps[i] = int(num_steps)
-        
-        
+      
     editing_args = dict(
-    editing_prompt = edit_concepts,
-    reverse_editing_direction = neg_guidance,
-    edit_warmup_steps=default_warm_up_steps,
-    edit_guidance_scale=[sega_edit_guidance]*num_concepts, 
-    edit_threshold=[.95]*num_concepts,
+    editing_prompt = [edit_concept_1],
+    reverse_editing_direction = [neg_guidance_1],
+    edit_warmup_steps=[warmup_1],
+    edit_guidance_scale=[guidnace_scale_1], 
+    edit_threshold=[threshold_1],
     edit_momentum_scale=0.5, 
-    edit_mom_beta=0.6 
+    edit_mom_beta=0.6,
+    eta=1,
   )
     latnets = wts.value[skip].expand(1, -1, -1, -1)
-    sega_out = sem_pipe(prompt=tar_prompt,eta=1, latents=latnets, guidance_scale = tar_cfg_scale,
+    sega_out = sem_pipe(prompt=tar_prompt, latents=latnets, guidance_scale = tar_cfg_scale,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
@@ -246,7 +220,7 @@ with gr.Blocks(css='style.css') as demo:
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
+        # ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
         sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
         input_image.style(height=512, width=512)
         ddpm_edited_image.style(height=512, width=512)
@@ -254,31 +228,20 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        # with gr.Accordion("SEGA Concepts", open=False, visible=True):
-        #     with gr.Column(scale=1):
-        #         edit_concept = gr.Textbox(lines=1, label="Enter SEGA Edit Concept", visible = True, interactive=True)
-        #     with gr.Column(scale=1):
-        #         neg_guidance = gr.Checkbox(label="Negative Guidance", value=False)
-        #         submit_concept = gr.Button(label="Add Concept")
-        #         concepts_table = gr.Dataframe(
-        #                         headers=["Concepts", "Negative Guidance"],
-        #                         datatype=["str", "bool"],
-        #                         label="SEGA Concepts",
-        #                     )
-                
-         
+
+                      
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
-            invert_button = gr.Button("Invert")
-        with gr.Column(scale=1, min_width=100):
-            edit_button = gr.Button("Edit")
+            run_button = gr.Button("Run")
+        # with gr.Column(scale=1, min_width=100):
+        #     edit_button = gr.Button("Edit")
 
     with gr.Accordion("Advanced Options", open=False):
          with gr.Tabs() as tabs:
                 with gr.TabItem('SEGA Guidance', id=0):
                     with gr.Row().style(mobile_collapse=False, equal_height=True):
-                        edit_1 = gr.Textbox(
-                            label="Edit Prompt 1",
+                        edit_concept_1 = gr.Textbox(
+                            label="Edit Concept",
                             show_label=False,
                             max_lines=1,
                             placeholder="Enter your 1st edit prompt",
@@ -289,11 +252,12 @@ with gr.Blocks(css='style.css') as demo:
                         )
                         with gr.Group():
                             with gr.Row().style(mobile_collapse=False, equal_height=True):
-                                rev_1 = gr.Checkbox(
+                                neg_guidance_1 = gr.Checkbox(
                                     label='Negative Guidance')
                                 warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
-                                scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
+                                guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
                                 threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
+                
                 with gr.TabItem('DDPM Guidance', id=1):
                         with gr.Row():
                             with gr.Column():
@@ -305,17 +269,14 @@ with gr.Blocks(css='style.css') as demo:
                             with gr.Column():    
                                 skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
                                 tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
-                                sega_edit_guidance = gr.Slider(value=10, label=f"SEGA Edit Guidance Scale", interactive=True)
-                                warm_up = gr.Textbox(label=f"SEGA Warm-up Steps", interactive=True, placeholder="type #warm-up steps for each concpets (e.g. 2,7,5...")
 
-            
-            # neg_guidance = gr.Checkbox(label="SEGA Negative Guidance")
+
           
 
     # gr.Markdown(help_text)
 
     
-    invert_button.click(
+    run_button.click(
         fn = randomize_seed_fn,
         inputs = [seed, randomize_seed],
         outputs = [seed], 
@@ -332,26 +293,26 @@ with gr.Blocks(css='style.css') as demo:
                 skip,
                 tar_cfg_scale,          
         ],
-        outputs=[ddpm_edited_image, wts, zs, do_inversion],
-    )
+        # outputs=[ddpm_edited_image, wts, zs, do_inversion],
+        outputs=[wts, zs, do_inversion],
+    ).success(
+        fn=edit,
+        inputs=[input_image, 
+                wts, zs, 
+                tar_prompt, 
+                steps,
+                skip,
+                tar_cfg_scale,
+                edit_concept_1,
+                guidnace_scale_1,
+                warmup_1,
+                neg_guidance_1,
+                threshold_1
 
-    # edit_button.click(
-    #     fn=edit,
-    #     inputs=[input_image, 
-    #             wts, zs, 
-    #             tar_prompt, 
-    #             steps,
-    #             skip,
-    #             tar_cfg_scale,
-    #             edit_concept,
-    #             sega_edit_guidance,
-    #             warm_up,
-    #             # neg_guidance,
-
-    #     ],
-    #     outputs=[sega_edited_image],
+        ],
+        outputs=[sega_edited_image],
         
-    # )
+    )
 
     input_image.change(
         fn = reset_do_inversion,

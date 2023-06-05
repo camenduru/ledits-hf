@@ -246,7 +246,7 @@ with gr.Blocks(css='style.css') as demo:
          
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False)
+        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
         sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
         input_image.style(height=512, width=512)
         ddpm_edited_image.style(height=512, width=512)
@@ -254,17 +254,17 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Row():
         tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
-        with gr.Accordion("SEGA Concepts", open=False, visible=True):
-            with gr.Column(scale=1):
-                edit_concept = gr.Textbox(lines=1, label="Enter SEGA Edit Concept", visible = True, interactive=True)
-            with gr.Column(scale=1):
-                neg_guidance = gr.Checkbox(label="Negative Guidance", value=False)
-                submit_concept = gr.Button(label="Add Concept")
-                concepts_table = gr.Dataframe(
-                                headers=["Concepts", "Negative Guidance"],
-                                datatype=["str", "bool"],
-                                label="SEGA Concepts",
-                            )
+        # with gr.Accordion("SEGA Concepts", open=False, visible=True):
+        #     with gr.Column(scale=1):
+        #         edit_concept = gr.Textbox(lines=1, label="Enter SEGA Edit Concept", visible = True, interactive=True)
+        #     with gr.Column(scale=1):
+        #         neg_guidance = gr.Checkbox(label="Negative Guidance", value=False)
+        #         submit_concept = gr.Button(label="Add Concept")
+        #         concepts_table = gr.Dataframe(
+        #                         headers=["Concepts", "Negative Guidance"],
+        #                         datatype=["str", "bool"],
+        #                         label="SEGA Concepts",
+        #                     )
                 
          
     with gr.Row():

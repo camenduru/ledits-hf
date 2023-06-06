@@ -245,46 +245,48 @@ with gr.Blocks(css='style.css') as demo:
           with gr.TabItem('2. Add SEGA edit concepts', id=1):
             # with gr.Group():
               with gr.Row().style(mobile_collapse=False, equal_height=True):
-                  edit_concept_1 = gr.Textbox(
-                                  label="Edit Concept",
-                                  show_label=False,
-                                  max_lines=1,
-                                  placeholder="Enter your 1st edit prompt",
-                              )
                   # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_1 = gr.Checkbox(
                       label='Negative Guidance')
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
                   guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
+                                    edit_concept_1 = gr.Textbox(
+                                  label="Edit Concept",
+                                  show_label=False,
+                                  max_lines=1,
+                                  placeholder="Enter your 1st edit prompt",
+                              )
               
               with gr.Row(visible=False) as row2:
-                  edit_concept_2 = gr.Textbox(
-                                  label="Edit Concept",
-                                  show_label=False,visible=True,
-                                  max_lines=1,
-                                  placeholder="Enter your 2st edit prompt",
-                              )
+                 
                   # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_2 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
                   warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, visible=True,interactive=True)
                   guidnace_scale_2 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25,visible=True, interactive=True)
                   threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
-              
-              with gr.Row(visible=False) as row3:
-                  edit_concept_3 = gr.Textbox(
+                  edit_concept_2 = gr.Textbox(
                                   label="Edit Concept",
                                   show_label=False,visible=True,
                                   max_lines=1,
-                                  placeholder="Enter your 3rd edit prompt",
+                                  placeholder="Enter your 2st edit prompt",
                               )
+              
+              with gr.Row(visible=False) as row3:
+                  
                   # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_3 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
                   warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, visible=True,interactive=True)
                   guidnace_scale_3 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25,visible=True, interactive=True)
                   threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
+                  edit_concept_3 = gr.Textbox(
+                                  label="Edit Concept",
+                                  show_label=False,visible=True,
+                                  max_lines=1,
+                                  placeholder="Enter your 3rd edit prompt",
+                              )
               
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                 plus = gr.Button("+")

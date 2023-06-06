@@ -685,10 +685,6 @@ class SemanticStableDiffusionPipeline(DiffusionPipeline):
               # σ_t = sqrt((1 − α_t−1)/(1 − α_t)) * sqrt(1 − α_t/α_t−1)    
               # variance = self.scheduler._get_variance(timestep, prev_timestep)
               # variance = get_variance(model, t) #, prev_timestep)
-              prev_timestep = t - self.scheduler.config.num_train_timesteps // self.scheduler.num_inference_steps
-              alpha_prod_t = self.scheduler.alphas_cumprod[t]
-              alpha_prod_t_prev = self.scheduler.alphas_cumprod[prev_timestep] if prev_timestep >= 0 else self.scheduler.final_alpha_cumprod
-              beta_prod_t = 1 - alpha_prod_t
               beta_prod_t_prev = 1 - alpha_prod_t_prev
               variance = (beta_prod_t_prev / beta_prod_t) * (1 - alpha_prod_t / alpha_prod_t_prev)
               
@@ -713,7 +709,7 @@ class SemanticStableDiffusionPipeline(DiffusionPipeline):
 
             ## ddpm ##########################################################
                 # compute the previous noisy sample x_t -> x_t-1
-            if not use_ddpm:
+            else: #if not use_ddpm:
               latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs).prev_sample
 
             # call the callback, if provided

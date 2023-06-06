@@ -157,23 +157,25 @@ def edit(input_image,
             steps=100,
             skip=36,
             tar_cfg_scale=15,
-            edit_concept_1 = "",
-            guidnace_scale_1 = 10,
-            warmup_1 = 1,
-            neg_guidance_1 = False,
-            threshold_1 = 0.95
+            edit_concepts = [],
+            guidnace_scales = [],
+            warmups = [],
+            neg_guidance = [],
+            thresholds = []
 
    ):
        
     # SEGA
     # parse concepts and neg guidance 
-      
+
+    
+    
     editing_args = dict(
-    editing_prompt = [edit_concept_1],
-    reverse_editing_direction = [neg_guidance_1],
-    edit_warmup_steps=[warmup_1],
-    edit_guidance_scale=[guidnace_scale_1], 
-    edit_threshold=[threshold_1],
+    editing_prompt = edit_concepts,
+    reverse_editing_direction = neg_guidance,
+    edit_warmup_steps=warmups,
+    edit_guidance_scale=guidnace_scales, 
+    edit_threshold=thresholds,
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6,
     eta=1,

@@ -208,16 +208,21 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <p/>"""
 with gr.Blocks(css='style.css') as demo:
     
+    def add_concept(sega_concepts_counter):
+      if sega_concepts_counter == 1:
+        return row2.update(visible=True), row3.update(visible=False), plus.update(visible=True), 2
+      else:
+        return row2.update(visible=True), row3.update(visible=True), plus.update(visible=False), 3
+
+
     def reset_do_inversion():
         do_inversion = True
         return do_inversion
-
-
     gr.HTML(intro)
     wts = gr.State()
     zs = gr.State()
     do_inversion = gr.State(value=True)
-         
+    sega_concepts_counter = gr.Number(1)
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
         # ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
@@ -226,8 +231,61 @@ with gr.Blocks(css='style.css') as demo:
         # ddpm_edited_image.style(height=512, width=512)
         sega_edited_image.style(height=512, width=512)
 
-    with gr.Row():
-        tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
+    with gr.Tabs() as tabs:
+          with gr.TabItem('1. Describe the desired output', id=0):
+            with gr.Row().style(mobile_collapse=False, equal_height=True):
+              tar_prompt = gr.Textbox(
+                                label="Edit Concept",
+                                show_label=False,
+                                max_lines=1,
+                                placeholder="Enter your 1st edit prompt",
+                            )
+          with gr.TabItem('2. Add SEGA edit concepts', id=1):
+            # with gr.Group():
+              with gr.Row().style(mobile_collapse=False, equal_height=True):
+                  edit_concept_1 = gr.Textbox(
+                                  label="Edit Concept",
+                                  show_label=False,
+                                  max_lines=1,
+                                  placeholder="Enter your 1st edit prompt",
+                              )
+                  # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
+                  neg_guidance_1 = gr.Checkbox(
+                      label='Negative Guidance')
+                  warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
+                  guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
+                  threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
+              
+              with gr.Row(visible=False) as row2:
+                  edit_concept_2 = gr.Textbox(
+                                  label="Edit Concept",
+                                  show_label=False,visible=True,
+                                  max_lines=1,
+                                  placeholder="Enter your 2st edit prompt",
+                              )
+                  # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
+                  neg_guidance_2 = gr.Checkbox(
+                      label='Negative Guidance',visible=True)
+                  warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, visible=True,interactive=True)
+                  guidnace_scale_2 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25,visible=True, interactive=True)
+                  threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
+              
+              with gr.Row(visible=False) as row3:
+                  edit_concept_3 = gr.Textbox(
+                                  label="Edit Concept",
+                                  show_label=False,visible=True,
+                                  max_lines=1,
+                                  placeholder="Enter your 3rd edit prompt",
+                              )
+                  # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
+                  neg_guidance_3 = gr.Checkbox(
+                      label='Negative Guidance',visible=True)
+                  warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, visible=True,interactive=True)
+                  guidnace_scale_3 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25,visible=True, interactive=True)
+                  threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
+              
+              with gr.Row().style(mobile_collapse=False, equal_height=True):
+                plus = gr.Button("+")
 
                       
     with gr.Row():
@@ -237,43 +295,23 @@ with gr.Blocks(css='style.css') as demo:
         #     edit_button = gr.Button("Edit")
 
     with gr.Accordion("Advanced Options", open=False):
-         with gr.Tabs() as tabs:
-                with gr.TabItem('SEGA Guidance', id=0):
-                    with gr.Row().style(mobile_collapse=False, equal_height=True):
-                        edit_concept_1 = gr.Textbox(
-                            label="Edit Concept",
-                            show_label=False,
-                            max_lines=1,
-                            placeholder="Enter your 1st edit prompt",
-                        ).style(
-                            border=(True, False, True, True),
-                            rounded=(True, False, False, True),
-                            container=False,
-                        )
-                        with gr.Group():
-                            with gr.Row().style(mobile_collapse=False, equal_height=True):
-                                neg_guidance_1 = gr.Checkbox(
-                                    label='Negative Guidance')
-                                warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
-                                guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
-                                threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
-                
-                with gr.TabItem('DDPM Guidance', id=1):
-                        with gr.Row():
-                            with gr.Column():
-                                src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
-                                steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
-                                src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
-                                seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
-                                randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
-                            with gr.Column():    
-                                skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
-                                tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
+            with gr.Row():
+                with gr.Column():
+                    src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
+                    steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
+                    src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
+                    seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
+                    randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
+                with gr.Column():    
+                    skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
+                    tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
 
 
-          
+
 
     # gr.Markdown(help_text)
+    plus.click(fn = add_concept, inputs=sega_concepts_counter,
+               outputs= [row2, row3, plus, sega_concepts_counter])
 
     
     run_button.click(
@@ -303,11 +341,11 @@ with gr.Blocks(css='style.css') as demo:
                 steps,
                 skip,
                 tar_cfg_scale,
-                edit_concept_1,
-                guidnace_scale_1,
-                warmup_1,
-                neg_guidance_1,
-                threshold_1
+                [edit_concept_1,edit_concept_2,edit_concept_3],
+                [guidnace_scale_1,guidnace_scale_2,guidnace_scale_3],
+                [warmup_1, warmup_2, warmup_3],
+                [neg_guidance_1, neg_guidance_2, neg_guidance_3],
+                [threshold_1, threshold_2, threshold_3]
 
         ],
         outputs=[sega_edited_image],

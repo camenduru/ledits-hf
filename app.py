@@ -313,7 +313,7 @@ with gr.Blocks(css='style.css') as demo:
 
     # gr.Markdown(help_text)
     plus.click(fn = add_concept, inputs=sega_concepts_counter,
-               outputs= [row2, row3, plus, sega_concepts_counter])
+               outputs= [row2, row3, plus, sega_concepts_counter], queue = False)
 
     
     run_button.click(

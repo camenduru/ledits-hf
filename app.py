@@ -153,15 +153,15 @@ def invert_and_reconstruct(
     
 def edit(input_image,
             wts, zs, 
-            tar_prompt="", 
-            steps=100,
-            skip=36,
-            tar_cfg_scale=15,
-            edit_concepts = [],
-            guidnace_scales = [],
-            warmups = [],
-            neg_guidance = [],
-            thresholds = []
+            tar_prompt, 
+            steps,
+            skipת
+            tar_cfg_scale,
+            edit_concept_1,edit_concept_2,edit_concept_3,
+            guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
+            warmup_1, warmup_2, warmup_3,
+            neg_guidance_1, neg_guidance_2, neg_guidance_3,
+            threshold_1, threshold_2, threshold_3
 
    ):
        
@@ -171,11 +171,11 @@ def edit(input_image,
     
     
     editing_args = dict(
-    editing_prompt = edit_concepts,
-    reverse_editing_direction = neg_guidance,
-    edit_warmup_steps=warmups,
-    edit_guidance_scale=guidnace_scales, 
-    edit_threshold=thresholds,
+    editing_prompt = [edit_concept_1,edit_concept_2,edit_concept_3],
+    reverse_editing_direction = [ neg_guidance_1, neg_guidance_2, neg_guidance_3,],
+    edit_warmup_steps=[warmup_1, warmup_2, warmup_3,],
+    edit_guidance_scale=[guidnace_scale_1,guidnace_scale_2,guidnace_scale_3], 
+    edit_threshold=[threshold_1, threshold_2, threshold_3],
     edit_momentum_scale=0.5, 
     edit_mom_beta=0.6,
     eta=1,
@@ -343,11 +343,11 @@ with gr.Blocks(css='style.css') as demo:
                 steps,
                 skip,
                 tar_cfg_scale,
-                [edit_concept_1,edit_concept_2,edit_concept_3],
-                [guidnace_scale_1,guidnace_scale_2,guidnace_scale_3],
-                [warmup_1, warmup_2, warmup_3],
-                [neg_guidance_1, neg_guidance_2, neg_guidance_3],
-                [threshold_1, threshold_2, threshold_3]
+                edit_concept_1,edit_concept_2,edit_concept_3,
+                guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
+                warmup_1, warmup_2, warmup_3,
+                neg_guidance_1, neg_guidance_2, neg_guidance_3,
+                threshold_1, threshold_2, threshold_3
 
         ],
         outputs=[sega_edited_image],

@@ -224,7 +224,7 @@ with gr.Blocks(css='style.css') as demo:
     wts = gr.State()
     zs = gr.State()
     do_inversion = gr.State(value=True)
-    sega_concepts_counter = gr.Number(1)
+    sega_concepts_counter = gr.State(1)
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
         # ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
@@ -251,7 +251,7 @@ with gr.Blocks(css='style.css') as demo:
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
                   guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
-                                    edit_concept_1 = gr.Textbox(
+                  edit_concept_1 = gr.Textbox(
                                   label="Edit Concept",
                                   show_label=False,
                                   max_lines=1,

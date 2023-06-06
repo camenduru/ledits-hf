@@ -155,7 +155,7 @@ def edit(input_image,
             wts, zs, 
             tar_prompt, 
             steps,
-            skipת
+            skip,
             tar_cfg_scale,
             edit_concept_1,edit_concept_2,edit_concept_3,
             guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,

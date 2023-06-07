@@ -229,9 +229,9 @@ with gr.Blocks(css='style.css') as demo:
         input_image = gr.Image(label="Input Image", interactive=True)
         # ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
         sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
-        input_image.style(height=512, width=512)
+        input_image.style(height=365, width=365)
         # ddpm_edited_image.style(height=512, width=512)
-        sega_edited_image.style(height=512, width=512)
+        sega_edited_image.style(height=365, width=365)
 
     with gr.Tabs() as tabs:
           with gr.TabItem('1. Describe the desired output', id=0):

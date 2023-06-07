@@ -73,10 +73,9 @@ def get_example():
             100,
             36,
             15,
-            '+Schnauzer dog, -cat',
+            'Schnauzer dog', 'cat',
             5.5,
             1,
-            'examples/ddpm_watercolor_painting_a_cat_sitting_next_to_a_mirror.png', 
             'examples/ddpm_sega_watercolor_painting_a_cat_sitting_next_to_a_mirror_plus_dog_minus_cat.png'
              ],
         [
@@ -86,10 +85,9 @@ def get_example():
             100,
             36,
             15,
-            '+painting',
+            'painting','',
             10,
             1,
-            'examples/ddpm_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png', 
             'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
              ],
     [
@@ -99,10 +97,9 @@ def get_example():
             100,
             36,
             15,
-            '+pink drawings of muffins',
+            'pink drawings of muffins','',
             10,
             1,
-            'examples/ddpm_wall_with_framed_photos.png', 
             'examples/ddpm_sega_plus_pink_drawings_of_muffins.png'
              ],
     [
@@ -112,10 +109,9 @@ def get_example():
             100,
             36,
             17,
-            '+giant elephant',
+            'giant elephant','',
             10,
             1,
-            'examples/ddpm_glass_walls.png', 
             'examples/ddpm_sega_glass_walls_gian_elephant.png'
              ]]
     return case
@@ -248,7 +244,7 @@ with gr.Blocks(css='style.css') as demo:
                   # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_1 = gr.Checkbox(
                       label='Negative Guidance')
-                  warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, interactive=True)
+                  warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, interactive=True)
                   guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
                   edit_concept_1 = gr.Textbox(
@@ -263,8 +259,8 @@ with gr.Blocks(css='style.css') as demo:
                   # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_2 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
-                  warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, visible=True,interactive=True)
-                  guidnace_scale_2 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25,visible=True, interactive=True)
+                  warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
+                  guidnace_scale_2 = gr.Slider(label='Scale', minimum=1, maximum=10, value=10, step=0.25,visible=True, interactive=True)
                   threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
                   edit_concept_2 = gr.Textbox(
                                   label="Edit Concept",
@@ -278,8 +274,8 @@ with gr.Blocks(css='style.css') as demo:
                   # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_3 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
-                  warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=10, step=1, visible=True,interactive=True)
-                  guidnace_scale_3 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25,visible=True, interactive=True)
+                  warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
+                  guidnace_scale_3 = gr.Slider(label='Scale', minimum=1, maximum=10, value=10, step=0.25,visible=True, interactive=True)
                   threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
                   edit_concept_3 = gr.Textbox(
                                   label="Edit Concept",
@@ -361,23 +357,24 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [do_inversion]
     )
 
-    # gr.Examples(
-    #     label='Examples', 
-    #     examples=get_example(), 
-    #     inputs=[input_image, src_prompt, tar_prompt, steps,
-    #                 # src_cfg_scale,
-    #                 skip,
-    #                 tar_cfg_scale,
-    #                 # edit_concept,
-    #                 sega_edit_guidance,
-    #                 warm_up,
-    #                 # neg_guidance,
-    #                 ddpm_edited_image, sega_edited_image
-    #            ],
-    #     outputs=[ddpm_edited_image, sega_edited_image],
-    #     # fn=edit,
-    #     # cache_examples=True
-    # )
+    gr.Examples(
+        label='Examples', 
+        examples=get_example(), 
+        inputs=[input_image, src_prompt, tar_prompt, steps,
+                    # src_cfg_scale,
+                    skip,
+                    tar_cfg_scale,
+                    edit_concept1,
+                    edit_concept2,
+                    guidnace_scale_1,
+                    warmup_1,
+                    # neg_guidance,
+                    sega_edited_image
+               ],
+        outputs=[sega_edited_image],
+        # fn=edit,
+        # cache_examples=True
+    )
 
 
 

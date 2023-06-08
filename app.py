@@ -222,7 +222,6 @@ with gr.Blocks(css='style.css') as demo:
     wts = gr.State()
     zs = gr.State()
     do_inversion = gr.State(value=True)
-    src_prompt_changed = gr.State(value=False)
     sega_concepts_counter = gr.State(1)
     
 
@@ -379,14 +378,14 @@ with gr.Blocks(css='style.css') as demo:
     )
 
     # Repeat inversion when these params are changed:
-    src_prompt.changed(
+    src_prompt.change(
         fn = reset_do_inversion,
         outputs = [do_inversion], queue = False
     )
-    steps.changed(fn = reset_do_inversion,
+    steps.change(fn = reset_do_inversion,
         outputs = [do_inversion], queue = False)
 
-    src_cfg_scale.changed(fn = reset_do_inversion,
+    src_cfg_scale.change(fn = reset_do_inversion,
         outputs = [do_inversion], queue = False)
     
 

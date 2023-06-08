@@ -204,6 +204,38 @@ For faster inference without waiting in queue, you may duplicate the space and u
 <a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
 <p/>"""
+
+help_text = """
+- **Getting Started - edit images with DDPM X SEGA:**
+    
+    The are 3 general setting options you can play with - 
+    
+    1. **Pure DDPM Edit -** Describe the desired edited output image in detail
+    2. **Pure SEGA Edit -** Keep the target prompt empty ***or*** with a description of the original image and add editing concepts for Semantic Gudiance editing 
+    3. **Combined -** Describe the desired edited output image in detail and add additional SEGA editing concepts on top 
+- **Getting Started - Tips**
+    
+    While the best approach depends on your editing objective and source image,  we can layout a few guiding tips to use as a starting point -
+    
+    1. **DDPM** is usually more suited for scene/style changes and major subject changes (for example ) while **SEGA** allows for more fine grained control, changes are more delicate, more suited for adding details (for example facial expressions and attributes, subtle style modifications, object adding/removing)
+    2. The more you describe the scene in the target prompt (both the parts and details you wish to keep the same and those you wish to change), the better the result 
+    3. **Combining DDPM Edit with SEGA -** 
+    Try dividing your editing objective to more significant scene/style/subject changes and detail adding/removing and more moderate changes. Then describe the major changes in a detailed target prompt and add the more fine grained details as SEGA concepts. 
+    4. **Reconstruction:** Using an empty source prompt + target prompt will lead to a perfect reconstruction
+- **Fidelity vs creativity**:
+    
+    Bigger values → more fidelity, smaller values → more creativity
+    
+    1. `Skip Steps` 
+    2. `Warmup` (SEGA)
+    3. `Threshold`  (SEGA)
+    
+    Bigger values → more creativity, smaller values → more fidelity
+    
+    1. `Guidance Scale`
+    2. `Concept Guidance Scale` (SEGA)
+"""
+
 with gr.Blocks(css='style.css') as demo:
     
     def add_concept(sega_concepts_counter):
@@ -314,7 +346,7 @@ with gr.Blocks(css='style.css') as demo:
 
 
 
-    # gr.Markdown(help_text)
+    gr.Markdown(help_text)
     plus.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row3, plus, sega_concepts_counter], queue = False)
 
@@ -389,24 +421,24 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [do_inversion], queue = False)
     
 
-    gr.Examples(
-        label='Examples', 
-        examples=get_example(), 
-        inputs=[input_image, src_prompt, tar_prompt, steps,
-                    # src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    edit_concept_1,
-                    edit_concept_2,
-                    guidnace_scale_1,
-                    warmup_1,
-                    # neg_guidance,
-                    sega_edited_image
-               ],
-        outputs=[sega_edited_image],
-        # fn=edit,
-        # cache_examples=True
-    )
+    # gr.Examples(
+    #     label='Examples', 
+    #     examples=get_example(), 
+    #     inputs=[input_image, src_prompt, tar_prompt, steps,
+    #                 # src_cfg_scale,
+    #                 skip,
+    #                 tar_cfg_scale,
+    #                 edit_concept_1,
+    #                 edit_concept_2,
+    #                 guidnace_scale_1,
+    #                 warmup_1,
+    #                 # neg_guidance,
+    #                 sega_edited_image
+    #            ],
+    #     outputs=[sega_edited_image],
+    #     # fn=edit,
+    #     # cache_examples=True
+    # )
 
 
 

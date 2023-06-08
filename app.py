@@ -250,7 +250,7 @@ with gr.Blocks(css='style.css') as demo:
                   neg_guidance_1 = gr.Checkbox(
                       label='Negative Guidance')
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, interactive=True)
-                  guidnace_scale_1 = gr.Slider(label='Scale', minimum=1, maximum=10, value=5, step=0.25, interactive=True)
+                  guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=15, value=5, step=0.25, interactive=True)
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
                   edit_concept_1 = gr.Textbox(
                                   label="Edit Concept",
@@ -265,7 +265,7 @@ with gr.Blocks(css='style.css') as demo:
                   neg_guidance_2 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
                   warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
-                  guidnace_scale_2 = gr.Slider(label='Scale', minimum=1, maximum=10, value=10, step=0.25,visible=True, interactive=True)
+                  guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=15, value=5, step=0.25,visible=True, interactive=True)
                   threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
                   edit_concept_2 = gr.Textbox(
                                   label="Edit Concept",
@@ -280,7 +280,7 @@ with gr.Blocks(css='style.css') as demo:
                   neg_guidance_3 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
                   warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
-                  guidnace_scale_3 = gr.Slider(label='Scale', minimum=1, maximum=10, value=10, step=0.25,visible=True, interactive=True)
+                  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=15, value=5, step=0.25,visible=True, interactive=True)
                   threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
                   edit_concept_3 = gr.Textbox(
                                   label="Edit Concept",

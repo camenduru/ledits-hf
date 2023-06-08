@@ -216,11 +216,17 @@ with gr.Blocks(css='style.css') as demo:
     def reset_do_inversion():
         do_inversion = True
         return do_inversion
+
+        
     gr.HTML(intro)
     wts = gr.State()
     zs = gr.State()
     do_inversion = gr.State(value=True)
+    src_prompt_changed = gr.State(value=False)
     sega_concepts_counter = gr.State(1)
+    
+
+    
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
         # ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
@@ -303,7 +309,7 @@ with gr.Blocks(css='style.css') as demo:
                     seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
                     randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
                 with gr.Column():    
-                    skip = gr.Slider(minimum=0, maximum=40, value=36, label="Skip Steps", interactive=True)
+                    skip = gr.Slider(minimum=0, maximum=60, value=36, label="Skip Steps", interactive=True)
                     tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
 
 
@@ -348,14 +354,41 @@ with gr.Blocks(css='style.css') as demo:
                 threshold_1, threshold_2, threshold_3
 
         ],
-        outputs=[sega_edited_image],
-        
+        outputs=[sega_edited_image],     
     )
 
+    # Automatically start inverting upon input_image change
     input_image.change(
         fn = reset_do_inversion,
-        outputs = [do_inversion]
+        outputs = [do_inversion], queue = False
+    ).then(
+        fn=invert_and_reconstruct,
+        inputs=[input_image, 
+                do_inversion,
+                seed, randomize_seed,
+                wts, zs, 
+                src_prompt, 
+                tar_prompt, 
+                steps,
+                src_cfg_scale,
+                skip,
+                tar_cfg_scale,          
+        ],
+        # outputs=[ddpm_edited_image, wts, zs, do_inversion],
+        outputs=[wts, zs, do_inversion],
     )
+
+    # Repeat inversion when these params are changed:
+    src_prompt.changed(
+        fn = reset_do_inversion,
+        outputs = [do_inversion], queue = False
+    )
+    steps.changed(fn = reset_do_inversion,
+        outputs = [do_inversion], queue = False)
+
+    src_cfg_scale.changed(fn = reset_do_inversion,
+        outputs = [do_inversion], queue = False)
+    
 
     gr.Examples(
         label='Examples', 

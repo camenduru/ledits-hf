@@ -345,8 +345,11 @@ with gr.Blocks(css='style.css') as demo:
 
 
 
-
-    gr.Markdown(help_text)
+    with gr.Accordion("Help", open=False):
+        gr.Markdown(help_text)
+    
+    
+    
     plus.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row3, plus, sega_concepts_counter], queue = False)
 
@@ -421,24 +424,24 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [do_inversion], queue = False)
     
 
-    # gr.Examples(
-    #     label='Examples', 
-    #     examples=get_example(), 
-    #     inputs=[input_image, src_prompt, tar_prompt, steps,
-    #                 # src_cfg_scale,
-    #                 skip,
-    #                 tar_cfg_scale,
-    #                 edit_concept_1,
-    #                 edit_concept_2,
-    #                 guidnace_scale_1,
-    #                 warmup_1,
-    #                 # neg_guidance,
-    #                 sega_edited_image
-    #            ],
-    #     outputs=[sega_edited_image],
-    #     # fn=edit,
-    #     # cache_examples=True
-    # )
+    gr.Examples(
+        label='Examples', 
+        examples=get_example(), 
+        inputs=[input_image, src_prompt, tar_prompt, steps,
+                    # src_cfg_scale,
+                    skip,
+                    tar_cfg_scale,
+                    edit_concept_1,
+                    edit_concept_2,
+                    guidnace_scale_1,
+                    warmup_1,
+                    # neg_guidance,
+                    sega_edited_image
+               ],
+        outputs=[sega_edited_image],
+        # fn=edit,
+        # cache_examples=True
+    )
 
 
 

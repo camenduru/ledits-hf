@@ -368,7 +368,7 @@ with gr.Blocks(css='style.css') as demo:
     
     
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
-               outputs= [row2, row3, plus, sega_concepts_counter], queue = False)
+               outputs= [row2, row3, add_concept_button, sega_concepts_counter], queue = False)
 
     reconstruct_button.click(
         fn = reconstruct,

@@ -125,12 +125,12 @@ def reconstruct(tar_prompt,
                 wts, zs, 
                 # do_reconstruction, 
                 # reconstruction
-               )
+               ):
     
-):
-        # if do_reconstruction:
-        reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
-        return reconstruction
+
+    # if do_reconstruction:
+    reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
+    return reconstruction
     
 def load_and_invert(
                     input_image, 

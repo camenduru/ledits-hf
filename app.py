@@ -427,7 +427,7 @@ with gr.Blocks(css='style.css') as demo:
         fn = reset_do_inversion,
         outputs = [do_inversion], queue = False
     ).then(
-        fn=invert_and_reconstruct,
+        fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,
                 seed, randomize_seed,

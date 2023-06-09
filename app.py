@@ -373,9 +373,9 @@ with gr.Blocks(css='style.css') as demo:
     reconstruct_button.click(
         fn = reconstruct,
         inputs = [tar_prompt, 
-                tar_cfg_scale, 
-                skip, 
-                wts, zs]
+                  tar_cfg_scale, 
+                  skip, 
+                  wts, zs],
         outputs = [ddpm_edited_image]
     )
 

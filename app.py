@@ -420,10 +420,6 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [reconstruct_button]
     )
 
-    reconstruct_button.click(
-        fn = 
-    )
-
     
 
     # Automatically start inverting upon input_image change

@@ -344,7 +344,7 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
             run_button = gr.Button("Run")
-            reconstruct_button = gr.Button("Show me the reconstruction")
+            reconstruct_button = gr.Button("Show me the reconstruction", visible=False)
         # with gr.Column(scale=1, min_width=100):
         #     edit_button = gr.Button("Edit")
 

@@ -14,12 +14,6 @@ import re
 
 
 
-def randomize_seed_fn(seed, randomize_seed):
-    if randomize_seed:
-        seed = random.randint(0, np.iinfo(np.int32).max)
-    torch.manual_seed(seed)
-    return seed
-
 
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
 
@@ -116,8 +110,29 @@ def get_example():
              ]]
     return case
 
+def randomize_seed_fn(seed, randomize_seed):
+    if randomize_seed:
+        seed = random.randint(0, np.iinfo(np.int32).max)
+    torch.manual_seed(seed)
+    return seed
 
-def invert_and_reconstruct(
+
+    
+
+def reconstruct(tar_prompt, 
+                tar_cfg_scale, 
+                skip, 
+                wts, zs, 
+                # do_reconstruction, 
+                # reconstruction
+               )
+    
+):
+        # if do_reconstruction:
+        reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
+        return reconstruction
+    
+def load_and_invert(
                     input_image, 
                     do_inversion,
                     seed, randomize_seed,
@@ -127,7 +142,7 @@ def invert_and_reconstruct(
                     steps=100,
                     src_cfg_scale = 3.5,
                     skip=36,
-                    tar_cfg_scale=15,
+                    tar_cfg_scale=15
                     
 ):
 
@@ -140,10 +155,7 @@ def invert_and_reconstruct(
         wts = gr.State(value=wts_tensor)
         zs = gr.State(value=zs_tensor)
         do_inversion = False
-
-    # output = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
-
-    # return output, wts, zs, do_inversion
+        
     return wts, zs, do_inversion
 
     
@@ -244,7 +256,10 @@ with gr.Blocks(css='style.css') as demo:
       else:
         return row2.update(visible=True), row3.update(visible=True), plus.update(visible=False), 3
 
-
+    def show_reconstruction_option():
+        return reconstruct_button.update(visible=True)
+        
+        
     def reset_do_inversion():
         do_inversion = True
         return do_inversion
@@ -255,15 +270,16 @@ with gr.Blocks(css='style.css') as demo:
     zs = gr.State()
     do_inversion = gr.State(value=True)
     sega_concepts_counter = gr.State(1)
+    # reconstruction = gr.State()
     
 
     
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        # ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
+        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
         sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
         input_image.style(height=365, width=365)
-        # ddpm_edited_image.style(height=512, width=512)
+        ddpm_edited_image.style(height=512, width=512)
         sega_edited_image.style(height=365, width=365)
 
     with gr.Tabs() as tabs:
@@ -322,12 +338,13 @@ with gr.Blocks(css='style.css') as demo:
                               )
               
               with gr.Row().style(mobile_collapse=False, equal_height=True):
-                plus = gr.Button("+")
+                add_concept_button = gr.Button("+")
 
                       
     with gr.Row():
         with gr.Column(scale=1, min_width=100):
             run_button = gr.Button("Run")
+            reconstruct_button = gr.Button("Show me the reconstruction")
         # with gr.Column(scale=1, min_width=100):
         #     edit_button = gr.Button("Edit")
 
@@ -350,8 +367,17 @@ with gr.Blocks(css='style.css') as demo:
     
     
     
-    plus.click(fn = add_concept, inputs=sega_concepts_counter,
+    add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row3, plus, sega_concepts_counter], queue = False)
+
+    reconstruct_button.click(
+        fn = reconstruct,
+        inputs = [tar_prompt, 
+                tar_cfg_scale, 
+                skip, 
+                wts, zs]
+        outputs = [ddpm_edited_image]
+    )
 
     
     run_button.click(
@@ -359,7 +385,7 @@ with gr.Blocks(css='style.css') as demo:
         inputs = [seed, randomize_seed],
         outputs = [seed], 
         queue = False).then(
-        fn=invert_and_reconstruct,
+        fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,
                 seed, randomize_seed,
@@ -369,10 +395,10 @@ with gr.Blocks(css='style.css') as demo:
                 steps,
                 src_cfg_scale,
                 skip,
-                tar_cfg_scale,          
+                tar_cfg_scale         
         ],
-        # outputs=[ddpm_edited_image, wts, zs, do_inversion],
         outputs=[wts, zs, do_inversion],
+
     ).success(
         fn=edit,
         inputs=[input_image, 
@@ -389,7 +415,16 @@ with gr.Blocks(css='style.css') as demo:
 
         ],
         outputs=[sega_edited_image],     
+    ).success( 
+        fn = show_reconstruction_option,
+        outputs = [reconstruct_button]
     )
+
+    reconstruct_button.click(
+        fn = 
+    )
+
+    
 
     # Automatically start inverting upon input_image change
     input_image.change(

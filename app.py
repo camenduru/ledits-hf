@@ -131,6 +131,7 @@ def reconstruct(tar_prompt,
     # if do_reconstruction:
     reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
     return reconstruction
+
     
 def load_and_invert(
                     input_image, 
@@ -258,6 +259,9 @@ with gr.Blocks(css='style.css') as demo:
 
     def show_reconstruction_option():
         return reconstruct_button.update(visible=True)
+
+    def show_reconstruction():
+        return ddpm_edited_image.update(visible=True)
         
         
     def reset_do_inversion():
@@ -371,6 +375,9 @@ with gr.Blocks(css='style.css') as demo:
                outputs= [row2, row3, add_concept_button, sega_concepts_counter], queue = False)
 
     reconstruct_button.click(
+        fn = show_reconstruction,
+        outputs = [ddpm_edited_image]
+    ).then(
         fn = reconstruct,
         inputs = [tar_prompt, 
                   tar_cfg_scale, 

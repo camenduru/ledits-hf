@@ -264,7 +264,9 @@ with gr.Blocks(css='style.css') as demo:
 
     def show_reconstruction():
         return ddpm_edited_image.update(visible=True)
-        
+
+    def hide_reconstruction():
+        return ddpm_edited_image.update(visible=False)
         
     def reset_do_inversion():
         do_inversion = True
@@ -429,6 +431,9 @@ with gr.Blocks(css='style.css') as demo:
         queue = False).then(
         fn = hide_reconstruction_button, 
            outputs = [reconstruct_button], 
+        queue=False).then(
+        fn = hide_reconstruction, 
+        outputs=[ddpm_edited_image], 
         queue=False).then(
         fn=load_and_invert,
         inputs=[input_image, 

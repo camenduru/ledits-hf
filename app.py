@@ -252,9 +252,9 @@ with gr.Blocks(css='style.css') as demo:
     
     def add_concept(sega_concepts_counter):
       if sega_concepts_counter == 1:
-        return row2.update(visible=True), row3.update(visible=False), plus.update(visible=True), 2
+        return row2.update(visible=True), row3.update(visible=False), add_concept_button.update(visible=True), 2
       else:
-        return row2.update(visible=True), row3.update(visible=True), plus.update(visible=False), 3
+        return row2.update(visible=True), row3.update(visible=True), add_concept_button.update(visible=False), 3
 
     def show_reconstruction_button():
         return reconstruct_button.update(visible=True)

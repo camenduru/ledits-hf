@@ -193,7 +193,7 @@ def edit(input_image,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
-    return sega_out.images[0]
+    return sega_out.images[0], True
 
 
 
@@ -256,8 +256,11 @@ with gr.Blocks(css='style.css') as demo:
       else:
         return row2.update(visible=True), row3.update(visible=True), plus.update(visible=False), 3
 
-    def show_reconstruction_option():
+    def show_reconstruction_button():
         return reconstruct_button.update(visible=True)
+            
+    def hide_reconstruction_button():
+        return reconstruct_button.update(visible=False)
 
     def show_reconstruction():
         return ddpm_edited_image.update(visible=True)
@@ -273,7 +276,7 @@ with gr.Blocks(css='style.css') as demo:
     zs = gr.State()
     do_inversion = gr.State(value=True)
     sega_concepts_counter = gr.State(1)
-    # reconstruction = gr.State()
+
     
 
     
@@ -341,9 +344,8 @@ with gr.Blocks(css='style.css') as demo:
 
                       
     with gr.Row():
-        with gr.Column(scale=1, min_width=100):
-            run_button = gr.Button("Run")
-            reconstruct_button = gr.Button("Show me the reconstruction", visible=False)
+        run_button = gr.Button("Run")
+        reconstruct_button = gr.Button("Show Reconstruction", visible=False)
 
     with gr.Accordion("Advanced Options", open=False):
             with gr.Row():
@@ -401,9 +403,9 @@ with gr.Blocks(css='style.css') as demo:
                 threshold_1, threshold_2, threshold_3
 
         ],
-        outputs=[sega_edited_image],     
+        outputs=[sega_edited_image, is_show_reconstruction],     
     ).success( 
-        fn = show_reconstruction_option,
+        fn = show_reconstruction_button,
         outputs = [reconstruct_button]
     )
 
@@ -423,8 +425,11 @@ with gr.Blocks(css='style.css') as demo:
     # Automatically start inverting upon input_image change
     input_image.change(
         fn = reset_do_inversion,
-        outputs = [do_inversion], queue = False
-    ).then(
+        outputs = [do_inversion], 
+        queue = False).then(
+        fn = hide_reconstruction_button, 
+           outputs = [reconstruct_button], 
+        queue=False).then(
         fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,

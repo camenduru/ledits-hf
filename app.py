@@ -14,7 +14,6 @@ import re
 
 
 
-
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
 
   #  inverts a real image according to Algorihm 1 in https://arxiv.org/pdf/2304.06140.pdf, 
@@ -185,7 +184,7 @@ def edit(input_image,
     edit_warmup_steps=[warmup_1, warmup_2, warmup_3,],
     edit_guidance_scale=[guidnace_scale_1,guidnace_scale_2,guidnace_scale_3], 
     edit_threshold=[threshold_1, threshold_2, threshold_3],
-    edit_momentum_scale=0.5, 
+    edit_momentum_scale=0.3, 
     edit_mom_beta=0.6,
     eta=1,
   )
@@ -296,9 +295,8 @@ with gr.Blocks(css='style.css') as demo:
                                 placeholder="Enter your 1st edit prompt",
                             )
           with gr.TabItem('2. Add SEGA edit concepts', id=1):
-            # with gr.Group():
+              # 1st SEGA concept
               with gr.Row().style(mobile_collapse=False, equal_height=True):
-                  # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_1 = gr.Checkbox(
                       label='Negative Guidance')
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, interactive=True)
@@ -310,10 +308,9 @@ with gr.Blocks(css='style.css') as demo:
                                   max_lines=1,
                                   placeholder="Enter your 1st edit prompt",
                               )
-              
+                  
+              # 2nd SEGA concept
               with gr.Row(visible=False) as row2:
-                 
-                  # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_2 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
                   warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
@@ -325,10 +322,8 @@ with gr.Blocks(css='style.css') as demo:
                                   max_lines=1,
                                   placeholder="Enter your 2st edit prompt",
                               )
-              
+              # 3rd SEGA concept
               with gr.Row(visible=False) as row3:
-                  
-                  # tar_prompt = gr.Textbox(lines=1, label="Target Prompt", interactive=True, placeholder="")
                   neg_guidance_3 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
                   warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
@@ -349,8 +344,6 @@ with gr.Blocks(css='style.css') as demo:
         with gr.Column(scale=1, min_width=100):
             run_button = gr.Button("Run")
             reconstruct_button = gr.Button("Show me the reconstruction", visible=False)
-        # with gr.Column(scale=1, min_width=100):
-        #     edit_button = gr.Button("Edit")
 
     with gr.Accordion("Advanced Options", open=False):
             with gr.Row():
@@ -369,22 +362,10 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Accordion("Help", open=False):
         gr.Markdown(help_text)
     
-    
+
     
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row3, add_concept_button, sega_concepts_counter], queue = False)
-
-    reconstruct_button.click(
-        fn = show_reconstruction,
-        outputs = [ddpm_edited_image]
-    ).then(
-        fn = reconstruct,
-        inputs = [tar_prompt, 
-                  tar_cfg_scale, 
-                  skip, 
-                  wts, zs],
-        outputs = [ddpm_edited_image]
-    )
 
     
     run_button.click(
@@ -405,7 +386,6 @@ with gr.Blocks(css='style.css') as demo:
                 tar_cfg_scale         
         ],
         outputs=[wts, zs, do_inversion],
-
     ).success(
         fn=edit,
         inputs=[input_image, 
@@ -427,7 +407,18 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [reconstruct_button]
     )
 
-    
+    reconstruct_button.click(
+        fn = show_reconstruction,
+        outputs = [ddpm_edited_image]
+    ).then(
+        fn = reconstruct,
+        inputs = [tar_prompt, 
+                  tar_cfg_scale, 
+                  skip, 
+                  wts, zs],
+        outputs = [ddpm_edited_image]
+    )
+
 
     # Automatically start inverting upon input_image change
     input_image.change(

@@ -90,7 +90,7 @@ def load_and_invert(
                     steps=100,
                     src_cfg_scale = 3.5,
                     skip=36,
-                    tar_cfg_scale=15
+                    tar_cfg_scale=15, progress=gr.Progress(track_tqdm=True)
                     
 ):
 
@@ -105,7 +105,7 @@ def load_and_invert(
         do_inversion = False
 
     inversion_progress = "Inversion compeleted!"
-    return wts, zs, do_inversion
+    return wts, zs, do_inversion, inversion_progress
 
 ## SEGA ##
     
@@ -412,7 +412,7 @@ with gr.Blocks(css='style.css') as demo:
                 skip,
                 tar_cfg_scale         
         ],
-        outputs=[wts, zs, do_inversion],
+        outputs=[wts, zs, do_inversion, inversion_progress],
     ).success(
         fn=edit,
         inputs=[input_image, 

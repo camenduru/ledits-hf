@@ -74,10 +74,15 @@ def reconstruct(tar_prompt,
                 tar_cfg_scale, 
                 skip, 
                 wts, zs, 
+                do_reconstruction,
+                reconstruction
                ):
-    
-    reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
-    return reconstruction
+
+    if do_reconstruction:
+        reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
+        reconstruction = gr.State(value=reconstruction)
+        do_reconstruction = False
+    return reconstruction, do_reconstruction
 
     
 def load_and_invert(
@@ -90,7 +95,8 @@ def load_and_invert(
                     steps=100,
                     src_cfg_scale = 3.5,
                     skip=36,
-                    tar_cfg_scale=15, progress=gr.Progress(track_tqdm=True)
+                    tar_cfg_scale=15, 
+                    progress=gr.Progress(track_tqdm=True)
                     
 ):
 
@@ -288,6 +294,10 @@ with gr.Blocks(css='style.css') as demo:
         do_inversion = True
         return do_inversion
 
+    def reset_do_reconstruction():
+        do_reconstruction = True
+        return do_reconstruction
+
     def show_inversion_progress():
         return inversion_progress.update(visible=True)
     
@@ -299,6 +309,8 @@ with gr.Blocks(css='style.css') as demo:
     wts = gr.State()
     zs = gr.State()
     do_inversion = gr.State(value=True)
+    do_reconstruction = gr.State(value=True)
+    reconstruction = gr.State()
     sega_concepts_counter = gr.State(1)
 
     
@@ -436,6 +448,8 @@ with gr.Blocks(css='style.css') as demo:
 
         ],
         outputs=[sega_edited_image],     
+    ).then(
+        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
     ).success( 
         fn = show_reconstruction_button,
         outputs = [reconstruct_button]
@@ -449,8 +463,9 @@ with gr.Blocks(css='style.css') as demo:
         inputs = [tar_prompt, 
                   tar_cfg_scale, 
                   skip, 
-                  wts, zs],
-        outputs = [ddpm_edited_image]
+                  wts, zs, do_reconstruction,
+                reconstruction ],
+        outputs = [ddpm_edited_image,reconstruction,do_reconstruction]
     ).then(fn = show_hide_reconstruction_button, outputs =[reconstruct_button, hide_reconstruct_button])
 
 
@@ -479,7 +494,9 @@ with gr.Blocks(css='style.css') as demo:
         ],
         # outputs=[ddpm_edited_image, wts, zs, do_inversion],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False)
+    ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False).then(
+        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
+    )
 
     hide_reconstruct_button.click(fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
@@ -492,13 +509,20 @@ with gr.Blocks(css='style.css') as demo:
     src_prompt.change(
         fn = reset_do_inversion,
         outputs = [do_inversion], queue = False
+    ).then(
+        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
     )
     steps.change(fn = reset_do_inversion,
-        outputs = [do_inversion], queue = False)
+        outputs = [do_inversion], queue = False).then(
+        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
+    )
 
     src_cfg_scale.change(fn = reset_do_inversion,
-        outputs = [do_inversion], queue = False)
-    
+        outputs = [do_inversion], queue = False).then(
+        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
+    )
+
+
 
     gr.Examples(
         label='Examples', 

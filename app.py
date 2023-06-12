@@ -26,7 +26,7 @@ blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image
 ## IMAGE CPATIONING ##
 def caption_image(input_image):
 
-  inputs = blip_processor(images=input_image, return_tensors="pt")
+  inputs = blip_processor(images=input_image, return_tensors="pt").to(device)
   pixel_values = inputs.pixel_values
 
   generated_ids = blip_model.generate(pixel_values=pixel_values, max_length=50)

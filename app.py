@@ -75,14 +75,14 @@ def reconstruct(tar_prompt,
                 skip, 
                 wts, zs, 
                 do_reconstruction,
-                reconstruction
+                reconstruction, reconstruct_button, hide_reconstruct_button
                ):
 
     if do_reconstruction:
         reconstruction_img = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
         reconstruction = gr.State(value=reconstruction_img)
         do_reconstruction = False
-    return reconstruction.value, reconstruction, do_reconstruction
+    return reconstruction.value, reconstruction, do_reconstruction, reconstruct_button.update(visible=False), hide_reconstruct_button.update(visible=True)
 
     
 def load_and_invert(
@@ -121,6 +121,7 @@ def edit(input_image,
             steps,
             skip,
             tar_cfg_scale,
+            reconstruct_button,
             edit_concept_1,edit_concept_2,edit_concept_3,
             guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
             warmup_1, warmup_2, warmup_3,
@@ -149,7 +150,7 @@ def edit(input_image,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
-    return sega_out.images[0]
+    return sega_out.images[0], reconstruct_button.update(visible=True)
 
 
 
@@ -440,6 +441,7 @@ with gr.Blocks(css='style.css') as demo:
                 steps,
                 skip,
                 tar_cfg_scale,
+                reconstruct_button,
                 edit_concept_1,edit_concept_2,edit_concept_3,
                 guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
                 warmup_1, warmup_2, warmup_3,
@@ -447,12 +449,9 @@ with gr.Blocks(css='style.css') as demo:
                 threshold_1, threshold_2, threshold_3
 
         ],
-        outputs=[sega_edited_image],     
+        outputs=[sega_edited_image, reconstruct_button],     
     ).then(
         fn =reset_do_reconstruction, outputs=[do_reconstruction]
-    ).success( 
-        fn = show_reconstruction_button,
-        outputs = [reconstruct_button]
     )
 
     reconstruct_button.click(
@@ -464,9 +463,9 @@ with gr.Blocks(css='style.css') as demo:
                   tar_cfg_scale, 
                   skip, 
                   wts, zs, do_reconstruction,
-                reconstruction ],
-        outputs = [ddpm_edited_image,reconstruction,do_reconstruction]
-    ).then(fn = show_hide_reconstruction_button, outputs =[reconstruct_button, hide_reconstruct_button])
+                reconstruction, reconstruct_button, hide_reconstruct_button ],
+        outputs = [ddpm_edited_image,reconstruction,do_reconstruction, reconstruct_button, hide_reconstruct_button]
+    )
 
 
     # Automatically start inverting upon input_image change

@@ -4,16 +4,37 @@ import numpy as np
 import requests
 import random
 from io import BytesIO
-from diffusers import StableDiffusionPipeline
-from diffusers import DDIMScheduler
 from utils import *
 from inversion_utils import *
 from modified_pipeline_semantic_stable_diffusion import SemanticStableDiffusionPipeline
 from torch import autocast, inference_mode
-import re
+from diffusers import StableDiffusionPipeline
+from diffusers import DDIMScheduler
+from transformers import AutoProcessor, BlipForConditionalGeneration
+
+# load pipelines
+sd_model_id = "stabilityai/stable-diffusion-2-base"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
+sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
+sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
+blip_processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-base").to(device)
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to(device)
 
 
 
+## IMAGE CPATIONING ##
+def caption_image(input_image):
+
+  inputs = blip_processor(images=image, return_tensors="pt")
+  pixel_values = inputs.pixel_values
+
+  generated_ids = blip_model.generate(pixel_values=pixel_values, max_length=50)
+  generated_caption = blip_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+  return generated_caption
+
+
+## DDPM INVERSION AND SAMPLING ##
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
 
   #  inverts a real image according to Algorihm 1 in https://arxiv.org/pdf/2304.06140.pdf, 
@@ -35,7 +56,6 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
   return zs, wts
 
 
-
 def sample(zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
 
     # reverse process (via Zs and wT)
@@ -49,14 +69,90 @@ def sample(zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
     img = image_grid(x0_dec)
     return img
 
-# load pipelines
-sd_model_id = "stabilityai/stable-diffusion-2-base"
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
-sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
-sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
+
+def reconstruct(tar_prompt, 
+                tar_cfg_scale, 
+                skip, 
+                wts, zs, 
+               ):
+    
+    reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
+    return reconstruction
+
+    
+def load_and_invert(
+                    input_image, 
+                    do_inversion,
+                    seed, randomize_seed,
+                    wts, zs, 
+                    src_prompt ="", 
+                    tar_prompt="", 
+                    steps=100,
+                    src_cfg_scale = 3.5,
+                    skip=36,
+                    tar_cfg_scale=15
+                    
+):
+
+    
+    x0 = load_512(input_image, device=device)
+    
+    if do_inversion or randomize_seed:
+        # invert and retrieve noise maps and latent
+        zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+        wts = gr.State(value=wts_tensor)
+        zs = gr.State(value=zs_tensor)
+        do_inversion = False
+        
+    return wts, zs, do_inversion
+
+## SEGA ##
+    
+def edit(input_image,
+            wts, zs, 
+            tar_prompt, 
+            steps,
+            skip,
+            tar_cfg_scale,
+            edit_concept_1,edit_concept_2,edit_concept_3,
+            guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
+            warmup_1, warmup_2, warmup_3,
+            neg_guidance_1, neg_guidance_2, neg_guidance_3,
+            threshold_1, threshold_2, threshold_3
+
+   ):
+       
+    # SEGA
+    # parse concepts and neg guidance 
+
+    
+    
+    editing_args = dict(
+    editing_prompt = [edit_concept_1,edit_concept_2,edit_concept_3],
+    reverse_editing_direction = [ neg_guidance_1, neg_guidance_2, neg_guidance_3,],
+    edit_warmup_steps=[warmup_1, warmup_2, warmup_3,],
+    edit_guidance_scale=[guidnace_scale_1,guidnace_scale_2,guidnace_scale_3], 
+    edit_threshold=[threshold_1, threshold_2, threshold_3],
+    edit_momentum_scale=0.3, 
+    edit_mom_beta=0.6,
+    eta=1,
+  )
+    latnets = wts.value[skip].expand(1, -1, -1, -1)
+    sega_out = sem_pipe(prompt=tar_prompt, latents=latnets, guidance_scale = tar_cfg_scale,
+                        num_images_per_prompt=1,  
+                        num_inference_steps=steps, 
+                        use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
+    return sega_out.images[0]
 
 
+
+def randomize_seed_fn(seed, randomize_seed):
+    if randomize_seed:
+        seed = random.randint(0, np.iinfo(np.int32).max)
+    torch.manual_seed(seed)
+    return seed
+
+    
 def get_example():
     case = [
         [
@@ -108,93 +204,6 @@ def get_example():
             'examples/ddpm_sega_glass_walls_gian_elephant.png'
              ]]
     return case
-
-def randomize_seed_fn(seed, randomize_seed):
-    if randomize_seed:
-        seed = random.randint(0, np.iinfo(np.int32).max)
-    torch.manual_seed(seed)
-    return seed
-
-
-    
-
-def reconstruct(tar_prompt, 
-                tar_cfg_scale, 
-                skip, 
-                wts, zs, 
-                # do_reconstruction, 
-                # reconstruction
-               ):
-    
-
-    # if do_reconstruction:
-    reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
-    return reconstruction
-
-    
-def load_and_invert(
-                    input_image, 
-                    do_inversion,
-                    seed, randomize_seed,
-                    wts, zs, 
-                    src_prompt ="", 
-                    tar_prompt="", 
-                    steps=100,
-                    src_cfg_scale = 3.5,
-                    skip=36,
-                    tar_cfg_scale=15
-                    
-):
-
-    
-    x0 = load_512(input_image, device=device)
-    
-    if do_inversion or randomize_seed:
-        # invert and retrieve noise maps and latent
-        zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
-        wts = gr.State(value=wts_tensor)
-        zs = gr.State(value=zs_tensor)
-        do_inversion = False
-        
-    return wts, zs, do_inversion
-
-    
-def edit(input_image,
-            wts, zs, 
-            tar_prompt, 
-            steps,
-            skip,
-            tar_cfg_scale,
-            edit_concept_1,edit_concept_2,edit_concept_3,
-            guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
-            warmup_1, warmup_2, warmup_3,
-            neg_guidance_1, neg_guidance_2, neg_guidance_3,
-            threshold_1, threshold_2, threshold_3
-
-   ):
-       
-    # SEGA
-    # parse concepts and neg guidance 
-
-    
-    
-    editing_args = dict(
-    editing_prompt = [edit_concept_1,edit_concept_2,edit_concept_3],
-    reverse_editing_direction = [ neg_guidance_1, neg_guidance_2, neg_guidance_3,],
-    edit_warmup_steps=[warmup_1, warmup_2, warmup_3,],
-    edit_guidance_scale=[guidnace_scale_1,guidnace_scale_2,guidnace_scale_3], 
-    edit_threshold=[threshold_1, threshold_2, threshold_3],
-    edit_momentum_scale=0.3, 
-    edit_mom_beta=0.6,
-    eta=1,
-  )
-    latnets = wts.value[skip].expand(1, -1, -1, -1)
-    sega_out = sem_pipe(prompt=tar_prompt, latents=latnets, guidance_scale = tar_cfg_scale,
-                        num_images_per_prompt=1,  
-                        num_inference_steps=steps, 
-                        use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
-    return sega_out.images[0]
-
 
 
 
@@ -346,6 +355,7 @@ with gr.Blocks(css='style.css') as demo:
 
                       
     with gr.Row():
+        caption_button = gr.Button("Caption Image")
         run_button = gr.Button("Run")
         reconstruct_button = gr.Button("Show Reconstruction", visible=False)
 
@@ -366,11 +376,14 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Accordion("Help", open=False):
         gr.Markdown(help_text)
     
-
+    caption_button.click(
+        fn = caption_image,
+        inputs = [input_image],
+        outputs = [tar_prompt]
+    )
     
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row3, add_concept_button, sega_concepts_counter], queue = False)
-
     
     run_button.click(
         fn = randomize_seed_fn,

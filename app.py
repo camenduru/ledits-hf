@@ -480,7 +480,10 @@ with gr.Blocks(css='style.css') as demo:
 
     hide_reconstruct_button.click(fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
-        queue=False)
+        queue=False).then(fn = hide_reconstruction_buttons, 
+                          outputs=[reconstruct_button, 
+                                   hide_reconstruct_button]).then(fn = show_reconstruction_button, 
+                                                                  outputs=[reconstruct_button])
 
     
     # Repeat inversion when these params are changed:

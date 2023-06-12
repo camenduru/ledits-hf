@@ -457,7 +457,7 @@ with gr.Blocks(css='style.css') as demo:
         queue=False).then(
         fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
-        queue=False).then(fn = show_inversion_progress, outputs=[inversion_progress]).then(
+        queue=False).then(fn = show_inversion_progress, outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,
@@ -472,7 +472,7 @@ with gr.Blocks(css='style.css') as demo:
         ],
         # outputs=[ddpm_edited_image, wts, zs, do_inversion],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    )
+    ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False)
 
     # Repeat inversion when these params are changed:
     src_prompt.change(

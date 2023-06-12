@@ -478,7 +478,9 @@ with gr.Blocks(css='style.css') as demo:
         outputs=[wts, zs, do_inversion, inversion_progress],
     ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False)
 
-
+    hide_reconstruct_button.click(fn = hide_reconstruction, 
+        outputs=[ddpm_edited_image], 
+        queue=False)
     ddpm_edited_image.change(fn = show_hide_reconstruction_button, outputs =[reconstruct_button, hide_reconstruct_button])
     
     # Repeat inversion when these params are changed:

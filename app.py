@@ -269,14 +269,17 @@ with gr.Blocks(css='style.css') as demo:
     def show_reconstruction_button():
         return reconstruct_button.update(visible=True)
             
-    def hide_reconstruction_button():
-        return reconstruct_button.update(visible=False)
+    def hide_reconstruction_buttons():
+        return reconstruct_button.update(visible=False), hide_reconstruct_button.update(visible=False)
 
     def show_reconstruction():
         return ddpm_edited_image.update(visible=True)
 
     def hide_reconstruction():
         return ddpm_edited_image.update(visible=False)
+
+    def show_hide_reconstruction_button():
+        return reconstruct_button.update(visible=False), hide_reconstruct_button.update(visible=True)
         
     def reset_do_inversion():
         do_inversion = True
@@ -368,6 +371,7 @@ with gr.Blocks(css='style.css') as demo:
         caption_button = gr.Button("Caption Image")
         run_button = gr.Button("Run")
         reconstruct_button = gr.Button("Show Reconstruction", visible=False)
+        hide_reconstruct_button = gr.Button("Hide Reconstruction", visible=False)
 
     with gr.Accordion("Advanced Options", open=False):
             with gr.Row():
@@ -452,8 +456,8 @@ with gr.Blocks(css='style.css') as demo:
         fn = reset_do_inversion,
         outputs = [do_inversion], 
         queue = False).then(
-        fn = hide_reconstruction_button, 
-           outputs = [reconstruct_button], 
+        fn = hide_reconstruction_buttons, 
+           outputs = [reconstruct_button, hide_reconstruct_button], 
         queue=False).then(
         fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
@@ -474,6 +478,9 @@ with gr.Blocks(css='style.css') as demo:
         outputs=[wts, zs, do_inversion, inversion_progress],
     ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False)
 
+
+    ddpm_edited_image.change(fn = show_hide_reconstruction_button, outputs =[reconstruct_button, hide_reconstruct_button])
+    
     # Repeat inversion when these params are changed:
     src_prompt.change(
         fn = reset_do_inversion,

@@ -449,7 +449,7 @@ with gr.Blocks(css='style.css') as demo:
         ],
         outputs=[sega_edited_image],     
     ).then(
-        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
+        fn =reset_do_reconstruction, outputs=[reset_do_reconstruction]
     ).success( 
         fn = show_reconstruction_button,
         outputs = [reconstruct_button]

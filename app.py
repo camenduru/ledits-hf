@@ -126,15 +126,9 @@ def edit(input_image,
             guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
             warmup_1, warmup_2, warmup_3,
             neg_guidance_1, neg_guidance_2, neg_guidance_3,
-            threshold_1, threshold_2, threshold_3
-
-   ):
-       
-    # SEGA
-    # parse concepts and neg guidance 
-
-    
-    
+            threshold_1, threshold_2, threshold_3):
+                
+                
     editing_args = dict(
     editing_prompt = [edit_concept_1,edit_concept_2,edit_concept_3],
     reverse_editing_direction = [ neg_guidance_1, neg_guidance_2, neg_guidance_3,],
@@ -143,13 +137,14 @@ def edit(input_image,
     edit_threshold=[threshold_1, threshold_2, threshold_3],
     edit_momentum_scale=0.3, 
     edit_mom_beta=0.6,
-    eta=1,
-  )
+    eta=1,)
+    
     latnets = wts.value[skip].expand(1, -1, -1, -1)
     sega_out = sem_pipe(prompt=tar_prompt, latents=latnets, guidance_scale = tar_cfg_scale,
                         num_images_per_prompt=1,  
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
+       
     return sega_out.images[0], reconstruct_button.update(visible=True)
 
 

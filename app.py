@@ -448,7 +448,7 @@ with gr.Blocks(css='style.css') as demo:
                   skip, 
                   wts, zs],
         outputs = [ddpm_edited_image]
-    )
+    ).then(fn = show_hide_reconstruction_button, outputs =[reconstruct_button, hide_reconstruct_button])
 
 
     # Automatically start inverting upon input_image change
@@ -481,7 +481,7 @@ with gr.Blocks(css='style.css') as demo:
     hide_reconstruct_button.click(fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
         queue=False)
-    ddpm_edited_image.change(fn = show_hide_reconstruction_button, outputs =[reconstruct_button, hide_reconstruct_button])
+
     
     # Repeat inversion when these params are changed:
     src_prompt.change(

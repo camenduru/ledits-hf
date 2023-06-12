@@ -103,7 +103,8 @@ def load_and_invert(
         wts = gr.State(value=wts_tensor)
         zs = gr.State(value=zs_tensor)
         do_inversion = False
-        
+
+    inversion_progress = "Inversion compeleted!"
     return wts, zs, do_inversion
 
 ## SEGA ##
@@ -281,6 +282,12 @@ with gr.Blocks(css='style.css') as demo:
         do_inversion = True
         return do_inversion
 
+    def show_inversion_progress():
+        return inversion_progress.update(visible=True)
+    
+    def hide_inversion_progress():
+        return inversion_progress.update(visible=False)
+
         
     gr.HTML(intro)
     wts = gr.State()
@@ -298,6 +305,9 @@ with gr.Blocks(css='style.css') as demo:
         input_image.style(height=365, width=365)
         ddpm_edited_image.style(height=365, width=365)
         sega_edited_image.style(height=365, width=365)
+
+    with gr.Row():
+        inversion_progress = gr.Textbox(visible=False)
 
     with gr.Tabs() as tabs:
           with gr.TabItem('1. Describe the desired output', id=0):
@@ -373,8 +383,8 @@ with gr.Blocks(css='style.css') as demo:
 
 
 
-    with gr.Accordion("Help", open=False):
-        gr.Markdown(help_text)
+    # with gr.Accordion("Help", open=False):
+    #     gr.Markdown(help_text)
     
     caption_button.click(
         fn = caption_image,
@@ -447,7 +457,7 @@ with gr.Blocks(css='style.css') as demo:
         queue=False).then(
         fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
-        queue=False).then(
+        queue=False).then(fn = show_inversion_progress, outputs=[inversion_progress]).then(
         fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,
@@ -461,7 +471,7 @@ with gr.Blocks(css='style.css') as demo:
                 tar_cfg_scale,          
         ],
         # outputs=[ddpm_edited_image, wts, zs, do_inversion],
-        outputs=[wts, zs, do_inversion],
+        outputs=[wts, zs, do_inversion, inversion_progress],
     )
 
     # Repeat inversion when these params are changed:

@@ -82,7 +82,7 @@ def reconstruct(tar_prompt,
         reconstruction = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
         reconstruction = gr.State(value=reconstruction)
         do_reconstruction = False
-    return reconstruction, do_reconstruction
+    return reconstruction,reconstruction, do_reconstruction
 
     
 def load_and_invert(

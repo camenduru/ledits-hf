@@ -496,7 +496,6 @@ with gr.Blocks(css='style.css') as demo:
         outputs=[wts, zs, do_inversion, inversion_progress],
     ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False).then(
         fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
-    )
 
     hide_reconstruct_button.click(fn = hide_reconstruction, 
         outputs=[ddpm_edited_image], 
@@ -511,16 +510,15 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [do_inversion], queue = False
     ).then(
         fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
-    )
+    
     steps.change(fn = reset_do_inversion,
         outputs = [do_inversion], queue = False).then(
         fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
-    )
+    
 
     src_cfg_scale.change(fn = reset_do_inversion,
         outputs = [do_inversion], queue = False).then(
         fn =reset_do_reconstruction, outputs=[reset_do_reconstruction])
-    )
 
 
 

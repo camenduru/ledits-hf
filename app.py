@@ -315,12 +315,13 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Tabs() as tabs:
           with gr.TabItem('1. Describe the desired output', id=0):
             with gr.Row().style(mobile_collapse=False, equal_height=True):
-              tar_prompt = gr.Textbox(
+                tar_prompt = gr.Textbox(
                                 label="Edit Concept",
                                 show_label=False,
                                 max_lines=1,
                                 placeholder="Enter your 1st edit prompt",
                             )
+                caption_button = gr.Button("Caption Image").style(size='sm')
           with gr.TabItem('2. Add SEGA edit concepts', id=1):
               # 1st SEGA concept
               with gr.Row().style(mobile_collapse=False, equal_height=True):
@@ -368,8 +369,7 @@ with gr.Blocks(css='style.css') as demo:
 
                       
     with gr.Row():
-        caption_button = gr.Button("Caption Image")
-        run_button = gr.Button("Run")
+        run_button = gr.Button("Edit")
         reconstruct_button = gr.Button("Show Reconstruction", visible=False)
         hide_reconstruct_button = gr.Button("Hide Reconstruction", visible=False)
 

@@ -145,7 +145,9 @@ def edit(input_image,
                         num_inference_steps=steps, 
                         use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
        
-    return sega_out.images[0], reconstruct_button.update(visible=True)
+    # return sega_out.images[0], reconstruct_button.update(visible=True)
+    return sega_out.images[0]
+                
 
 
 
@@ -444,8 +446,9 @@ with gr.Blocks(css='style.css') as demo:
                 threshold_1, threshold_2, threshold_3
 
         ],
-        outputs=[sega_edited_image, reconstruct_button],     
-    ).then(
+        # outputs=[sega_edited_image, reconstruct_button]  
+        outputs=[sega_edited_image]  
+    ).then(fn=show_reconstruction_button, outputs[reconstruct_button]).then(
         fn =reset_do_reconstruction, outputs=[do_reconstruction]
     )
 

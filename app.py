@@ -302,6 +302,10 @@ with gr.Blocks(css='style.css') as demo:
     def hide_inversion_progress():
         return inversion_progress.update(visible=False)
 
+    def clear():
+        return "",ddpm_edited_image.update(visible=False), sega_edited_image.update(visible=False), reconstruct_button.update(visible=False), True
+                
+
         
     gr.HTML(intro)
     wts = gr.State()
@@ -385,6 +389,7 @@ with gr.Blocks(css='style.css') as demo:
         run_button = gr.Button("Edit")
         reconstruct_button = gr.Button("Show Reconstruction", visible=False)
         hide_reconstruct_button = gr.Button("Hide Reconstruction", visible=False)
+        clear_button = gr.Button("Clear")
 
     with gr.Accordion("Advanced Options", open=False):
             with gr.Row():
@@ -463,6 +468,11 @@ with gr.Blocks(css='style.css') as demo:
                   wts, zs, do_reconstruction,
                 reconstruction, reconstruct_button, hide_reconstruct_button ],
         outputs = [ddpm_edited_image,reconstruction,do_reconstruction, reconstruct_button, hide_reconstruct_button]
+    )
+
+    clear_button.click(
+        fn = clear,
+        outputs = [tar_prompt,ddpm_edited_image, sega_edited_image, reconstruct_button, do_reconstruction]
     )
 
 

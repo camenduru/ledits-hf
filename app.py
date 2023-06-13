@@ -303,7 +303,7 @@ with gr.Blocks(css='style.css') as demo:
         return inversion_progress.update(visible=False)
 
     def clear():
-        return "",ddpm_edited_image.update(visible=False), sega_edited_image.update(visible=False), reconstruct_button.update(visible=False), True
+        return "",ddpm_edited_image.update(visible=False), None, reconstruct_button.update(visible=False), True
                 
 
         

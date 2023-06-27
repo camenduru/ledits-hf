@@ -267,11 +267,32 @@ help_text = """
 
 with gr.Blocks(css='style.css') as demo:
 
+    
     def add_concept(sega_concepts_counter):
       if sega_concepts_counter == 1:
-        return row2.update(visible=True), row3.update(visible=False), add_concept_button.update(visible=True), 2
+        return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=False), row3_advanced.update(visible=False), add_concept_button.update(visible=True), 2
       else:
-        return row2.update(visible=True), row3.update(visible=True), add_concept_button.update(visible=False), 3
+        return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=True), row3_advanced.update(visible=False), add_concept_button.update(visible=False), 3
+
+    def update_display_concept_1(add_1, edit_concept_1):
+      if add_1 == 'Add':
+        return edit_concept_1, concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), "Clear"
+      else: # remove
+        return "", concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), "Add"
+
+    def update_display_concept_2(add_2, edit_concept_2):
+      if add_2 == 'Add':
+        return edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), "Clear"
+      else: # remove
+        return "", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), "Add"
+
+    def update_display_concept_3(add_3, edit_concept_3):
+      if add_3 == 'Add':
+        return edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), "Clear"
+      else: # remove
+        return "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), "Add"
+        
+
 
 
     def reset_do_inversion():
@@ -282,16 +303,11 @@ with gr.Blocks(css='style.css') as demo:
       do_reconstruction = True
       return  do_reconstruction
 
-
-    def update_inversion_progress_visibility(do_inversion):
-      if do_inversion:
+    def update_inversion_progress_visibility(input_image, do_inversion):
+      if do_inversion and not input_image is None:
           return inversion_progress.update(visible=True)
       else:
         return inversion_progress.update(visible=False)
-
-
-
-
 
 
     gr.HTML(intro)
@@ -303,7 +319,6 @@ with gr.Blocks(css='style.css') as demo:
     sega_concepts_counter = gr.State(1)
 
 
-
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
         ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
@@ -311,6 +326,32 @@ with gr.Blocks(css='style.css') as demo:
         input_image.style(height=365, width=365)
         ddpm_edited_image.style(height=365, width=365)
         sega_edited_image.style(height=365, width=365)
+
+    with gr.Row():
+      with gr.Column() as col1:
+       concept_1 = gr.Button(visible=False)
+       guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                                                step=0.5, interactive=True,visible=False)
+       with gr.Column() as col2:
+        concept_2 = gr.Button(visible=False)
+        guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                                                step=0.5, interactive=True,visible=False)
+      with gr.Column() as col3:
+        concept_3 = gr.Button(visible=False)
+        guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                                                step=0.5, interactive=True,visible=False)
+
+
+    
+    with gr.Row():
+      gallery =  gr.Gallery(visible = False).style(
+                                     columns=3,
+                                     object_fit='contain')
+
+
 
     with gr.Row():
         inversion_progress = gr.Textbox(visible=False, label="Inversion progress")
@@ -322,54 +363,60 @@ with gr.Blocks(css='style.css') as demo:
                                 label="Edit Concept",
                                 show_label=False,
                                 max_lines=1,
-                                placeholder="Enter your 1st edit prompt",
+                                placeholder="Enter your 1st edit prompt",  elem_classes="feedback"
                             )
                 caption_button = gr.Button("Caption Image")
           with gr.TabItem('2. Add SEGA edit concepts', id=1):
               # 1st SEGA concept
               with gr.Row().style(mobile_collapse=False, equal_height=True):
-                  neg_guidance_1 = gr.Checkbox(
-                      label='Negative Guidance')
-
-                  guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                                               value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                                               step=0.5, interactive=True)
-
                   edit_concept_1 = gr.Textbox(
                                   label="Edit Concept",
                                   show_label=False,
                                   max_lines=1,
                                   placeholder="Enter your 1st edit prompt",
                               )
+                  neg_guidance_1 = gr.Checkbox(
+                      label='Negative Guidance')
+
+                  # guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                  #                              value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                  #                              step=0.5, interactive=True)
+
+
+                  add_1 = gr.Button('Add')
 
               # 2nd SEGA concept
               with gr.Row(visible=False) as row2:
-                  neg_guidance_2 = gr.Checkbox(
-                      label='Negative Guidance',visible=True)
-                  guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                                               value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                                               step=0.5, interactive=True)
                   edit_concept_2 = gr.Textbox(
                                   label="Edit Concept",
                                   show_label=False,
                                   max_lines=1,
                                   placeholder="Enter your 2st edit prompt",
                               )
+                  neg_guidance_2 = gr.Checkbox(
+                      label='Negative Guidance',visible=True)
+                  # guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                  #                              value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                  #                              step=0.5, interactive=True)
+                  add_2 = gr.Button('Add')
+
               # 3rd SEGA concept
               with gr.Row(visible=False) as row3:
-                  neg_guidance_3 = gr.Checkbox(
-                      label='Negative Guidance',visible=True)
-
-                  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                                               value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                                               step=0.5, interactive=True)
-
-                  edit_concept_3 = gr.Textbox(
+                 edit_concept_3 = gr.Textbox(
                                   label="Edit Concept",
                                   show_label=False,
                                   max_lines=1,
                                   placeholder="Enter your 3rd edit prompt",
                               )
+                 neg_guidance_3 = gr.Checkbox(
+                      label='Negative Guidance',visible=True)
+                #  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                #                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                #                                step=0.5, interactive=True)
+                 add_3 = gr.Button('Add')
+
+
+                  
 
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                 add_concept_button = gr.Button("+")
@@ -382,6 +429,7 @@ with gr.Blocks(css='style.css') as demo:
 
     with gr.Accordion("Advanced Options", open=False):
       with gr.Tabs() as tabs:
+          
           with gr.TabItem('General options', id=2):
             with gr.Row():
                 with gr.Column():
@@ -390,9 +438,11 @@ with gr.Blocks(css='style.css') as demo:
                     src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
                     seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
                     randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
+
                 with gr.Column():
                     skip = gr.Slider(minimum=0, maximum=60, value=36, label="Skip Steps", interactive=True)
                     tar_cfg_scale = gr.Slider(minimum=7, maximum=30,value=15, label=f"Guidance Scale", interactive=True)
+          
           with gr.TabItem('SEGA options', id=3):
              # 1st SEGA concept
               with gr.Row().style(mobile_collapse=False, equal_height=True):
@@ -419,23 +469,21 @@ with gr.Blocks(css='style.css') as demo:
                                           value=DEFAULT_THRESHOLD, steps=0.01,
                                           interactive=True)
 
-
-
-
-
-    # with gr.Accordion("Help", open=False):
-    #     gr.Markdown(help_text)
-
     caption_button.click(
         fn = caption_image,
         inputs = [input_image],
         outputs = [tar_prompt]
     )
 
-    add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
-               outputs= [row2, row3, add_concept_button, sega_concepts_counter], queue = False)
+    add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1],  outputs=[concept_1, concept_1, edit_concept_1, guidnace_scale_1, add_1])   
+    add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2],  outputs=[concept_2, concept_2, edit_concept_2, guidnace_scale_2, add_2])
+    add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3],  outputs=[concept_3, concept_3, edit_concept_3, guidnace_scale_3, add_3])
 
-    run_button.click(fn = update_inversion_progress_visibility, inputs =[do_inversion], outputs=[inversion_progress],queue=False).then(
+
+    add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
+               outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)
+
+    run_button.click(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image,
                 do_inversion,
@@ -449,7 +497,7 @@ with gr.Blocks(css='style.css') as demo:
                 tar_cfg_scale
         ],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).then(fn = update_inversion_progress_visibility, inputs =[do_inversion], outputs=[inversion_progress],queue=False).success(
+    ).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).success(
         fn=edit,
         inputs=[input_image,
                 wts, zs,
@@ -472,7 +520,7 @@ with gr.Blocks(css='style.css') as demo:
     input_image.change(
         fn = reset_do_inversion,
         outputs = [do_inversion],
-        queue = False).then(fn = update_inversion_progress_visibility, inputs =[do_inversion],
+        queue = False).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
                             outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image,
@@ -488,7 +536,7 @@ with gr.Blocks(css='style.css') as demo:
         ],
         # outputs=[ddpm_edited_image, wts, zs, do_inversion],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).then(fn = update_inversion_progress_visibility, inputs =[do_inversion],
+    ).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
            outputs=[inversion_progress],queue=False).then(
               lambda: reconstruct_button.update(visible=False),
               outputs=[reconstruct_button]).then(

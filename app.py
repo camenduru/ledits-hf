@@ -5,6 +5,7 @@ import requests
 import random
 from io import BytesIO
 from utils import *
+from constants import *
 from inversion_utils import *
 from modified_pipeline_semantic_stable_diffusion import SemanticStableDiffusionPipeline
 from torch import autocast, inference_mode
@@ -214,8 +215,8 @@ def get_example():
 
 ########
 # demo #
-########
-                        
+########        
+
 intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
    Edit Friendly DDPM X Semantic Guidance
@@ -270,40 +271,18 @@ with gr.Blocks(css='style.css') as demo:
       else:
         return row2.update(visible=True), row3.update(visible=True), add_concept_button.update(visible=False), 3
 
-    def show_reconstruction_button():
-        return reconstruct_button.update(visible=True)
-
-    def hide_hide_reconstruction_button():
-        return reconstruct_button.update(visible=True),hide_reconstruct_button.update(visible=False)
-        
-    def hide_reconstruction_buttons():
-        return reconstruct_button.update(visible=False), hide_reconstruct_button.update(visible=False)
-
-    def show_reconstruction():
-        return ddpm_edited_image.update(visible=True)
-
-    def hide_reconstruction():
-        return ddpm_edited_image.update(visible=False)
-
-    def show_hide_reconstruction_button():
-        return reconstruct_button.update(visible=False), hide_reconstruct_button.update(visible=True)
         
     def reset_do_inversion():
         do_inversion = True
         return do_inversion
 
-    def reset_do_reconstruction():
-        do_reconstruction = True
-        return do_reconstruction
 
-    def show_inversion_progress():
-        return inversion_progress.update(visible=True)
-    
-    def hide_inversion_progress():
+    def update_inversion_progress_visibility(do_inversion):
+      if do_inversion:
+          return inversion_progress.update(visible=True)
+      else:
         return inversion_progress.update(visible=False)
-
-    def clear():
-        return "",ddpm_edited_image.update(visible=False), None, reconstruct_button.update(visible=False), True
+    
                 
 
         
@@ -311,12 +290,10 @@ with gr.Blocks(css='style.css') as demo:
     wts = gr.State()
     zs = gr.State()
     do_inversion = gr.State(value=True)
-    do_reconstruction = gr.State(value=True)
     reconstruction = gr.State()
     sega_concepts_counter = gr.State(1)
 
-    
-
+  
     
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
@@ -338,15 +315,20 @@ with gr.Blocks(css='style.css') as demo:
                                 max_lines=1,
                                 placeholder="Enter your 1st edit prompt",
                             )
-                caption_button = gr.Button("Caption Image").style(size='sm')
+                caption_button = gr.Button("Caption Image")
           with gr.TabItem('2. Add SEGA edit concepts', id=1):
               # 1st SEGA concept
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                   neg_guidance_1 = gr.Checkbox(
                       label='Negative Guidance')
-                  warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, interactive=True)
-                  guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=15, value=5, step=0.25, interactive=True)
-                  threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01, interactive=True)
+                  warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50, 
+                                       value=DEFAULT_WARMUP_STEPS, 
+                                       step=1, interactive=True)
+                  guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30, 
+                                               value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, 
+                                               step=0.5, interactive=True)
+                  threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, 
+                                          value=DEFAULT_THRESHOLD, steps=0.01, interactive=True)
                   edit_concept_1 = gr.Textbox(
                                   label="Edit Concept",
                                   show_label=False,
@@ -358,12 +340,18 @@ with gr.Blocks(css='style.css') as demo:
               with gr.Row(visible=False) as row2:
                   neg_guidance_2 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
-                  warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
-                  guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=15, value=5, step=0.25,visible=True, interactive=True)
-                  threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
+                  warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50, 
+                                       value=DEFAULT_WARMUP_STEPS, 
+                                       step=1, interactive=True)
+                  guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30, 
+                                               value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, 
+                                               step=0.5, interactive=True)
+                  threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, 
+                                          value=DEFAULT_THRESHOLD, 
+                                          steps=0.01, interactive=True)
                   edit_concept_2 = gr.Textbox(
                                   label="Edit Concept",
-                                  show_label=False,visible=True,
+                                  show_label=False,
                                   max_lines=1,
                                   placeholder="Enter your 2st edit prompt",
                               )
@@ -371,12 +359,18 @@ with gr.Blocks(css='style.css') as demo:
               with gr.Row(visible=False) as row3:
                   neg_guidance_3 = gr.Checkbox(
                       label='Negative Guidance',visible=True)
-                  warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, value=1, step=1, visible=True,interactive=True)
-                  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=15, value=5, step=0.25,visible=True, interactive=True)
-                  threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, value=0.95, steps=0.01,visible=True, interactive=True)
+                  warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50, 
+                                       value=DEFAULT_WARMUP_STEPS, step=1, 
+                                       interactive=True)
+                  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30, 
+                                               value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, 
+                                               step=0.5, interactive=True)
+                  threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99, 
+                                          value=DEFAULT_THRESHOLD, steps=0.01,
+                                          interactive=True)
                   edit_concept_3 = gr.Textbox(
                                   label="Edit Concept",
-                                  show_label=False,visible=True,
+                                  show_label=False,
                                   max_lines=1,
                                   placeholder="Enter your 3rd edit prompt",
                               )
@@ -388,8 +382,9 @@ with gr.Blocks(css='style.css') as demo:
     with gr.Row():
         run_button = gr.Button("Edit")
         reconstruct_button = gr.Button("Show Reconstruction", visible=False)
-        hide_reconstruct_button = gr.Button("Hide Reconstruction", visible=False)
-        clear_button = gr.Button("Clear")
+        undo_button = gr.Button("Undo", visible=False)
+
+        clear_button = gr.ClearButton()
 
     with gr.Accordion("Advanced Options", open=False):
             with gr.Row():
@@ -401,8 +396,10 @@ with gr.Blocks(css='style.css') as demo:
                     randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
                 with gr.Column():    
                     skip = gr.Slider(minimum=0, maximum=60, value=36, label="Skip Steps", interactive=True)
-                    tar_cfg_scale = gr.Slider(minimum=7, maximum=18,value=15, label=f"Guidance Scale", interactive=True)  
+                    tar_cfg_scale = gr.Slider(minimum=7, maximum=30,value=15, label=f"Guidance Scale", interactive=True)  
 
+
+    
 
 
     # with gr.Accordion("Help", open=False):
@@ -421,7 +418,7 @@ with gr.Blocks(css='style.css') as demo:
         fn = randomize_seed_fn,
         inputs = [seed, randomize_seed],
         outputs = [seed], 
-        queue = False).then(
+        queue = False).then(fn = update_inversion_progress_visibility, inputs =[do_inversion], outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,
@@ -435,7 +432,7 @@ with gr.Blocks(css='style.css') as demo:
                 tar_cfg_scale         
         ],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).success(
+    ).then(fn = update_inversion_progress_visibility, inputs =[do_inversion], outputs=[inversion_progress],queue=False).success(
         fn=edit,
         inputs=[input_image, 
                 wts, zs, 
@@ -452,41 +449,15 @@ with gr.Blocks(css='style.css') as demo:
 
         ],
         # outputs=[sega_edited_image, reconstruct_button]  
-        outputs=[sega_edited_image]  
-    ).then(fn=show_reconstruction_button, outputs=[reconstruct_button]).then(
-        fn =reset_do_reconstruction, outputs=[do_reconstruction]
-    )
+        outputs=[sega_edited_image]  )
 
-    reconstruct_button.click(
-        fn = show_reconstruction,
-        outputs = [ddpm_edited_image]
-    ).then(
-        fn = reconstruct,
-        inputs = [tar_prompt, 
-                  tar_cfg_scale, 
-                  skip, 
-                  wts, zs, do_reconstruction,
-                reconstruction, reconstruct_button, hide_reconstruct_button ],
-        outputs = [ddpm_edited_image,reconstruction,do_reconstruction, reconstruct_button, hide_reconstruct_button]
-    )
-
-    clear_button.click(
-        fn = clear,
-        outputs = [tar_prompt,ddpm_edited_image, sega_edited_image, reconstruct_button, do_reconstruction]
-    )
 
 
     # Automatically start inverting upon input_image change
     input_image.change(
         fn = reset_do_inversion,
         outputs = [do_inversion], 
-        queue = False).then(
-        fn = hide_reconstruction_buttons, 
-           outputs = [reconstruct_button, hide_reconstruct_button], 
-        queue=False).then(
-        fn = hide_reconstruction, 
-        outputs=[ddpm_edited_image], 
-        queue=False).then(fn = show_inversion_progress, outputs=[inversion_progress],queue=False).then(
+        queue = False).then(fn = update_inversion_progress_visibility, inputs =[do_inversion], outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image, 
                 do_inversion,
@@ -501,52 +472,58 @@ with gr.Blocks(css='style.css') as demo:
         ],
         # outputs=[ddpm_edited_image, wts, zs, do_inversion],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).then(fn = hide_inversion_progress, outputs=[inversion_progress],queue=False).then(
-        fn =reset_do_reconstruction, outputs=[do_reconstruction])
-
-    hide_reconstruct_button.click(fn = hide_reconstruction, 
-        outputs=[ddpm_edited_image], 
-        queue=False).then(fn = hide_hide_reconstruction_button, 
-                          outputs=[reconstruct_button, 
-                                   hide_reconstruct_button])
+    ).then(fn = update_inversion_progress_visibility, inputs =[do_inversion], outputs=[inversion_progress],queue=False)
 
     
     # Repeat inversion when these params are changed:
     src_prompt.change(
         fn = reset_do_inversion,
-        outputs = [do_inversion], queue = False
-    ).then(
-        fn =reset_do_reconstruction, outputs=[do_reconstruction])
+        outputs = [do_inversion], queue = False)
     
     steps.change(fn = reset_do_inversion,
-        outputs = [do_inversion], queue = False).then(
-        fn =reset_do_reconstruction, outputs=[do_reconstruction])
+        outputs = [do_inversion], queue = False)
     
 
     src_cfg_scale.change(fn = reset_do_inversion,
-        outputs = [do_inversion], queue = False).then(
-        fn =reset_do_reconstruction, outputs=[do_reconstruction])
+        outputs = [do_inversion], queue = False)
 
+    components_to_clear = [input_image,ddpm_edited_image,sega_edited_image, do_inversion,
+                                   src_prompt, steps, src_cfg_scale, seed,
+                                  tar_prompt, skip, tar_cfg_scale,
+                                  edit_concept_1, guidnace_scale_1,warmup_1,  threshold_1, neg_guidance_1,
+                                  edit_concept_2, guidnace_scale_2,warmup_2,  threshold_2, neg_guidance_2,
+                                  edit_concept_3, guidnace_scale_3,warmup_3,  threshold_3, neg_guidance_3,
+                                  
+                                  ]
+    clear_output_vals = [None, None, None, True,
+                     "", DEFAULT_DIFFUSION_STEPS, DEFAULT_SOURCE_GUIDANCE_SCALE, DEFAULT_SEED,
+                     "", DEFAULT_SKIP_STEPS, DEFAULT_TARGET_GUIDANCE_SCALE,
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE,
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE,
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE,
+                         ]                            
+    clear_button.click(lambda:clear_output_vals, outputs =components_to_clear)
+    
 
+    # gr.Examples(
+    #     label='Examples', 
+    #     examples=get_example(), 
+    #     inputs=[input_image, src_prompt, tar_prompt, steps,
+    #                 # src_cfg_scale,
+    #                 skip,
+    #                 tar_cfg_scale,
+    #                 edit_concept_1,
+    #                 edit_concept_2,
+    #                 guidnace_scale_1,
+    #                 warmup_1,
+    #                 # neg_guidance,
+    #                 sega_edited_image
+    #            ],
+    #     outputs=[sega_edited_image],
+    #     # fn=edit,
+    #     # cache_examples=True
+    # )
 
-    gr.Examples(
-        label='Examples', 
-        examples=get_example(), 
-        inputs=[input_image, src_prompt, tar_prompt, steps,
-                    # src_cfg_scale,
-                    skip,
-                    tar_cfg_scale,
-                    edit_concept_1,
-                    edit_concept_2,
-                    guidnace_scale_1,
-                    warmup_1,
-                    # neg_guidance,
-                    sega_edited_image
-               ],
-        outputs=[sega_edited_image],
-        # fn=edit,
-        # cache_examples=True
-    )
 
 
 

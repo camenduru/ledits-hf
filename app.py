@@ -265,7 +265,7 @@ help_text = """
     2. `Concept Guidance Scale` (SEGA)
 """
 
-with gr.Blocks(css=css) as demo:
+with gr.Blocks(css="style.css") as demo:
 
     def add_concept(sega_concepts_counter):
       if sega_concepts_counter == 1:

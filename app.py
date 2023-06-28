@@ -265,9 +265,8 @@ help_text = """
     2. `Concept Guidance Scale` (SEGA)
 """
 
-with gr.Blocks(css='style.css') as demo:
+with gr.Blocks(css=css) as demo:
 
-    
     def add_concept(sega_concepts_counter):
       if sega_concepts_counter == 1:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=False), row3_advanced.update(visible=False), add_concept_button.update(visible=True), 2
@@ -276,22 +275,30 @@ with gr.Blocks(css='style.css') as demo:
 
     def update_display_concept_1(add_1, edit_concept_1):
       if add_1 == 'Add':
-        return edit_concept_1, concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), "Clear"
+        return box1.update(visible=True), edit_concept_1, concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), "Clear"
       else: # remove
-        return "", concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), "Add"
+        return box1.update(visible=False),"", concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), "Add"
 
     def update_display_concept_2(add_2, edit_concept_2):
       if add_2 == 'Add':
-        return edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), "Clear"
+        return box2.update(visible=True), edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), "Clear"
       else: # remove
-        return "", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), "Add"
+        return box2.update(visible=False),"", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), "Add"
 
     def update_display_concept_3(add_3, edit_concept_3):
       if add_3 == 'Add':
-        return edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), "Clear"
+        return box3.update(visible=True), edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), "Clear"
       else: # remove
-        return "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), "Add"
-        
+        return box3.update(visible=False), "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), "Add"
+
+    def display_editing_options(run_button, clear_button, sega_tab):
+      return run_button.update(visible=True), clear_button.update(visible=True), sega_tab.update(visible=True)
+
+    # def update_gallery_display(prev_output_image, sega_edited_image):
+    #   if prev_output_image is None:
+    #     return sega_edited_image, gallery.update(visible=True), sega_edited_image
+    #   else:
+    #     return prev_output_image, gallery.update(visible=True), sega_edited_image
 
 
 
@@ -309,6 +316,9 @@ with gr.Blocks(css='style.css') as demo:
       else:
         return inversion_progress.update(visible=False)
 
+    def undo():
+      return
+
 
     gr.HTML(intro)
     wts = gr.State()
@@ -317,6 +327,20 @@ with gr.Blocks(css='style.css') as demo:
     do_inversion = gr.State(value=True)
     do_reconstruction = gr.State(value=True)
     sega_concepts_counter = gr.State(1)
+
+
+    #Undo / gallery
+    # prev_wts = gr.State()
+    # prev_zs = gr.State()
+    # prev_src_prompt = gr.State()
+    # prev_tar_prompt = gr.State()
+    # prev_tar_guidance_scale = gr.State()
+    # prev_src_guidance_scale = gr.State()
+    # prev_num_steps = gr.State()
+    # prev_skip = gr.State()
+    # prev_output_image = gr.Image(visible=False)
+    # prev_input_image = gr.State()
+
 
 
     with gr.Row():
@@ -328,28 +352,28 @@ with gr.Blocks(css='style.css') as demo:
         sega_edited_image.style(height=365, width=365)
 
     with gr.Row():
-      with gr.Column() as col1:
-       concept_1 = gr.Button(visible=False)
-       guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+      with gr.Box(visible=False) as box1:
+        concept_1 = gr.Button(visible=False)
+        guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                                                  value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                                                  step=0.5, interactive=True,visible=False)
+      with gr.Box(visible=False) as box2:
+       concept_2 = gr.Button(visible=False)
+       guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
                                                 value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
                                                 step=0.5, interactive=True,visible=False)
-       with gr.Column() as col2:
-        concept_2 = gr.Button(visible=False)
-        guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                                                step=0.5, interactive=True,visible=False)
-      with gr.Column() as col3:
-        concept_3 = gr.Button(visible=False)
-        guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+      with gr.Box(visible=False) as box3:
+       concept_3 = gr.Button(visible=False)
+       guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
                                                 value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
                                                 step=0.5, interactive=True,visible=False)
 
 
-    
-    with gr.Row():
-      gallery =  gr.Gallery(visible = False).style(
-                                     columns=3,
-                                     object_fit='contain')
+
+    # with gr.Row():
+    #   gallery =  gr.Gallery(label = "History", visible = True).style(
+    #                                  columns=1,rows=1,
+    #                                  object_fit='contain')
 
 
 
@@ -416,20 +440,20 @@ with gr.Blocks(css='style.css') as demo:
                  add_3 = gr.Button('Add')
 
 
-                  
+
 
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                 add_concept_button = gr.Button("+")
 
 
     with gr.Row():
-        run_button = gr.Button("Edit")
+        run_button = gr.Button("Edit", visible=True)
         reconstruct_button = gr.Button("Show Reconstruction", visible=False)
-        clear_button = gr.Button("Clear")
+        clear_button = gr.Button("Clear", visible=True)
 
     with gr.Accordion("Advanced Options", open=False):
       with gr.Tabs() as tabs:
-          
+
           with gr.TabItem('General options', id=2):
             with gr.Row():
                 with gr.Column():
@@ -442,8 +466,8 @@ with gr.Blocks(css='style.css') as demo:
                 with gr.Column():
                     skip = gr.Slider(minimum=0, maximum=60, value=36, label="Skip Steps", interactive=True)
                     tar_cfg_scale = gr.Slider(minimum=7, maximum=30,value=15, label=f"Guidance Scale", interactive=True)
-          
-          with gr.TabItem('SEGA options', id=3):
+
+          with gr.TabItem('SEGA options', id=3) as sega_advanced_tab:
              # 1st SEGA concept
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50,
@@ -475,9 +499,9 @@ with gr.Blocks(css='style.css') as demo:
         outputs = [tar_prompt]
     )
 
-    add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1],  outputs=[concept_1, concept_1, edit_concept_1, guidnace_scale_1, add_1])   
-    add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2],  outputs=[concept_2, concept_2, edit_concept_2, guidnace_scale_2, add_2])
-    add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3],  outputs=[concept_3, concept_3, edit_concept_3, guidnace_scale_3, add_3])
+    add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1, add_1])
+    add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2, add_2])
+    add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3, add_3])
 
 
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
@@ -513,6 +537,7 @@ with gr.Blocks(css='style.css') as demo:
 
         ],
         outputs=[sega_edited_image, reconstruct_button])
+    # .success(fn=update_gallery_display, inputs= [prev_output_image, sega_edited_image], outputs = [gallery, gallery, prev_output_image])
 
 
 
@@ -584,16 +609,16 @@ with gr.Blocks(css='style.css') as demo:
     clear_components = [input_image,ddpm_edited_image,ddpm_edited_image,sega_edited_image, do_inversion,
                                    src_prompt, steps, src_cfg_scale, seed,
                                   tar_prompt, skip, tar_cfg_scale, reconstruct_button,reconstruct_button,
-                                  edit_concept_1, guidnace_scale_1,warmup_1,  threshold_1, neg_guidance_1,
-                                  edit_concept_2, guidnace_scale_2,warmup_2,  threshold_2, neg_guidance_2,
-                                  edit_concept_3, guidnace_scale_3,warmup_3,  threshold_3, neg_guidance_3,]
+                                  edit_concept_1, guidnace_scale_1,guidnace_scale_1,warmup_1,  threshold_1, neg_guidance_1, concept_1, concept_1, 
+                                  edit_concept_2, guidnace_scale_2,guidnace_scale_2,warmup_2,  threshold_2, neg_guidance_2, concept_2, concept_2, row2, row2_advanced, 
+                                  edit_concept_3, guidnace_scale_3,guidnace_scale_3,warmup_3,  threshold_3, neg_guidance_3, concept_3,concept_3, row3, row3_advanced ]
 
     clear_components_output_vals = [None, None,ddpm_edited_image.update(visible=False), None, True,
                      "", DEFAULT_DIFFUSION_STEPS, DEFAULT_SOURCE_GUIDANCE_SCALE, DEFAULT_SEED,
                      "", DEFAULT_SKIP_STEPS, DEFAULT_TARGET_GUIDANCE_SCALE, reconstruct_button.update(value="Show Reconstruction"),reconstruct_button.update(visible=False),
-                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE,
-                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE,
-                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE, DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE,
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_1.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "", concept_1.update(visible=False),
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_2.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "", concept_2.update(visible=False), row2.update(visible=False), row2_advanced.update(visible=False), 
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "",concept_3.update(visible=False), row3.update(visible=False), row3_advanced.update(visible=False)
                          ]
 
 

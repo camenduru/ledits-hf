@@ -294,6 +294,12 @@ with gr.Blocks(css="style.css") as demo:
     def display_editing_options(run_button, clear_button, sega_tab):
       return run_button.update(visible=True), clear_button.update(visible=True), sega_tab.update(visible=True)
 
+    def update_edit_concept(concept, edit_concept, add):
+      if add == "Clear":
+        return edit_concept
+      else:
+        return concept
+
     # def update_gallery_display(prev_output_image, sega_edited_image):
     #   if prev_output_image is None:
     #     return sega_edited_image, gallery.update(visible=True), sega_edited_image
@@ -634,6 +640,11 @@ with gr.Blocks(css="style.css") as demo:
                           reconstruct_button],
                 outputs = [ddpm_edited_image,reconstruction, ddpm_edited_image, do_reconstruction, reconstruct_button])
 
+        
+    edit_concept_1.change(fn=update_edit_concept, inputs = [concept_1, edit_concept_1, add_1], outputs = [concept_1])
+    edit_concept_2.change(fn=update_edit_concept, inputs = [concept_2, edit_concept_2, add_2], outputs = [concept_2])
+    edit_concept_3.change(fn=update_edit_concept, inputs = [concept_3, edit_concept_3, add_3], outputs = [concept_3])
+    
     randomize_seed.change(
         fn = randomize_seed_fn,
         inputs = [seed, randomize_seed],

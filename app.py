@@ -559,7 +559,9 @@ with gr.Blocks(css="style.css") as demo:
     input_image.change(
         fn = reset_do_inversion,
         outputs = [do_inversion],
-        queue = False).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
+        queue = False).then(fn = caption_image,
+        inputs = [input_image],
+        outputs = [tar_prompt]).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
                             outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image,
@@ -576,9 +578,7 @@ with gr.Blocks(css="style.css") as demo:
         # outputs=[ddpm_edited_image, wts, zs, do_inversion],
         outputs=[wts, zs, do_inversion, inversion_progress],
     ).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
-           outputs=[inversion_progress],queue=False).then(fn = caption_image,
-        inputs = [input_image],
-        outputs = [tar_prompt]).then(
+           outputs=[inversion_progress],queue=False).then(
               lambda: reconstruct_button.update(visible=False),
               outputs=[reconstruct_button]).then(
         fn = reset_do_reconstruction,

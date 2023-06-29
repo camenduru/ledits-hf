@@ -233,14 +233,14 @@ def get_example():
 
 intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
-   LEDIT
+   LEDITS
 </h1>
 <h2 style="font-weight: 800; text-align: center; margin-bottom: 7px;">
    Real Image Latent Editing with Edit Friendly DDPM X Semantic Guidance
 </h2>
 
 <h3 style="font-weight: 600; text-align: center; margin-bottom: 7px;">
-   This is a demo for LEDIT - real image editing combined approach introduced in:
+   This is a demo for LEDITS - real image editing combined approach introduced in:
    <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank"> Project Page </a>
 </h3>
 

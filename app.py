@@ -454,6 +454,7 @@ with gr.Blocks(css="style.css") as demo:
               with gr.Column(scale=1, min_width=100):
                       neg_guidance_1 = gr.Checkbox(
                           label='Remove Concept?')
+              with gr.Column(scale=1, min_width=100):
                       dropdown1 = gr.Dropdown(label = "Edit Type", value ='default' , choices=['default','style', 'object', 'facial'])
     
 
@@ -475,6 +476,7 @@ with gr.Blocks(css="style.css") as demo:
             with gr.Column(scale=1, min_width=100):
                       neg_guidance_2 = gr.Checkbox(
                           label='Remove Concept?',visible=True)
+            with gr.Column(scale=1, min_width=100):
                       dropdown2 = gr.Dropdown(label = "Edit Type", value ='default' , choices=['default','style', 'object', 'facial'])
 
             with gr.Column(scale=1, min_width=100):
@@ -492,6 +494,7 @@ with gr.Blocks(css="style.css") as demo:
           with gr.Column(scale=1, min_width=100):
                      neg_guidance_3 = gr.Checkbox(
                       label='Remove Concept?',visible=True)
+          with gr.Column(scale=1, min_width=100):
                      dropdown3 = gr.Dropdown(label = "Edit Type", value ='default' , choices=['default','style', 'object', 'facial'])
           with gr.Column(scale=1, min_width=100):
                      add_3 = gr.Button('Include')

@@ -294,19 +294,19 @@ with gr.Blocks(css="style.css") as demo:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=True), row3_advanced.update(visible=True), add_concept_button.update(visible=False), 3
 
     def update_display_concept_1(add_1, edit_concept_1, neg_guidance_1):
-      if add_1 == 'Add' and edit_concept_1 != "":
+      if add_1 == 'Include' and edit_concept_1 != "":
         return box1.update(visible=True), edit_concept_1, concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), neg_guidance_1, "Clear"
       else: # remove
         return box1.update(visible=False),"", concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), False, "Add"
 
     def update_display_concept_2(add_2, edit_concept_2, neg_guidance_2):
-      if add_2 == 'Add' and edit_concept_2 != "":
+      if add_2 == 'Include' and edit_concept_2 != "":
         return box2.update(visible=True), edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), neg_guidance_2, "Clear"
       else: # remove
         return box2.update(visible=False),"", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), False, "Add"
 
     def update_display_concept_3(add_3, edit_concept_3, neg_guidance_3):
-      if add_3 == 'Add'and edit_concept_3 != "":
+      if add_3 == 'Include'and edit_concept_3 != "":
         return box3.update(visible=True), edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), neg_guidance_3, "Clear"
       else: # remove
         return box3.update(visible=False), "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), False, "Add"

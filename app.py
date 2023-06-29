@@ -236,11 +236,11 @@ intro = """
    LEDITS
 </h1>
 <h2 style="font-weight: 800; text-align: center; margin-bottom: 7px;">
-   Real Image Latent Editing with Edit Friendly DDPM X Semantic Guidance
+   Real Image Latent Editing with Edit Friendly DDPM and Semantic Guidance
 </h2>
 
 <h3 style="font-weight: 600; text-align: center; margin-bottom: 7px;">
-   This is a demo for LEDITS - real image editing combined approach introduced in:
+   This is a demo for LEDITS - a combined approach for real image editing introduced in:
    <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank"> Project Page </a>
 </h3>
 
@@ -382,7 +382,7 @@ with gr.Blocks(css="style.css") as demo:
     with gr.Row().style(mobile_collapse=False, equal_height=True):
                 tar_prompt = gr.Textbox(
                                 label="Image Description",
-                                show_label=False,
+                                # show_label=False,
                                 max_lines=1, value="",
                                 placeholder="Enter your target prompt", 
                             )

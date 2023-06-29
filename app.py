@@ -171,11 +171,6 @@ def randomize_seed_fn(seed, randomize_seed):
     torch.manual_seed(seed)
     return seed
 
-def update_label(check_negative):
-    if(check_negative):
-        return gr.update(value="Remove")
-    else:
-        return gr.update(value="Include")
     
     
 
@@ -287,6 +282,7 @@ help_text = """
 
 with gr.Blocks(css="style.css") as demo:
 
+
     def add_concept(sega_concepts_counter):
       if sega_concepts_counter == 1:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=False), row3_advanced.update(visible=False), add_concept_button.update(visible=True), 2
@@ -294,25 +290,39 @@ with gr.Blocks(css="style.css") as demo:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=True), row3_advanced.update(visible=True), add_concept_button.update(visible=False), 3
 
     def update_display_concept_1(add_1, edit_concept_1, neg_guidance_1):
-      if add_1 == 'Include' and edit_concept_1 != "":
-        return box1.update(visible=True), edit_concept_1, concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), neg_guidance_1, "Clear"
+      guidance_scale_info = "How strongly the concept should be included in the image"
+      if add_1 == 'Include' or add_1 == 'Remove' and edit_concept_1 != "":
+        if neg_guidance_1:
+          guidance_scale_info = "How strongly the concept should be removed from the image" 
+        return box1.update(visible=True), edit_concept_1,concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), neg_guidance_1,  "Clear", gr.update(interactive=False), gr.update(interactive=False)
       else: # remove
-        return box1.update(visible=False),"", concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), False, "Add"
+        return box1.update(visible=False),"",concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), False, "Include", gr.update(interactive=True), gr.update(interactive=True)
 
     def update_display_concept_2(add_2, edit_concept_2, neg_guidance_2):
-      if add_2 == 'Include' and edit_concept_2 != "":
-        return box2.update(visible=True), edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), neg_guidance_2, "Clear"
+      if add_2 == 'Include' or add_2 == 'Remove' and edit_concept_2 != "":
+        return box2.update(visible=True), edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), neg_guidance_2, "Clear", gr.update(interactive=False), gr.update(interactive=False)
       else: # remove
-        return box2.update(visible=False),"", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), False, "Add"
+        return box2.update(visible=False),"", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), False, "Include", gr.update(interactive=True), gr.update(interactive=True)
 
     def update_display_concept_3(add_3, edit_concept_3, neg_guidance_3):
-      if add_3 == 'Include'and edit_concept_3 != "":
-        return box3.update(visible=True), edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), neg_guidance_3, "Clear"
+      if add_3 == 'Include'or add_3 == 'Remove' and edit_concept_3 != "":
+        return box3.update(visible=True), edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), neg_guidance_3, "Clear", gr.update(interactive=False), gr.update(interactive=False)
       else: # remove
-        return box3.update(visible=False), "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), False, "Add"
+        return box3.update(visible=False), "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), False, "Include", gr.update(interactive=True), gr.update(interactive=True)
 
     def display_editing_options(run_button, clear_button, sega_tab):
       return run_button.update(visible=True), clear_button.update(visible=True), sega_tab.update(visible=True)
+    
+    def update_label(neg_gudiance, add_button_label):
+      if (neg_gudiance):
+          return "Remove"
+      else:
+          return "Include"
+    def update_interactive_mode(add_button_label):
+      if add_button_label == "Clear":
+        return gr.update(interactive=False), gr.update(interactive=False)
+      else:
+        return gr.update(interactive=True), gr.update(interactive=True)
 
     # def update_gallery_display(prev_output_image, sega_edited_image):
     #   if prev_output_image is None:
@@ -394,7 +404,7 @@ with gr.Blocks(css="style.css") as demo:
                 # caption_button = gr.Button("Caption Image")
           # with gr.TabItem('2. Add SEGA edit concepts', id=1):
     with gr.Box():
-        intro_segs = gr.Markdown("Add/Remove New Concepts from your Image")
+        intro_segs = gr.Markdown("Add/Remove New Concepts to your Image")
                   # 1st SEGA concept
         with gr.Row().style(mobile_collapse=False, equal_height=True):
               with gr.Column(scale=3, min_width=100):
@@ -513,10 +523,11 @@ with gr.Blocks(css="style.css") as demo:
     #     outputs = [tar_prompt]
     # )
     neg_guidance_1.change(fn = update_label, inputs=[neg_guidance_1], outputs=[add_1])
-    add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1])
-    add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2])
-    add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3])
-
+    neg_guidance_2.change(fn = update_label, inputs=[neg_guidance_2], outputs=[add_2])
+    neg_guidance_3.change(fn = update_label, inputs=[neg_guidance_3], outputs=[add_3])
+    add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, edit_concept_1,neg_guidance_1 ])
+    add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2, edit_concept_2,neg_guidance_2 ])
+    add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, edit_concept_3, neg_guidance_3])
 
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)

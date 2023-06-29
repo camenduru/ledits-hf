@@ -239,7 +239,7 @@ def get_example():
             
              ],
         [
-            'examples/butterfly.jpg', 
+            'examples/butterfly_input.jpg', 
             # '',
             'oil painting',
              'bee', 'butterfly',

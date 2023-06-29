@@ -394,7 +394,7 @@ with gr.Blocks(css="style.css") as demo:
                 # caption_button = gr.Button("Caption Image")
           # with gr.TabItem('2. Add SEGA edit concepts', id=1):
     with gr.Box():
-        intro_segs = gr.Markdown("Add/Remove New Concepts to your Image")
+        intro_segs = gr.Markdown("Add/Remove New Concepts from your Image")
                   # 1st SEGA concept
         with gr.Row().style(mobile_collapse=False, equal_height=True):
               with gr.Column(scale=3, min_width=100):

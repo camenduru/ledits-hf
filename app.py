@@ -362,16 +362,19 @@ with gr.Blocks(css="style.css") as demo:
       with gr.Box(visible=False) as box1:
         concept_1 = gr.Button(visible=False)
         guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                            info="How strongly the concept should be included in the image",
                                                   value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
                                                   step=0.5, interactive=True,visible=False)
       with gr.Box(visible=False) as box2:
        concept_2 = gr.Button(visible=False)
        guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                          info="How strongly the concept should be included in the image",
                                                 value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
                                                 step=0.5, interactive=True,visible=False)
       with gr.Box(visible=False) as box3:
        concept_3 = gr.Button(visible=False)
        guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                           info="How strongly the concept should be included in the image",
                                                 value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
                                                 step=0.5, interactive=True,visible=False)
 

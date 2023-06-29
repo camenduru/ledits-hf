@@ -390,8 +390,8 @@ with gr.Blocks(css="style.css") as demo:
 
     with gr.Row():
         input_image = gr.Image(label="Input Image", interactive=True)
-        ddpm_edited_image = gr.Image(label=f"DDPM Reconstructed Image", interactive=False, visible=False)
-        sega_edited_image = gr.Image(label=f"DDPM + SEGA Edited Image", interactive=False)
+        ddpm_edited_image = gr.Image(label=f"Pure DDPM Inversion Image", interactive=False, visible=False)
+        sega_edited_image = gr.Image(label=f"LEDITS Edited Image", interactive=False)
         input_image.style(height=365, width=365)
         ddpm_edited_image.style(height=365, width=365)
         sega_edited_image.style(height=365, width=365)

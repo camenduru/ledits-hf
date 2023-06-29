@@ -177,53 +177,81 @@ def randomize_seed_fn(seed, randomize_seed):
 def get_example():
     case = [
         [
-            'examples/source_a_cat_sitting_next_to_a_mirror.jpeg', 
-            'a cat sitting next to a mirror',
-            'watercolor painting of a cat sitting next to a mirror',
+            'examples/lemons_input.jpg', 
+            # '',
+            'a ceramic bowl',
+            'apples', 'lemons',
+             'examples/lemons_output.jpg',
+            
+            
+            7,7,
+            1,1,
+            False, True,
             100,
             36,
             15,
-            'Schnauzer dog', 'cat',
-            5.5,
-            1,
-            'examples/ddpm_sega_watercolor_painting_a_cat_sitting_next_to_a_mirror_plus_dog_minus_cat.png'
+           
              ],
         [
-            'examples/source_a_man_wearing_a_brown_hoodie_in_a_crowded_street.jpeg', 
-            'a man wearing a brown hoodie in a crowded street',
-            'a robot wearing a brown hoodie in a crowded street',
+            'examples/rockey_shore_input.jpg', 
+            # '',
+            'watercolor painting',
+            'sea turtle', '',
+            'examples/rockey_shore_output.jpg',
+            
+            
+            7,7,
+            1,2,
             100,
             36,
             15,
-            'painting','',
-            10,
-            1,
-            'examples/ddpm_sega_painting_of_a_robot_wearing_a_brown_hoodie_in_a_crowded_street.png'
              ],
-    [
-            'examples/source_wall_with_framed_photos.jpeg', 
-            '',
-            '',
-            100,
+         [
+            'examples/flower_field_input.jpg', 
+            # '',
+            'oil painting',
+             'colorful flowers', 'red flowers',
+              'examples/flower_field_output.jpg',
+            
+            20,7,
+            1,1,
+             False, True,
+             100,
             36,
             15,
-            'pink drawings of muffins','',
-            10,
-            1,
-            'examples/ddpm_sega_plus_pink_drawings_of_muffins.png'
+            
+           
              ],
-    [
-            'examples/source_an_empty_room_with_concrete_walls.jpg', 
-            'an empty room with concrete walls',
-            'glass walls',
-            100,
+                 [
+            'examples/flower_field_input.jpg', 
+            # '',
+            'oil painting',
+            'wheat', 'red flowers',
+             'examples/flower_field_output_2.jpg',
+
+
+            20,7,
+            1,1,
+                     False,True,
+                      100,
             36,
-            17,
-            'giant elephant','',
-            10,
-            1,
-            'examples/ddpm_sega_glass_walls_gian_elephant.png'
-             ]]
+            15,
+            
+             ],
+        [
+            'examples/butterfly.jpg', 
+            # '',
+            'oil painting',
+             'bee', 'butterfly',
+            'examples/butterfly_output.jpg',      
+            7, 7,
+            1,1,
+            False, True,
+                        100,
+            36,
+            15,
+             ]
+ ]
     return case
 
 
@@ -667,24 +695,28 @@ with gr.Blocks(css="style.css") as demo:
         outputs = [seed],
         queue = False)
     
-    # gr.Examples(
-    #     label='Examples',
-    #     examples=get_example(),
-    #     inputs=[input_image, src_prompt, tar_prompt, steps,
-    #                 # src_cfg_scale,
-    #                 skip,
-    #                 tar_cfg_scale,
-    #                 edit_concept_1,
-    #                 edit_concept_2,
-    #                 guidnace_scale_1,
-    #                 warmup_1,
-    #                 # neg_guidance,
-    #                 sega_edited_image
-    #            ],
-    #     outputs=[sega_edited_image],
-    #     # fn=edit,
-    #     # cache_examples=True
-    # )
+    gr.Examples(
+        label='Examples',
+        examples=get_example(),
+        inputs=[input_image, 
+                # src_prompt, 
+                    tar_prompt,
+                    edit_concept_1,
+                    edit_concept_2,
+                    sega_edited_image,
+                    guidnace_scale_1,
+                    guidnace_scale_2,
+                    warmup_1,
+                    warmup_2,
+                    neg_guidance_1,
+                    neg_guidance_2,
+                    steps,
+                    skip,
+                    tar_cfg_scale,
+                    
+               ],
+        outputs=[sega_edited_image],
+    )
 
 
 

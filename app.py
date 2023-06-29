@@ -246,12 +246,12 @@ intro = """
     Real Image Latent Editing with Edit Friendly DDPM and Semantic Guidance
 </h3>
 <h4 style="text-align: center; margin-bottom: 7px;">
-    <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank">if(if(egativePage</a> | <a href="#" style="text-decoration: underline;" target="_blank">ArXiv</a>
+    <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank">Project Page</a> | <a href="#" style="text-decoration: underline;" target="_blank">ArXiv</a>
 </h4>
 
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
 <a href="https://huggingface.co/spaces/editing-images/edit_friendly_ddpm_x_sega?duplicate=true">
-<img style="margin-top: 0em; margin-bottom: 0em" src="bit.ly/3CWLGkA" alt="Duplicate Space"></a>
+<img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3CWLGkA" alt="Duplicate Space"></a>
 <p/>"""
 
 help_text = """

@@ -26,15 +26,13 @@ blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image
 
 ## IMAGE CPATIONING ##
 def caption_image(input_image):
-
-  if not input_image is None:
     inputs = blip_processor(images=input_image, return_tensors="pt").to(device)
     pixel_values = inputs.pixel_values
-
+    
     generated_ids = blip_model.generate(pixel_values=pixel_values, max_length=50)
     generated_caption = blip_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
     return generated_caption
-  return ""
+
 
 
 ## DDPM INVERSION AND SAMPLING ##
@@ -363,10 +361,7 @@ with gr.Blocks(css="style.css") as demo:
 
 
     def reset_do_inversion():
-        if not input_image is None:
-            return True
-        else:
-            return False
+        return True
 
     def reset_do_reconstruction():
       do_reconstruction = True
@@ -599,7 +594,7 @@ with gr.Blocks(css="style.css") as demo:
 
 
     # Automatically start inverting upon input_image change
-    input_image.change(
+    input_image.upload(
         fn = reset_do_inversion,
         inputs = [input_image],
         outputs = [do_inversion],

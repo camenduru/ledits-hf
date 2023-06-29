@@ -230,18 +230,25 @@ def get_example():
 # demo #
 ########
 
+
 intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
-   Edit Friendly DDPM X Semantic Guidance
+   LEDIT
 </h1>
-<p style="font-size: 0.9rem; text-align: center; margin: 0rem; line-height: 1.2em; margin-top:1em">
-<a href="https://arxiv.org/abs/2304.06140" style="text-decoration: underline;" target="_blank">An Edit Friendly DDPM Noise Space:
-Inversion and Manipulations </a> X
-<a href="https://arxiv.org/abs/2301.12247" style="text-decoration: underline;" target="_blank">SEGA: Instructing Diffusion using Semantic Dimensions</a>
-<p/>
+<h2 style="font-weight: 800; text-align: center; margin-bottom: 7px;">
+   Real Image Latent Editing with Edit Friendly DDPM X Semantic Guidance
+</h2>
+
+<h3 style="font-weight: 600; text-align: center; margin-bottom: 7px;">
+   This is a demo for LEDIT - real image editing combined approach introduced in:
+   <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank"> Project Page </a>
+</h3>
+
+ 
+
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
 For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
-<a href="https://huggingface.co/spaces/LinoyTsaban/ddpm_sega?duplicate=true">
+<a href="https://huggingface.co/spaces/editing-images/edit_friendly_ddpm_x_sega?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
 <p/>"""
 

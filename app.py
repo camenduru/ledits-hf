@@ -171,7 +171,14 @@ def randomize_seed_fn(seed, randomize_seed):
     torch.manual_seed(seed)
     return seed
 
+def update_label(check_negative):
+    if(check_negative):
+        return gr.update(value="Remove")
+    else:
+        return gr.update(value="Include")
     
+    
+
 def get_example():
     case = [
         [
@@ -233,23 +240,18 @@ def get_example():
 
 intro = """
 <h1 style="font-weight: 1400; text-align: center; margin-bottom: 7px;">
-   LEDITS
+   LEDITS - Pipeline for editing images
 </h1>
-<h2 style="font-weight: 800; text-align: center; margin-bottom: 7px;">
-   Real Image Latent Editing with Edit Friendly DDPM and Semantic Guidance
-</h2>
-
-<h3 style="font-weight: 600; text-align: center; margin-bottom: 7px;">
-   This is a demo for LEDITS - a combined approach for real image editing introduced in:
-   <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank"> Project Page </a>
+<h3 style="font-weight: 600; text-align: center;">
+    Real Image Latent Editing with Edit Friendly DDPM and Semantic Guidance
 </h3>
-
- 
+<h4 style="text-align: center; margin-bottom: 7px;">
+    <a href="https://editing-images-project.hf.space/" style="text-decoration: underline;" target="_blank">if(if(egativePage</a> | <a href="#" style="text-decoration: underline;" target="_blank">ArXiv</a>
+</h4>
 
 <p style="font-size: 0.9rem; margin: 0rem; line-height: 1.2em; margin-top:1em">
-For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.
 <a href="https://huggingface.co/spaces/editing-images/edit_friendly_ddpm_x_sega?duplicate=true">
-<img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
+<img style="margin-top: 0em; margin-bottom: 0em" src="bit.ly/3CWLGkA" alt="Duplicate Space"></a>
 <p/>"""
 
 help_text = """
@@ -388,72 +390,73 @@ with gr.Blocks(css="style.css") as demo:
                             )
                 # caption_button = gr.Button("Caption Image")
           # with gr.TabItem('2. Add SEGA edit concepts', id=1):
-    intro_segs = gr.Markdown("Add SEGA Edit Concepts")
-              # 1st SEGA concept
-    with gr.Row().style(mobile_collapse=False, equal_height=True):
+    with gr.Box():
+        intro_segs = gr.Markdown("Add/Remove New Concepts to your Image")
+                  # 1st SEGA concept
+        with gr.Row().style(mobile_collapse=False, equal_height=True):
+              with gr.Column(scale=3, min_width=100):
+                      edit_concept_1 = gr.Textbox(
+                                      label="Edit Concept",
+                                      show_label=False,
+                                      max_lines=1, value="",
+                                      placeholder="E.g.: Sunglasses",
+                                  )
+              with gr.Column(scale=1, min_width=100):
+                      neg_guidance_1 = gr.Checkbox(
+                          label='Remove Concept?')
+    
+                      # guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                      #                              value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                      #                              step=0.5, interactive=True)
+              with gr.Column(scale=1, min_width=100):
+    
+                      add_1 = gr.Button('Include')
+    
+                  # 2nd SEGA concept
+        with gr.Row(visible=False).style(equal_height=True) as row2:
+            with gr.Column(scale=3, min_width=100):
+                      edit_concept_2 = gr.Textbox(
+                                      label="Edit Concept",
+                                      show_label=False,
+                                      max_lines=1,
+                                      placeholder="E.g.: Realistic",
+                                  )
+            with gr.Column(scale=1, min_width=100):
+                      neg_guidance_2 = gr.Checkbox(
+                          label='Remove Concept?',visible=True)
+                      # guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                      #                              value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                      #                              step=0.5, interactive=True)
+            with gr.Column(scale=1, min_width=100):
+                      add_2 = gr.Button('Include')
+    
+                  # 3rd SEGA concept
+        with gr.Row(visible=False).style(equal_height=True) as row3:
           with gr.Column(scale=3, min_width=100):
-                  edit_concept_1 = gr.Textbox(
-                                  label="Edit Concept",
-                                  show_label=False,
-                                  max_lines=1, value="",
-                                  placeholder="Enter your 1st edit prompt",
-                              )
+                     edit_concept_3 = gr.Textbox(
+                                      label="Edit Concept",
+                                      show_label=False,
+                                      max_lines=1,
+                                      placeholder="E.g.: orange",
+                                  )
           with gr.Column(scale=1, min_width=100):
-                  neg_guidance_1 = gr.Checkbox(
-                      label='Negative Guidance')
-
-                  # guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                  #                              value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                  #                              step=0.5, interactive=True)
+                     neg_guidance_3 = gr.Checkbox(
+                          label='Remove Concept?',visible=True)
+                    #  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                    #                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                    #                                step=0.5, interactive=True)
           with gr.Column(scale=1, min_width=100):
-
-                  add_1 = gr.Button('Add')
-
-              # 2nd SEGA concept
-    with gr.Row(visible=False).style(equal_height=True) as row2:
-        with gr.Column(scale=3, min_width=100):
-                  edit_concept_2 = gr.Textbox(
-                                  label="Edit Concept",
-                                  show_label=False,
-                                  max_lines=1,
-                                  placeholder="Enter your 2st edit prompt",
-                              )
-        with gr.Column(scale=1, min_width=100):
-                  neg_guidance_2 = gr.Checkbox(
-                      label='Negative Guidance',visible=True)
-                  # guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                  #                              value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                  #                              step=0.5, interactive=True)
-        with gr.Column(scale=1, min_width=100):
-                  add_2 = gr.Button('Add')
-
-              # 3rd SEGA concept
-    with gr.Row(visible=False).style(equal_height=True) as row3:
-      with gr.Column(scale=3, min_width=100):
-                 edit_concept_3 = gr.Textbox(
-                                  label="Edit Concept",
-                                  show_label=False,
-                                  max_lines=1,
-                                  placeholder="Enter your 3rd edit prompt",
-                              )
-      with gr.Column(scale=1, min_width=100):
-                 neg_guidance_3 = gr.Checkbox(
-                      label='Negative Guidance',visible=True)
-                #  guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                #                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                #                                step=0.5, interactive=True)
-      with gr.Column(scale=1, min_width=100):
-                 add_3 = gr.Button('Add')
-
-
-
-
-    with gr.Row().style(mobile_collapse=False, equal_height=True):
-                add_concept_button = gr.Button("+")
+                     add_3 = gr.Button('Include')
+    
+    
+    
+    
+        with gr.Row().style(mobile_collapse=False, equal_height=True):
+                    add_concept_button = gr.Button("+1 concept")
 
 
     with gr.Row():
-        run_button = gr.Button("Edit", visible=True)
+        run_button = gr.Button("Edit your image!", visible=True)
         
 
     with gr.Accordion("Advanced Options", open=False):
@@ -506,7 +509,7 @@ with gr.Blocks(css="style.css") as demo:
     #     inputs = [input_image],
     #     outputs = [tar_prompt]
     # )
-
+    neg_guidance_1.change(fn = update_label, inputs=[neg_guidance_1], outputs=[add_1])
     add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1])
     add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2])
     add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3])

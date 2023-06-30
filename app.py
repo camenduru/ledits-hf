@@ -310,12 +310,19 @@ help_text = """
 
 with gr.Blocks(css="style.css") as demo:
 
-
+    def remove_concept():
+      guidance_scale_label = "Concept Guidance Scale"
+      enable_interactive =  gr.update(interactive=True)
+      return gr.update(visible=False), gr.update(visible=False, value="",), gr.update(interactive=True, value=""), gr.update(visible=False,label = guidance_scale_label), gr.update(interactive=True, value =False),  gr.update(visible=True),enable_interactive
+    
     def add_concept(sega_concepts_counter):
       if sega_concepts_counter == 1:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=False), row3_advanced.update(visible=False), add_concept_button.update(visible=True), 2
       else:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=True), row3_advanced.update(visible=True), add_concept_button.update(visible=False), 3
+
+    
+    
 
     def update_display_concept(add, edit_concept, neg_guidance):
       guidance_scale_label = "Concept Guidance Scale"
@@ -324,9 +331,8 @@ with gr.Blocks(css="style.css") as demo:
       if (add == 'Include' or add == 'Remove') and edit_concept != "":
         if neg_guidance:
           guidance_scale_label = "Negative Guidance Scale" 
-        return gr.update(visible=True), edit_concept,gr.update(visible=True), edit_concept, gr.update(visible=True), neg_guidance,  "Clear",disable_interactive, disable_interactive, disable_interactive, gr.update(label = guidance_scale_label)
-      else: # remove
-        return gr.update(visible=False),"", gr.update(visible=False), "", gr.update(visible=False), False, "Include", enable_interactive,enable_interactive,enable_interactive,gr.update(label = guidance_scale_label)
+        return gr.update(visible=True), gr.update(visible=True, value=edit_concept), gr.update(value=edit_concept,interactive=False), gr.update(visible=True,label = guidance_scale_label ), gr.update(value=neg_guidance,interactive=False),  gr.update(visible=False),disable_interactive, disable_interactive
+
 
     def display_editing_options(run_button, clear_button, sega_tab):
       return run_button.update(visible=True), clear_button.update(visible=True), sega_tab.update(visible=True)
@@ -393,23 +399,32 @@ with gr.Blocks(css="style.css") as demo:
 
     with gr.Row():
       with gr.Box(visible=False) as box1:
-        concept_1 = gr.Button(visible=False)
-        guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+        with gr.Row():
+          concept_1 = gr.Button(visible=False, scale=3)
+          remove_concept1 = gr.Button("x", scale=1)
+        with gr.Row():
+            guidnace_scale_1 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
                             info="How strongly the concept should be included in the image",
                                                   value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
                                                   step=0.5, interactive=True,visible=False)
       with gr.Box(visible=False) as box2:
-       concept_2 = gr.Button(visible=False)
-       guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                          info="How strongly the concept should be included in the image",
-                                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                                                step=0.5, interactive=True,visible=False)
+        with gr.Row():
+          concept_2 = gr.Button(visible=False, scale=3)
+          remove_concept2 = gr.Button("x", scale=1)
+        with gr.Row():
+          guidnace_scale_2 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                              info="How strongly the concept should be included in the image",
+                                                    value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                                                    step=0.5, interactive=True,visible=False)
       with gr.Box(visible=False) as box3:
-       concept_3 = gr.Button(visible=False)
-       guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
-                           info="How strongly the concept should be included in the image",
-                                                value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
-                                                step=0.5, interactive=True,visible=False)
+        with gr.Row():
+          concept_3 = gr.Button(visible=False, scale=3)
+          remove_concept3 = gr.Button("x", scale=1)
+        with gr.Row():
+          guidnace_scale_3 = gr.Slider(label='Concept Guidance Scale', minimum=1, maximum=30,
+                              info="How strongly the concept should be included in the image",
+                                                    value=DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,
+                                                    step=0.5, interactive=True,visible=False)
 
 
     with gr.Row():
@@ -547,9 +562,13 @@ with gr.Blocks(css="style.css") as demo:
     neg_guidance_1.change(fn = update_label, inputs=[neg_guidance_1], outputs=[add_1])
     neg_guidance_2.change(fn = update_label, inputs=[neg_guidance_2], outputs=[add_2])
     neg_guidance_3.change(fn = update_label, inputs=[neg_guidance_3], outputs=[add_3])
-    add_1.click(fn = update_display_concept, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, edit_concept_1,neg_guidance_1, dropdown1, guidnace_scale_1])
-    add_2.click(fn = update_display_concept, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2, edit_concept_2,neg_guidance_2 , dropdown2,guidnace_scale_2])
-    add_3.click(fn = update_display_concept, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, edit_concept_3, neg_guidance_3, dropdown3, guidnace_scale_3])
+    add_1.click(fn = update_display_concept, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, dropdown1])
+    add_2.click(fn = update_display_concept, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2 , dropdown2])
+    add_3.click(fn = update_display_concept, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, dropdown3])
+
+    remove_concept1.click(fn = remove_concept, outputs= [box1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, dropdown1])
+    remove_concept2.click(fn = remove_concept, outputs=[box2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2 , dropdown2])
+    remove_concept3.click(fn = remove_concept, outputs=[box3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, dropdown3])
 
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)

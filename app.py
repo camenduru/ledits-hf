@@ -317,32 +317,16 @@ with gr.Blocks(css="style.css") as demo:
       else:
         return row2.update(visible=True), row2_advanced.update(visible=True), row3.update(visible=True), row3_advanced.update(visible=True), add_concept_button.update(visible=False), 3
 
-    def update_display_concept_1(add_1, edit_concept_1, neg_guidance_1):
+    def update_display_concept(add, edit_concept, neg_guidance):
       guidance_scale_label = "Concept Guidance Scale"
-      if (add_1 == 'Include' or add_1 == 'Remove') and edit_concept_1 != "":
-        if neg_guidance_1:
+      disable_interactive =  gr.update(interactive=False)
+      enable_interactive =  gr.update(interactive=True)
+      if (add == 'Include' or add == 'Remove') and edit_concept != "":
+        if neg_guidance:
           guidance_scale_label = "Negative Guidance Scale" 
-        return box1.update(visible=True), edit_concept_1,concept_1.update(visible=True), edit_concept_1, guidnace_scale_1.update(visible=True), neg_guidance_1,  "Clear", gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False),gr.update(label = guidance_scale_label)
+        return gr.update(visible=True), edit_concept,gr.update(visible=True), edit_concept, gr.update(visible=True), neg_guidance,  "Clear",disable_interactive, disable_interactive, disable_interactive, gr.update(label = guidance_scale_label)
       else: # remove
-        return box1.update(visible=False),"",concept_1.update(visible=False), "", guidnace_scale_1.update(visible=False), False, "Include", gr.update(interactive=True), gr.update(interactive=True), gr.update(interactive=True),gr.update(label = guidance_scale_label)
-
-    def update_display_concept_2(add_2, edit_concept_2, neg_guidance_2):
-      guidance_scale_label = "Concept Guidance Scale"
-      if (add_2 == 'Include' or add_2 == 'Remove') and edit_concept_2 != "":
-         if neg_guidance_1:
-          guidance_scale_label = "Negative Guidance Scale"
-         return box2.update(visible=True), edit_concept_2, concept_2.update(visible=True),edit_concept_2, guidnace_scale_2.update(visible=True), neg_guidance_2, "Clear", gr.update(interactive=False), gr.update(interactive=False),gr.update(interactive=False),gr.update(label = guidance_scale_label)
-      else: # remove
-        return box2.update(visible=False),"", concept_2.update(visible=False), "", guidnace_scale_2.update(visible=False), False, "Include", gr.update(interactive=True), gr.update(interactive=True), gr.update(interactive=True),gr.update(label = guidance_scale_label)
-
-    def update_display_concept_3(add_3, edit_concept_3, neg_guidance_3):
-      guidance_scale_label = "Concept Guidance Scale"
-      if (add_3 == 'Include'or add_3 == 'Remove') and edit_concept_3 != "":
-        if neg_guidance_1:
-          guidance_scale_label = "Negative Guidance Scale" 
-        return box3.update(visible=True), edit_concept_3, concept_3.update(visible=True), edit_concept_3, guidnace_scale_3.update(visible=True), neg_guidance_3, "Clear", gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False),gr.update(label = guidance_scale_label)
-      else: # remove
-        return box3.update(visible=False), "", concept_3.update(visible=False), "", guidnace_scale_3.update(visible=False), False, "Include", gr.update(interactive=True), gr.update(interactive=True),gr.update(interactive=True),gr.update(label = guidance_scale_label)
+        return gr.update(visible=False),"", gr.update(visible=False), "", gr.update(visible=False), False, "Include", enable_interactive,enable_interactive,enable_interactive,gr.update(label = guidance_scale_label)
 
     def display_editing_options(run_button, clear_button, sega_tab):
       return run_button.update(visible=True), clear_button.update(visible=True), sega_tab.update(visible=True)
@@ -494,9 +478,9 @@ with gr.Blocks(css="style.css") as demo:
           with gr.Column(scale=1, min_width=100):
                      neg_guidance_3 = gr.Checkbox(
                       label='Remove Concept?',visible=True)
-          with gr.Column(scale=1, min_width=100):
-                     dropdown3 = gr.Dropdown(label = "Edit Type", value ='default' , choices=['default','style', 'object', 'facial'])
           with gr.Column(scale=2, min_width=100):
+                     dropdown3 = gr.Dropdown(label = "Edit Type", value ='default' , choices=['default','style', 'object', 'facial'])
+          with gr.Column(scale=1, min_width=100):
                      add_3 = gr.Button('Include')
     
     
@@ -563,9 +547,9 @@ with gr.Blocks(css="style.css") as demo:
     neg_guidance_1.change(fn = update_label, inputs=[neg_guidance_1], outputs=[add_1])
     neg_guidance_2.change(fn = update_label, inputs=[neg_guidance_2], outputs=[add_2])
     neg_guidance_3.change(fn = update_label, inputs=[neg_guidance_3], outputs=[add_3])
-    add_1.click(fn = update_display_concept_1, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, edit_concept_1,neg_guidance_1, dropdown1, guidnace_scale_1])
-    add_2.click(fn = update_display_concept_2, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2, edit_concept_2,neg_guidance_2 , dropdown2,guidnace_scale_2])
-    add_3.click(fn = update_display_concept_3, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, edit_concept_3, neg_guidance_3, dropdown3, guidnace_scale_3])
+    add_1.click(fn = update_display_concept, inputs=[add_1, edit_concept_1, neg_guidance_1],  outputs=[box1, concept_1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, edit_concept_1,neg_guidance_1, dropdown1, guidnace_scale_1])
+    add_2.click(fn = update_display_concept, inputs=[add_2, edit_concept_2, neg_guidance_2],  outputs=[box2, concept_2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2, edit_concept_2,neg_guidance_2 , dropdown2,guidnace_scale_2])
+    add_3.click(fn = update_display_concept, inputs=[add_3, edit_concept_3, neg_guidance_3],  outputs=[box3, concept_3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, edit_concept_3, neg_guidance_3, dropdown3, guidnace_scale_3])
 
     add_concept_button.click(fn = add_concept, inputs=sega_concepts_counter,
                outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)

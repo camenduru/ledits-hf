@@ -396,10 +396,7 @@ with gr.Blocks(css="style.css") as demo:
 
 
     def reset_do_inversion():
-        if not input_image is None:
-            return True
-        else:
-            return False
+        return True
 
     def reset_do_reconstruction():
       do_reconstruction = True

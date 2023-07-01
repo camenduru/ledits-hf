@@ -268,15 +268,15 @@ def swap_visibilities(input_image,
                     steps,
                     skip,
                     tar_cfg_scale,
-                    sega_concepts_counter=0
+                    sega_concepts_counter
                     
 ):
     concept1_update = update_display_concept("Remove" if neg_guidance_1 else "Add", edit_concept_1, neg_guidance_1, sega_concepts_counter)
     if(edit_concept_2 != ""):
-        concept2_update = update_display_concept("Remove" if neg_guidance_2 else "Add", edit_concept_2, neg_guidance_2, sega_concepts_counter)
+        concept2_update = update_display_concept("Remove" if neg_guidance_2 else "Add", edit_concept_2, neg_guidance_2, sega_concepts_counter+1)
     else:
-        concept2_update = gr.update(visible=False), gr.update(visible=False),gr.update(visible=False), gr.update(value=neg_guidance_2),gr.update(visible=True),gr.update(visible=False),sega_concepts_counter
-    return (*concept1_update,*concept2_update)
+        concept2_update = gr.update(visible=False), gr.update(visible=False),gr.update(visible=False), gr.update(value=neg_guidance_2),gr.update(visible=True),gr.update(visible=False),sega_concepts_counter+1
+    return (*concept1_update[:-1], *concept2_update)
     
 
 
@@ -359,7 +359,7 @@ with gr.Blocks(css="style.css") as demo:
     
     
     def update_display_concept(button_label, edit_concept, neg_guidance, sega_concepts_counter):
-      sega_concepts_counter+=1
+      sega_concepts_counter += 1
       guidance_scale_label = "Concept Guidance Scale"
       if(button_label=='Remove'):
         neg_guidance = True
@@ -378,17 +378,11 @@ with gr.Blocks(css="style.css") as demo:
     def display_editing_options(run_button, clear_button, sega_tab):
       return run_button.update(visible=True), clear_button.update(visible=True), sega_tab.update(visible=True)
     
-    def update_label(neg_gudiance, add_button_label):
-      if (neg_gudiance):
-          return "Remove"
-      else:
-          return "Include"
     def update_interactive_mode(add_button_label):
       if add_button_label == "Clear":
         return gr.update(interactive=False), gr.update(interactive=False)
       else:
         return gr.update(interactive=True), gr.update(interactive=True)
-    
     
     def update_dropdown_parms(dropdown):
         if dropdown == 'custom':
@@ -538,7 +532,7 @@ with gr.Blocks(css="style.css") as demo:
           with gr.Column(scale=2, min_width=100):
                      dropdown3 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'facial'])
           with gr.Column(scale=1, min_width=100):
-                     add_3 = gr.Button('Include')
+                     add_3 = gr.Button('Add')
                      remove_3 = gr.Button('Remove')
     
         with gr.Row(visible=False).style(equal_height=True) as row4:
@@ -785,8 +779,7 @@ with gr.Blocks(css="style.css") as demo:
                     tar_cfg_scale,
                     sega_concepts_counter
                ],
-        outputs=[box1, concept_1, guidnace_scale_1,neg_guidance_1, row1, row2, sega_concepts_counter,box2, concept_2, guidnace_scale_2,neg_guidance_2,row2, row3,sega_concepts_counter],
-        cache_examples=True
+        outputs=[box1, concept_1, guidnace_scale_1,neg_guidance_1, row1, row2,box2, concept_2, guidnace_scale_2,neg_guidance_2,row2, row3,sega_concepts_counter],
     )
 
 

@@ -9,15 +9,14 @@ from constants import *
 from inversion_utils import *
 from modified_pipeline_semantic_stable_diffusion import SemanticStableDiffusionPipeline
 from torch import autocast, inference_mode
-from diffusers import DiffusionPipeline
+from diffusers import StableDiffusionPipeline
 from diffusers import DDIMScheduler
 from transformers import AutoProcessor, BlipForConditionalGeneration
 
-torch.cuda.empty_cache()
 # load pipelines
 sd_model_id = "stabilityai/stable-diffusion-2-1-base"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sd_pipe = DiffusionPipeline.from_pretrained(sd_model_id).to(device)
+sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
 sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
 blip_processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
@@ -792,4 +791,4 @@ with gr.Blocks(css="style.css") as demo:
 
 
 demo.queue()
-demo.launch(share=True)
+demo.launch()

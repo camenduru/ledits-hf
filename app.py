@@ -647,7 +647,11 @@ with gr.Blocks(css="style.css") as demo:
     # .success(fn=update_gallery_display, inputs= [prev_output_image, sega_edited_image], outputs = [gallery, gallery, prev_output_image])
 
 
-
+    input_image.change(
+        fn = reset_do_inversion,
+        inputs = [input_image],
+        outputs = [do_inversion],
+        queue = False)
     # Automatically start inverting upon input_image change
     input_image.upload(
         fn = reset_do_inversion,

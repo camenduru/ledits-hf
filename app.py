@@ -161,7 +161,7 @@ def edit(input_image,
           do_reconstruction = False
           return pure_ddpm_img, reconstruct_button.update(visible=False), do_reconstruction, reconstruction
       
-      return reconstruction, reconstruct_button.update(visible=False), do_reconstruction, reconstruction
+      return reconstruction.value, reconstruct_button.update(visible=False), do_reconstruction, reconstruction
         
 
 def randomize_seed_fn(seed, randomize_seed):

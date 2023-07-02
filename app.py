@@ -649,13 +649,11 @@ with gr.Blocks(css="style.css") as demo:
 
     input_image.change(
         fn = reset_do_inversion,
-        inputs = [input_image],
         outputs = [do_inversion],
         queue = False)
     # Automatically start inverting upon input_image change
     input_image.upload(
         fn = reset_do_inversion,
-        inputs = [input_image],
         outputs = [do_inversion],
         queue = False).then(fn = caption_image,
         inputs = [input_image],

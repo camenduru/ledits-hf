@@ -334,15 +334,19 @@ help_text = """
 """
 
 with gr.Blocks(css="style.css") as demo:
-
-    def remove_concept(sega_concepts_counter,edit_concept1,edit_concept2,edit_concept3):
-      if(not sega_concepts_counter):
-          sega_concepts_counter = len([concept for concept in [edit_concept1, edit_concept2, edit_concept3] if concept != ''])-1
-      else:
-        sega_concepts_counter -= 1
+    def update_counter(sega_concepts_counter, concept1, concept2, concept3):
+        if sega_concepts_counter == "":
+            sega_concepts_counter = sum(1 for concept in (concept1, concept2, concept3) if concept != '')
+        return sega_concepts_counter
+    def remove_concept(sega_concepts_counter, row_triggered):
+      sega_concepts_counter -= 1
       rows_visibility = [gr.update(visible=False) for _ in range(4)]
-      rows_visibility[sega_concepts_counter] = gr.update(visible=True)
-
+      
+      if(row_triggered-1 > sega_concepts_counter):
+            rows_visibility[sega_concepts_counter] = gr.update(visible=True)
+      else:
+            rows_visibility[row_triggered-1] = gr.update(visible=True)
+      
       row1_visibility, row2_visibility, row3_visibility, row4_visibility = rows_visibility
 
       guidance_scale_label = "Concept Guidance Scale"
@@ -603,17 +607,23 @@ with gr.Blocks(css="style.css") as demo:
     #neg_guidance_1.change(fn = update_label, inputs=[neg_guidance_1], outputs=[add_1])
     #neg_guidance_2.change(fn = update_label, inputs=[neg_guidance_2], outputs=[add_2])
     #neg_guidance_3.change(fn = update_label, inputs=[neg_guidance_3], outputs=[add_3])
-    add_1.click(fn = update_display_concept, inputs=[add_1, edit_concept_1, neg_guidance_1, sega_concepts_counter],  outputs=[box1, concept_1, guidnace_scale_1,neg_guidance_1,row1, row2, sega_concepts_counter],queue=False)
-    add_2.click(fn = update_display_concept, inputs=[add_2, edit_concept_2, neg_guidance_2, sega_concepts_counter],  outputs=[box2, concept_2, guidnace_scale_2,neg_guidance_2,row2, row3, sega_concepts_counter],queue=False)
-    add_3.click(fn = update_display_concept, inputs=[add_3, edit_concept_3, neg_guidance_3, sega_concepts_counter],  outputs=[box3, concept_3, guidnace_scale_3,neg_guidance_3,row3, row4, sega_concepts_counter],queue=False)
+    add_1.click(fn=update_counter,inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=sega_concepts_counter).then(fn = update_display_concept, inputs=[add_1, edit_concept_1, neg_guidance_1, sega_concepts_counter],  outputs=[box1, concept_1, guidnace_scale_1,neg_guidance_1,row1, row2, sega_concepts_counter],queue=False)
+    add_2.click(fn=update_counter,inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=sega_concepts_counter).then(fn = update_display_concept, inputs=[add_2, edit_concept_2, neg_guidance_2, sega_concepts_counter],  outputs=[box2, concept_2, guidnace_scale_2,neg_guidance_2,row2, row3, sega_concepts_counter],queue=False)
+    add_3.click(fn=update_counter,inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=sega_concepts_counter).then(fn = update_display_concept, inputs=[add_3, edit_concept_3, neg_guidance_3, sega_concepts_counter],  outputs=[box3, concept_3, guidnace_scale_3,neg_guidance_3,row3, row4, sega_concepts_counter],queue=False)
     
     remove_1.click(fn = update_display_concept, inputs=[remove_1, edit_concept_1, neg_guidance_1, sega_concepts_counter],  outputs=[box1, concept_1, guidnace_scale_1,neg_guidance_1,row1, row2, sega_concepts_counter],queue=False)
     remove_2.click(fn = update_display_concept, inputs=[remove_2, edit_concept_2, neg_guidance_2 ,sega_concepts_counter],  outputs=[box2, concept_2, guidnace_scale_2,neg_guidance_2,row2, row3,sega_concepts_counter],queue=False)
     remove_3.click(fn = update_display_concept, inputs=[remove_3, edit_concept_3, neg_guidance_3, sega_concepts_counter],  outputs=[box3, concept_3, guidnace_scale_3,neg_guidance_3, row3, row4, sega_concepts_counter],queue=False)
     
-    remove_concept1.click(fn = remove_concept, inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs= [box1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, dropdown1, row1, row2, row3, row4, sega_concepts_counter],queue=False)
-    remove_concept2.click(fn = remove_concept,  inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=[box2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2 , dropdown2, row1, row2, row3, row4, sega_concepts_counter],queue=False)
-    remove_concept3.click(fn = remove_concept,  inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=[box3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, dropdown3, row1, row2, row3, row4, sega_concepts_counter],queue=False)
+    remove_concept1.click(
+        fn=update_counter,inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=sega_concepts_counter).then(
+        fn = remove_concept, inputs=[sega_concepts_counter,gr.State(1)], outputs= [box1, concept_1, edit_concept_1, guidnace_scale_1,neg_guidance_1, add_1, dropdown1, row1, row2, row3, row4, sega_concepts_counter],queue=False)
+    remove_concept2.click(
+        fn=update_counter,inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=sega_concepts_counter).then(
+        fn = remove_concept,  inputs=[sega_concepts_counter,gr.State(2)], outputs=[box2, concept_2, edit_concept_2, guidnace_scale_2,neg_guidance_2, add_2 , dropdown2, row1, row2, row3, row4, sega_concepts_counter],queue=False)
+    remove_concept3.click(
+        fn=update_counter,inputs=[sega_concepts_counter,edit_concept_1,edit_concept_2,edit_concept_3], outputs=sega_concepts_counter).then(
+        fn = remove_concept,inputs=[sega_concepts_counter,gr.State(3)], outputs=[box3, concept_3, edit_concept_3, guidnace_scale_3,neg_guidance_3, add_3, dropdown3, row1, row2, row3, row4, sega_concepts_counter],queue=False)
 
     #add_concept_button.click(fn = update_display_concept, inputs=sega_concepts_counter,
     #           outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)
@@ -788,4 +798,4 @@ with gr.Blocks(css="style.css") as demo:
 
 
 demo.queue()
-demo.launch()
+demo.launch(share=True)

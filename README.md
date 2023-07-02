@@ -1,6 +1,6 @@
 ---
-title: Ddpm Sega
-emoji: 🌖
+title: LEDIS
+emoji: ✏️
 colorFrom: gray
 colorTo: blue
 sdk: gradio

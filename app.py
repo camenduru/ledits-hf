@@ -271,6 +271,7 @@ def swap_visibilities(input_image,
                     sega_concepts_counter
                     
 ):
+    sega_concepts_counter=0
     concept1_update = update_display_concept("Remove" if neg_guidance_1 else "Add", edit_concept_1, neg_guidance_1, sega_concepts_counter)
     if(edit_concept_2 != ""):
         concept2_update = update_display_concept("Remove" if neg_guidance_2 else "Add", edit_concept_2, neg_guidance_2, sega_concepts_counter+1)

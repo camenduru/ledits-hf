@@ -197,8 +197,8 @@ def get_example():
         [
             'examples/lemons_input.jpg', 
             # '',
-            'a ceramic bowl',
             'apples', 'lemons',
+            'a ceramic bowl',
              'examples/lemons_output.jpg',
             
             
@@ -213,8 +213,8 @@ def get_example():
         [
             'examples/girl_with_pearl_earring_input.png', 
             # '',
-            '',
             'glasses', '',
+            '',
              'examples/girl_with_pearl_earring_output.png',
             
             
@@ -229,8 +229,8 @@ def get_example():
         [
             'examples/rockey_shore_input.jpg', 
             # '',
-            'watercolor painting',
             'sea turtle', '',
+            'watercolor painting',
             'examples/rockey_shore_output.jpg',
             
             
@@ -244,8 +244,8 @@ def get_example():
                  [
             'examples/flower_field_input.jpg', 
             # '',
-            'oil painting',
             'wheat', 'red flowers',
+            'oil painting',
              'examples/flower_field_output_2.jpg',
 
 
@@ -260,8 +260,8 @@ def get_example():
         [
             'examples/butterfly_input.jpg', 
             # '',
-            'oil painting',
              'bee', 'butterfly',
+            'oil painting',
             'examples/butterfly_output.jpg',      
             7, 7,
             1,1,
@@ -272,6 +272,7 @@ def get_example():
              ]
  ]
     return case
+
 
 def swap_visibilities(input_image,  
                     edit_concept_1,

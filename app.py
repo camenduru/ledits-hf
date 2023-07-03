@@ -417,10 +417,10 @@ with gr.Blocks(css="style.css") as demo:
         return inversion_progress.update(visible=False)
 
     def update_edit_progress_visibility(input_image, do_inversion):
-      if do_inversion and not input_image is None:
-          return inversion_progress.update(visible=True, label="inverting...")
-      else:
-        return inversion_progress.update(visible=True, label="editing...")
+      # if do_inversion and not input_image is None:
+      #     return inversion_progress.update(visible=True)
+      # else:
+        return inversion_progress.update(visible=True)
 
 
     gr.HTML(intro)
@@ -649,7 +649,7 @@ with gr.Blocks(css="style.css") as demo:
                 tar_cfg_scale
         ],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).success(
+    ).success(
         fn=edit,
         inputs=[input_image,
                 wts, zs,

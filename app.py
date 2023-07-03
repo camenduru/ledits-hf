@@ -578,7 +578,8 @@ with gr.Blocks(css="style.css") as demo:
                                        value=DEFAULT_WARMUP_STEPS,
                                        step=1, interactive=True, info="at which step to start applying semantic guidance?")
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
-                                          value=DEFAULT_THRESHOLD, step=0.01, interactive=True)
+                                          value=DEFAULT_THRESHOLD, step=0.01, interactive=True, 
+                                          info = "threshold of the percent of noise estimate’s dimensions used for semantic guidance. Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
 
               # 2nd SEGA concept
               gr.Markdown("2nd concept")
@@ -588,7 +589,8 @@ with gr.Blocks(css="style.css") as demo:
                                        step=1, interactive=True, info="at which step to start applying semantic guidance?")
                   threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD,
-                                          step=0.01, interactive=True)
+                                          step=0.01, interactive=True,
+                                         info = "threshold of the percent of noise estimate’s dimensions used for semantic guidnace. Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
               # 3rd SEGA concept
               gr.Markdown("3rd concept")
               with gr.Row() as row3_advanced:
@@ -597,7 +599,8 @@ with gr.Blocks(css="style.css") as demo:
                                        interactive=True, info="at which step to start applying semantic guidance?")
                   threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD, step=0.01,
-                                          interactive=True)
+                                          interactive=True,
+                                         info = "threshold of the percent of noise estimate’s dimensions used for semantic guidance. Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
 
     # caption_button.click(
     #     fn = caption_image,

@@ -576,7 +576,7 @@ with gr.Blocks(css="style.css") as demo:
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50,
                                        value=DEFAULT_WARMUP_STEPS,
-                                       step=1, interactive=True)
+                                       step=1, interactive=True, info="at which step to start applying semantic guidance?")
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD, step=0.01, interactive=True)
 
@@ -585,7 +585,7 @@ with gr.Blocks(css="style.css") as demo:
               with gr.Row() as row2_advanced:
                   warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50,
                                        value=DEFAULT_WARMUP_STEPS,
-                                       step=1, interactive=True)
+                                       step=1, interactive=True, info="at which step to start applying semantic guidance?")
                   threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD,
                                           step=0.01, interactive=True)
@@ -594,7 +594,7 @@ with gr.Blocks(css="style.css") as demo:
               with gr.Row() as row3_advanced:
                   warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50,
                                        value=DEFAULT_WARMUP_STEPS, step=1,
-                                       interactive=True)
+                                       interactive=True, info="at which step to start applying semantic guidance?")
                   threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD, step=0.01,
                                           interactive=True)

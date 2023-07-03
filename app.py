@@ -503,14 +503,16 @@ with gr.Blocks(css="style.css") as demo:
                   # 1st SEGA concept
         with gr.Row().style(mobile_collapse=False) as row1:
               with gr.Column(scale=3, min_width=100):
-                      edit_concept_1 = gr.Textbox(
-                                      label="Concept",
-                                      show_label=True,
-                                      max_lines=1, value="",
-                                      placeholder="E.g.: Sunglasses",
-                                  )
-              with gr.Column(scale=2, min_width=100):
-                      dropdown1 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
+                  with gr.Row().style(mobile_collapse=True):
+                      with gr.Column(scale=3, min_width=100):
+                              edit_concept_1 = gr.Textbox(
+                                              label="Concept",
+                                              show_label=True,
+                                              max_lines=1, value="",
+                                              placeholder="E.g.: Sunglasses",
+                                          )
+                      with gr.Column(scale=2, min_width=100):
+                              dropdown1 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
     
 
               with gr.Column(scale=1, min_width=100, visible=False):
@@ -525,37 +527,43 @@ with gr.Blocks(css="style.css") as demo:
                   # 2nd SEGA concept
         with gr.Row(visible=False).style(equal_height=True) as row2:
             with gr.Column(scale=3, min_width=100):
-                      edit_concept_2 = gr.Textbox(
-                                      label="Concept",
-                                      show_label=True,
-                                      max_lines=1,
-                                      placeholder="E.g.: Realistic",
-                                  )
+                with gr.Row().style(mobile_collapse=True): #better mobile UI
+                    with gr.Column(scale=3, min_width=100):
+                              edit_concept_2 = gr.Textbox(
+                                              label="Concept",
+                                              show_label=True,
+                                              max_lines=1,
+                                              placeholder="E.g.: Realistic",
+                                          )
+                    with gr.Column(scale=2, min_width=100):
+                              dropdown2 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
+
             with gr.Column(scale=1, min_width=100, visible=False):
                       neg_guidance_2 = gr.Checkbox(
                           label='Remove Concept?')
-            with gr.Column(scale=2, min_width=100):
-                      dropdown2 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
-
+                
             with gr.Column(scale=1, min_width=100):
                       add_2 = gr.Button('Add')
                       remove_2 = gr.Button('Remove')
     
                   # 3rd SEGA concept
         with gr.Row(visible=False).style(equal_height=True) as row3:
-          with gr.Column(scale=3, min_width=100):
-                     edit_concept_3 = gr.Textbox(
-                                      label="Concept",
-                                      show_label=True,
-                                      max_lines=1,
-                                      placeholder="E.g.: orange",
-                                  )
-          with gr.Column(scale=1, min_width=100, visible=False):
-                     neg_guidance_3 = gr.Checkbox(
-                      label='Remove Concept?',visible=True)
-          with gr.Column(scale=2, min_width=100):
-                     dropdown3 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
-          with gr.Column(scale=1, min_width=100):
+            with gr.Column(scale=3, min_width=100):
+                with gr.Row().style(mobile_collapse=True): #better mobile UI  
+                    with gr.Column(scale=3, min_width=100):
+                             edit_concept_3 = gr.Textbox(
+                                              label="Concept",
+                                              show_label=True,
+                                              max_lines=1,
+                                              placeholder="E.g.: orange",
+                                          )
+                    with gr.Column(scale=2, min_width=100):
+                             dropdown3 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
+            
+            with gr.Column(scale=1, min_width=100, visible=False):
+                             neg_guidance_3 = gr.Checkbox(
+                              label='Remove Concept?',visible=True)
+            with gr.Column(scale=1, min_width=100):
                      add_3 = gr.Button('Add')
                      remove_3 = gr.Button('Remove')
     

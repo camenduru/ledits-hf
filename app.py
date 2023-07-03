@@ -241,22 +241,6 @@ def get_example():
             36,
             15,
              ],
-         [
-            'examples/flower_field_input.jpg', 
-            # '',
-            'oil painting',
-             'colorful flowers', 'red flowers',
-              'examples/flower_field_output.jpg',
-            
-            20,7,
-            1,1,
-             False, True,
-             100,
-            36,
-            15,
-            
-           
-             ],
                  [
             'examples/flower_field_input.jpg', 
             # '',

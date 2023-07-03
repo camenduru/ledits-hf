@@ -132,7 +132,23 @@ def edit(input_image,
             neg_guidance_1, neg_guidance_2, neg_guidance_3,
             threshold_1, threshold_2, threshold_3,
          do_reconstruction,
-         reconstruction):
+         reconstruction,
+         
+         # for inversion in case it needs to be re computed (and avoid delay):
+         do_inversion,
+         seed, 
+         randomize_seed,
+         src_prompt,
+         src_cfg_scale):
+
+     if do_inversion or randomize_seed:
+        x0 = load_512(input_image, device=device)
+        # invert and retrieve noise maps and latent
+        zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
+        wts = gr.State(value=wts_tensor)
+        zs = gr.State(value=zs_tensor)
+        do_inversion = False    
+    
 
     if edit_concept_1 != "" or edit_concept_2 != "" or edit_concept_3 != "":
       editing_args = dict(
@@ -151,7 +167,7 @@ def edit(input_image,
                           num_inference_steps=steps,
                           use_ddpm=True,  wts=wts.value, zs=zs.value[skip:], **editing_args)
       
-      return sega_out.images[0], reconstruct_button.update(visible=True), do_reconstruction, reconstruction
+      return sega_out.images[0], reconstruct_button.update(visible=True), do_reconstruction, reconstruction, wts, zs, do_inversion
     
     else: # if sega concepts were not added, performs regular ddpm sampling
       
@@ -159,9 +175,9 @@ def edit(input_image,
           pure_ddpm_img = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
           reconstruction = gr.State(value=pure_ddpm_img)
           do_reconstruction = False
-          return pure_ddpm_img, reconstruct_button.update(visible=False), do_reconstruction, reconstruction
+          return pure_ddpm_img, reconstruct_button.update(visible=False), do_reconstruction, reconstruction wts, zs, do_inversion
       
-      return reconstruction.value, reconstruct_button.update(visible=False), do_reconstruction, reconstruction
+      return reconstruction.value, reconstruct_button.update(visible=False), do_reconstruction, reconstruction, wts, zs, do_inversion
         
 
 def randomize_seed_fn(seed, randomize_seed):
@@ -635,21 +651,7 @@ with gr.Blocks(css="style.css") as demo:
     #add_concept_button.click(fn = update_display_concept, inputs=sega_concepts_counter,
     #           outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)
 
-    run_button.click(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).then(
-        fn=load_and_invert,
-        inputs=[input_image,
-                do_inversion,
-                seed, randomize_seed,
-                wts, zs,
-                src_prompt,
-                tar_prompt,
-                steps,
-                src_cfg_scale,
-                skip,
-                tar_cfg_scale
-        ],
-        outputs=[wts, zs, do_inversion, inversion_progress],
-    ).success(
+    run_button.click(
         fn=edit,
         inputs=[input_image,
                 wts, zs,
@@ -661,10 +663,16 @@ with gr.Blocks(css="style.css") as demo:
                 guidnace_scale_1,guidnace_scale_2,guidnace_scale_3,
                 warmup_1, warmup_2, warmup_3,
                 neg_guidance_1, neg_guidance_2, neg_guidance_3,
-                threshold_1, threshold_2, threshold_3, do_reconstruction, reconstruction
+                threshold_1, threshold_2, threshold_3, do_reconstruction, reconstruction,
+                do_inversion,
+                seed, 
+                randomize_seed,
+                src_prompt,
+                src_cfg_scale
+
 
         ],
-        outputs=[sega_edited_image, reconstruct_button, do_reconstruction, reconstruction])
+        outputs=[sega_edited_image, reconstruct_button, do_reconstruction, reconstruction, wts, zs, do_inversion])
     # .success(fn=update_gallery_display, inputs= [prev_output_image, sega_edited_image], outputs = [gallery, gallery, prev_output_image])
 
 

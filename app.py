@@ -599,7 +599,7 @@ with gr.Blocks(css="style.css") as demo:
           with gr.TabItem('General options', id=2):
             with gr.Row():
                 with gr.Column(min_width=100):
-                   clear_button = gr.Button("Clear", visible=False)
+                   clear_button = gr.Button("Clear", visible=True)
                    src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
                    steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
                    src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
@@ -785,7 +785,7 @@ with gr.Blocks(css="style.css") as demo:
                      "", DEFAULT_SKIP_STEPS, DEFAULT_TARGET_GUIDANCE_SCALE, reconstruct_button.update(value="Show Reconstruction"),reconstruct_button.update(visible=False),
                      "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_1.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "custom","", concept_1.update(visible=False), row1.update(visible=True),
                      "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_2.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "custom","", concept_2.update(visible=False), row2.update(visible=False),
-                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "custom","",concept_3.update(visible=False), row3.update(visible=False), row4.update(visible=False), gr.State(0),
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "custom","",concept_3.update(visible=False), row3.update(visible=False), row4.update(visible=False), gr.update(value=0),
                           box1.update(visible=False), box2.update(visible=False), box3.update(visible=False)]
 
 

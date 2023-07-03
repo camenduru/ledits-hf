@@ -218,7 +218,7 @@ def get_example():
              'examples/girl_with_pearl_earring_output.png',
             
             
-            3,'',
+            3,1,
             3,'',
             False,'' ,
             100,

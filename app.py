@@ -599,7 +599,7 @@ with gr.Blocks(css="style.css") as demo:
           with gr.TabItem('General options', id=2):
             with gr.Row():
                 with gr.Column(min_width=100):
-                   clear_button = gr.Button("Clear", visible=True)
+                   clear_button = gr.Button("Clear", visible=False)
                    src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
                    steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
                    src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)

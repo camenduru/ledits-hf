@@ -175,7 +175,7 @@ def edit(input_image,
           pure_ddpm_img = sample(zs.value, wts.value, prompt_tar=tar_prompt, skip=skip, cfg_scale_tar=tar_cfg_scale)
           reconstruction = gr.State(value=pure_ddpm_img)
           do_reconstruction = False
-          return pure_ddpm_img, reconstruct_button.update(visible=False), do_reconstruction, reconstruction wts, zs, do_inversion
+          return pure_ddpm_img, reconstruct_button.update(visible=False), do_reconstruction, reconstruction, wts, zs, do_inversion
       
       return reconstruction.value, reconstruct_button.update(visible=False), do_reconstruction, reconstruction, wts, zs, do_inversion
         

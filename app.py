@@ -496,7 +496,7 @@ with gr.Blocks(css="style.css") as demo:
                                 label="Describe your edited image",
                                 # show_label=False,
                                 max_lines=1, value="",
-                                placeholder="Target prompt, DDPM Inversion", 
+                                placeholder="Target prompt, DDPM Inversion", info = "Leave blank to have only SEGA concepts guide your edit"
                             )
 
     with gr.Box():

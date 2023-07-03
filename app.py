@@ -370,7 +370,7 @@ with gr.Blocks(css="style.css") as demo:
       row1_visibility, row2_visibility, row3_visibility, row4_visibility = rows_visibility
 
       guidance_scale_label = "Concept Guidance Scale"
-      enable_interactive =  gr.update(interactive=True)
+      # enable_interactive =  gr.update(interactive=True)
       return (gr.update(visible=False),
               gr.update(visible=False, value="",),
               gr.update(interactive=True, value=""),
@@ -379,7 +379,7 @@ with gr.Blocks(css="style.css") as demo:
               gr.update(value=DEFAULT_WARMUP_STEPS),
               gr.update(value=DEFAULT_THRESHOLD),
               gr.update(visible=True),
-              enable_interactive,
+              gr.update(interactive=True, value="custom"),
               row1_visibility,
               row2_visibility,
               row3_visibility,

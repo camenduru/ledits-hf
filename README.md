@@ -1,5 +1,5 @@
 ---
-title: LEDIS
+title: LEDITS
 emoji: ✏️
 colorFrom: gray
 colorTo: blue
@@ -9,7 +9,7 @@ app_file: app.py
 pinned: true
 ---
 
-This is the repository for LEDIS - Real Image Latent Editing with Edit Friendly DDPM and Semantic Guidance.  More information about the technique [here](https://editing-images-project.hf.space)
+This is the repository for LEDITS - Real Image Latent Editing with Edit Friendly DDPM and Semantic Guidance.  More information about the technique [here](https://editing-images-project.hf.space)
 
 This repository contains the following relevant files: 
 - `app.py` - Gradio application for the inversion technique combining uploading an image, captioning it, doing the DDPM Inversion and applying SEGA concepts to the editing.

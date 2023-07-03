@@ -150,7 +150,7 @@ def edit(input_image,
         zs = gr.State(value=zs_tensor)
         do_inversion = False    
     
-    if image_caption == tar_prompt: # if image caption was not changed, run pure sega
+    if image_caption.lower() == tar_prompt.lower(): # if image caption was not changed, run pure sega
           tar_prompt = ""
         
     if edit_concept_1 != "" or edit_concept_2 != "" or edit_concept_3 != "":

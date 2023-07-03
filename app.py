@@ -496,26 +496,15 @@ with gr.Blocks(css="style.css") as demo:
 
     with gr.Row():
         inversion_progress = gr.Textbox(visible=False, label="Inversion progress")
-
-
-    with gr.Row().style(mobile_collapse=False, equal_height=True):
-                tar_prompt = gr.Textbox(
-                                label="Describe your edited image",
-                                # show_label=False,
-                                max_lines=1, value="", scale=3,
-                                placeholder="Target prompt, DDPM Inversion", info = "Leave blank to have only SEGA concepts guide your edit"
-                            )
-                # caption_button = gr.Button("Caption Image", scale=1)
-        
         
 
     with gr.Box():
-        intro_segs = gr.Markdown("Add/Remove SEGA Concepts from your Image")
+        intro_segs = gr.Markdown("Add/Remove Concepts from your Image <span style=\"font-size: 12px; color: rgb(156, 163, 175)\">with Semantic Guidance</span>")
                   # 1st SEGA concept
         with gr.Row().style(mobile_collapse=False) as row1:
               with gr.Column(scale=3, min_width=100):
                       edit_concept_1 = gr.Textbox(
-                                      label="Edit Concept",
+                                      label="Concept",
                                       show_label=True,
                                       max_lines=1, value="",
                                       placeholder="E.g.: Sunglasses",
@@ -537,7 +526,7 @@ with gr.Blocks(css="style.css") as demo:
         with gr.Row(visible=False).style(equal_height=True) as row2:
             with gr.Column(scale=3, min_width=100):
                       edit_concept_2 = gr.Textbox(
-                                      label="Edit Concept",
+                                      label="Concept",
                                       show_label=True,
                                       max_lines=1,
                                       placeholder="E.g.: Realistic",
@@ -556,7 +545,7 @@ with gr.Blocks(css="style.css") as demo:
         with gr.Row(visible=False).style(equal_height=True) as row3:
           with gr.Column(scale=3, min_width=100):
                      edit_concept_3 = gr.Textbox(
-                                      label="Edit Concept",
+                                      label="Concept",
                                       show_label=True,
                                       max_lines=1,
                                       placeholder="E.g.: orange",
@@ -577,6 +566,17 @@ with gr.Blocks(css="style.css") as demo:
         #            add_concept_button = gr.Button("+1 concept")
 
 
+    
+    with gr.Row().style(mobile_collapse=False, equal_height=True):
+                tar_prompt = gr.Textbox(
+                                label="Describe your edited image (optional)",
+                                # show_label=False,
+                                max_lines=1, value="", scale=3,
+                                placeholder="Target prompt, DDPM Inversion", info = "DDPM Inversion Prompt. Can help with global changes, modify to what you would like to see"
+                            )
+                # caption_button = gr.Button("Caption Image", scale=1)
+        
+    
     with gr.Row():
         run_button = gr.Button("Edit your image!", visible=True)
         

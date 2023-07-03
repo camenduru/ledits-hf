@@ -31,7 +31,7 @@ def caption_image(input_image):
 
     generated_ids = blip_model.generate(pixel_values=pixel_values, max_length=50)
     generated_caption = blip_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-    return generated_caption
+    return generated_caption, generated_caption
 
 
 
@@ -123,6 +123,7 @@ def load_and_invert(
 def edit(input_image,
             wts, zs,
             tar_prompt,
+            image_caption,
             steps,
             skip,
             tar_cfg_scale,
@@ -162,6 +163,8 @@ def edit(input_image,
       eta=1,)
 
       latnets = wts.value[skip].expand(1, -1, -1, -1)
+      if image_caption == tar_prompt:
+          tar_prompt = ""
       sega_out = sem_pipe(prompt=tar_prompt, latents=latnets, guidance_scale = tar_cfg_scale,
                           num_images_per_prompt=1,
                           num_inference_steps=steps,
@@ -426,6 +429,9 @@ with gr.Blocks(css="style.css") as demo:
       do_reconstruction = True
       return  do_reconstruction
 
+    def reset_image_caption():
+        return ""
+
     def update_inversion_progress_visibility(input_image, do_inversion):
       if do_inversion and not input_image is None:
           return inversion_progress.update(visible=True)
@@ -446,6 +452,7 @@ with gr.Blocks(css="style.css") as demo:
     do_inversion = gr.State(value=True)
     do_reconstruction = gr.State(value=True)
     sega_concepts_counter = gr.State(0)
+    image_caption = gr.State(value="")
 
 
 
@@ -659,6 +666,7 @@ with gr.Blocks(css="style.css") as demo:
         inputs=[input_image,
                 wts, zs,
                 tar_prompt,
+                image_caption,
                 steps,
                 skip,
                 tar_cfg_scale,
@@ -689,7 +697,7 @@ with gr.Blocks(css="style.css") as demo:
         outputs = [do_inversion],
         queue = False).then(fn = caption_image,
         inputs = [input_image],
-        outputs = [tar_prompt]).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
+        outputs = [tar_prompt, image_caption]).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
                             outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image,

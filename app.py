@@ -599,7 +599,7 @@ with gr.Blocks(css="style.css") as demo:
           with gr.TabItem('General options', id=2):
             with gr.Row():
                 with gr.Column(min_width=100):
-                   clear_button = gr.Button("Clear", visible=False)
+                   clear_button = gr.Button("Clear", visible=True)
                    src_prompt = gr.Textbox(lines=1, label="Source Prompt", interactive=True, placeholder="")
                    steps = gr.Number(value=100, precision=0, label="Num Diffusion Steps", interactive=True)
                    src_cfg_scale = gr.Number(value=3.5, label=f"Source Guidance Scale", interactive=True)
@@ -777,14 +777,16 @@ with gr.Blocks(css="style.css") as demo:
                                   tar_prompt, skip, tar_cfg_scale, reconstruct_button,reconstruct_button,
                                   edit_concept_1, guidnace_scale_1,guidnace_scale_1,warmup_1,  threshold_1, neg_guidance_1,dropdown1, concept_1, concept_1,
                                   edit_concept_2, guidnace_scale_2,guidnace_scale_2,warmup_2,  threshold_2, neg_guidance_2,dropdown2, concept_2, concept_2, row2, row2_advanced,
-                                  edit_concept_3, guidnace_scale_3,guidnace_scale_3,warmup_3,  threshold_3, neg_guidance_3,dropdown3, concept_3,concept_3, row3, row3_advanced ]
+                                  edit_concept_3, guidnace_scale_3,guidnace_scale_3,warmup_3,  threshold_3, neg_guidance_3,dropdown3, concept_3,concept_3, row3, row3_advanced,
+                                  row4,sega_concepts_counter, box1, box2, box3 ]
 
     clear_components_output_vals = [None, None,ddpm_edited_image.update(visible=False), None, True,
                      "", DEFAULT_DIFFUSION_STEPS, DEFAULT_SOURCE_GUIDANCE_SCALE, DEFAULT_SEED,
-                     "", DEFAULT_SKIP_STEPS, DEFAULT_TARGET_GUIDANCE_SCALE, reconstruct_button.update(value="Show Reconstruction"),reconstruct_button.update(visible=False),
+                     "", DEFAULT_SKIP_STEPS, DEFAULT_TARGET_GUIDANCE_SCALE, reconstruct_button.update(value="Show Reconstruction"),reconstruct_button.update(visible=False)
                      "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_1.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default", concept_1.update(visible=False),
                      "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_2.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default", concept_2.update(visible=False), row2.update(visible=False), row2_advanced.update(visible=False),
-                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default",concept_3.update(visible=False), row3.update(visible=False), row3_advanced.update(visible=False)
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default",concept_3.update(visible=False), row3.update(visible=False), row3_advanced.update(visible=False, row.update(visible=False), gr.State(0)),
+                          box1.update(visible=False), box2.update(visible=False), box3.update(visible=False)          
                          ]
 
 

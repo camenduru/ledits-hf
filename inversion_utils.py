@@ -29,27 +29,11 @@ def load_512(image_path, left=0, right=0, top=0, bottom=0, device=None):
         image = image[offset:offset + w]
     image = np.array(Image.fromarray(image).resize((512, 512)))
     image = torch.from_numpy(image).float() / 127.5 - 1
-    image = image.permute(2, 0, 1).unsqueeze(0).to(device)
+    image = image.permute(2, 0, 1).unsqueeze(0).to(device, dtype =torch.float16)
 
     return image 
 
 
-def load_real_image(folder = "data/", img_name = None, idx = 0, img_size=512, device='cuda'):
-    from PIL import Image
-    from glob import glob
-    if img_name is not None:
-        path = os.path.join(folder, img_name)
-    else:
-        path = glob(folder + "*")[idx]
-
-    img = Image.open(path).resize((img_size,
-                                    img_size))
-
-    img = pil_to_tensor(img).to(device)
-
-    if img.shape[1]== 4:
-        img = img[:,:3,:,:]
-    return img
 
 def mu_tilde(model, xt,x0, timestep):
     "mu_tilde(x_t, x_0) DDPM paper eq. 7"
@@ -77,10 +61,10 @@ def sample_xts_from_x0(model, x0, num_inference_steps=50):
     
     timesteps = model.scheduler.timesteps.to(model.device)
     t_to_idx = {int(v):k for k,v in enumerate(timesteps)}
-    xts = torch.zeros(variance_noise_shape).to(x0.device)
+    xts = torch.zeros(variance_noise_shape).to(x0.device,  dtype =torch.float16)
     for t in reversed(timesteps):
         idx = t_to_idx[int(t)]
-        xts[idx] = x0 * (alpha_bar[t] ** 0.5) + torch.randn_like(x0) * sqrt_one_minus_alpha_bar[t]
+        xts[idx] = x0 * (alpha_bar[t] ** 0.5) + torch.randn_like(x0,  dtype =torch.float16) * sqrt_one_minus_alpha_bar[t]
     xts = torch.cat([xts, x0 ],dim = 0)
 
     return xts
@@ -151,7 +135,7 @@ def inversion_forward_process(model, x0,
         if type(etas) in [int, float]: etas = [etas]*model.scheduler.num_inference_steps
         xts = sample_xts_from_x0(model, x0, num_inference_steps=num_inference_steps)
         alpha_bar = model.scheduler.alphas_cumprod
-        zs = torch.zeros(size=variance_noise_shape, device=model.device)
+        zs = torch.zeros(size=variance_noise_shape, device=model.device,  dtype =torch.float16)
         
     t_to_idx = {int(v):k for k,v in enumerate(timesteps)}
     xt = x0
@@ -230,7 +214,7 @@ def reverse_step(model, model_output, timestep, sample, eta = 0, variance_noise=
     # 8. Add noice if eta > 0
     if eta > 0:
         if variance_noise is None:
-            variance_noise = torch.randn(model_output.shape, device=model.device)
+            variance_noise = torch.randn(model_output.shape, device=model.device,  dtype =torch.float16)
         sigma_z =  eta * variance ** (0.5) * variance_noise
         prev_sample = prev_sample + sigma_z
 
@@ -248,7 +232,7 @@ def inversion_reverse_process(model,
 
     batch_size = len(prompts)
 
-    cfg_scales_tensor = torch.Tensor(cfg_scales).view(-1,1,1,1).to(model.device)
+    cfg_scales_tensor = torch.Tensor(cfg_scales).view(-1,1,1,1).to(model.device,  dtype=torch.float16)
 
     text_embeddings = encode_text(model, prompts)
     uncond_embedding = encode_text(model, [""] * batch_size)

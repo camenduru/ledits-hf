@@ -495,9 +495,12 @@ with gr.Blocks(css="style.css") as demo:
                 tar_prompt = gr.Textbox(
                                 label="Describe your edited image",
                                 # show_label=False,
-                                max_lines=1, value="",
+                                max_lines=1, value="", scale=3,
                                 placeholder="Target prompt, DDPM Inversion", info = "Leave blank to have only SEGA concepts guide your edit"
                             )
+                caption_button = gr.Button("Caption Image", scale=1)
+        
+        
 
     with gr.Box():
         intro_segs = gr.Markdown("Add/Remove SEGA Concepts from your Image")
@@ -622,11 +625,11 @@ with gr.Blocks(css="style.css") as demo:
                                           interactive=True,
                                          info = "Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
 
-    # caption_button.click(
-    #     fn = caption_image,
-    #     inputs = [input_image],
-    #     outputs = [tar_prompt]
-    # )
+    caption_button.click(
+        fn = caption_image,
+        inputs = [input_image],
+        outputs = [tar_prompt]
+    )
     #neg_guidance_1.change(fn = update_label, inputs=[neg_guidance_1], outputs=[add_1])
     #neg_guidance_2.change(fn = update_label, inputs=[neg_guidance_2], outputs=[add_2])
     #neg_guidance_3.change(fn = update_label, inputs=[neg_guidance_3], outputs=[add_3])
@@ -684,9 +687,7 @@ with gr.Blocks(css="style.css") as demo:
     input_image.upload(
         fn = reset_do_inversion,
         outputs = [do_inversion],
-        queue = False).then(fn = caption_image,
-        inputs = [input_image],
-        outputs = [tar_prompt]).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
+        queue = False).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion],
                             outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image,

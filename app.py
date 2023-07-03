@@ -141,7 +141,7 @@ def edit(input_image,
          src_prompt,
          src_cfg_scale):
 
-     if do_inversion or randomize_seed:
+    if do_inversion or randomize_seed:
         x0 = load_512(input_image, device=device)
         # invert and retrieve noise maps and latent
         zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)

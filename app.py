@@ -211,6 +211,22 @@ def get_example():
            
              ],
         [
+            'examples/girl_with_pearl_earring_input.png', 
+            # '',
+            '',
+            'glasses', '',
+             'examples/girl_with_pearl_earring_output.png',
+            
+            
+            3,'',
+            3,'',
+            False,'' ,
+            100,
+            36,
+            15,
+           
+             ],
+        [
             'examples/rockey_shore_input.jpg', 
             # '',
             'watercolor painting',

@@ -15,5 +15,5 @@ This repository contains the following relevant files:
 - `app.py` - Gradio application for the inversion technique combining uploading an image, captioning it, doing the DDPM Inversion and applying SEGA concepts to the editing.
 - `constants.py` - default config values for the `app.py`
 - `inversion_utils.py` - utilities for providing the DDPM Inversion
-- `modified_pipeline_semantic_stable_diffusion.py` - modified pipeline of SEGA for the purposes of LEDIS
+- `modified_pipeline_semantic_stable_diffusion.py` - modified pipeline of SEGA for the purposes of LEDITS
 - `utils.py` - generic useful utils for the app

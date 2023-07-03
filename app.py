@@ -150,7 +150,9 @@ def edit(input_image,
         zs = gr.State(value=zs_tensor)
         do_inversion = False    
     
-
+    if image_caption == tar_prompt: # if image caption was not changed, run pure sega
+          tar_prompt = ""
+        
     if edit_concept_1 != "" or edit_concept_2 != "" or edit_concept_3 != "":
       editing_args = dict(
       editing_prompt = [edit_concept_1,edit_concept_2,edit_concept_3],
@@ -163,8 +165,6 @@ def edit(input_image,
       eta=1,)
 
       latnets = wts.value[skip].expand(1, -1, -1, -1)
-      if image_caption == tar_prompt:
-          tar_prompt = ""
       sega_out = sem_pipe(prompt=tar_prompt, latents=latnets, guidance_scale = tar_cfg_scale,
                           num_images_per_prompt=1,
                           num_inference_steps=steps,

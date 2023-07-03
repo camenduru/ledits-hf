@@ -416,7 +416,11 @@ with gr.Blocks(css="style.css") as demo:
       else:
         return inversion_progress.update(visible=False)
 
-
+    def update_edit_progress_visibility(input_image, do_inversion):
+      if do_inversion and not input_image is None:
+          return inversion_progress.update(visible=True, label="inverting...")
+      else:
+        return inversion_progress.update(visible=True, label="editing...")
 
 
     gr.HTML(intro)
@@ -631,7 +635,7 @@ with gr.Blocks(css="style.css") as demo:
     #add_concept_button.click(fn = update_display_concept, inputs=sega_concepts_counter,
     #           outputs= [row2, row2_advanced, row3, row3_advanced, add_concept_button, sega_concepts_counter], queue = False)
 
-    run_button.click(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).then(
+    run_button.click(fn = update_edit_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).then(
         fn=load_and_invert,
         inputs=[input_image,
                 do_inversion,
@@ -645,7 +649,7 @@ with gr.Blocks(css="style.css") as demo:
                 tar_cfg_scale
         ],
         outputs=[wts, zs, do_inversion, inversion_progress],
-    ).then(fn = update_inversion_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).success(
+    ).then(fn = update_edit_progress_visibility, inputs =[input_image,do_inversion], outputs=[inversion_progress],queue=False).success(
         fn=edit,
         inputs=[input_image,
                 wts, zs,

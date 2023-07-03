@@ -565,7 +565,7 @@ with gr.Blocks(css="style.css") as demo:
 
                 with gr.Column(min_width=100):
                     reconstruct_button = gr.Button("Show Reconstruction", visible=False)
-                    skip = gr.Slider(minimum=0, maximum=60, value=36, label="Skip Steps", interactive=True, info = "at which step start denoising. Bigger values increase fidelity to the original image")
+                    skip = gr.Slider(minimum=0, maximum=60, value=36, label="Skip Steps", interactive=True, info = "At which step start denoising? Bigger values increase fidelity to the original image")
                     tar_cfg_scale = gr.Slider(minimum=7, maximum=30,value=15, label=f"Guidance Scale", interactive=True)
                     seed = gr.Number(value=0, precision=0, label="Seed", interactive=True)
                     randomize_seed = gr.Checkbox(label='Randomize seed', value=False)
@@ -576,31 +576,31 @@ with gr.Blocks(css="style.css") as demo:
               with gr.Row().style(mobile_collapse=False, equal_height=True):
                   warmup_1 = gr.Slider(label='Warmup', minimum=0, maximum=50,
                                        value=DEFAULT_WARMUP_STEPS,
-                                       step=1, interactive=True, info="at which step to start applying semantic guidance?")
+                                       step=1, interactive=True, info="At which step to start applying semantic guidance?")
                   threshold_1 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD, step=0.01, interactive=True, 
-                                          info = "threshold of the percent of noise estimate’s dimensions used for semantic guidance. Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
+                                          info = "Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
 
               # 2nd SEGA concept
               gr.Markdown("2nd concept")
               with gr.Row() as row2_advanced:
                   warmup_2 = gr.Slider(label='Warmup', minimum=0, maximum=50,
                                        value=DEFAULT_WARMUP_STEPS,
-                                       step=1, interactive=True, info="at which step to start applying semantic guidance?")
+                                       step=1, interactive=True, info="At which step to start applying semantic guidance?")
                   threshold_2 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD,
                                           step=0.01, interactive=True,
-                                         info = "threshold of the percent of noise estimate’s dimensions used for semantic guidance. Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
+                                         info = "Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
               # 3rd SEGA concept
               gr.Markdown("3rd concept")
               with gr.Row() as row3_advanced:
                   warmup_3 = gr.Slider(label='Warmup', minimum=0, maximum=50,
                                        value=DEFAULT_WARMUP_STEPS, step=1,
-                                       interactive=True, info="at which step to start applying semantic guidance?")
+                                       interactive=True, info="At which step to start applying semantic guidance?")
                   threshold_3 = gr.Slider(label='Threshold', minimum=0.5, maximum=0.99,
                                           value=DEFAULT_THRESHOLD, step=0.01,
                                           interactive=True,
-                                         info = "threshold of the percent of noise estimate’s dimensions used for semantic guidance. Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
+                                         info = "Lower the threshold for more effect (e.g. ~0.9 for style transfer)")
 
     # caption_button.click(
     #     fn = caption_image,

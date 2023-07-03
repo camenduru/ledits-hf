@@ -28,7 +28,7 @@ blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image
 def caption_image(input_image):
     inputs = blip_processor(images=input_image, return_tensors="pt").to(device, torch.float16)
     pixel_values = inputs.pixel_values
-    
+
     generated_ids = blip_model.generate(pixel_values=pixel_values, max_length=50)
     generated_caption = blip_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
     return generated_caption
@@ -38,9 +38,9 @@ def caption_image(input_image):
 ## DDPM INVERSION AND SAMPLING ##
 def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta = 1):
 
-  #  inverts a real image according to Algorihm 1 in https://arxiv.org/pdf/2304.06140.pdf, 
+  #  inverts a real image according to Algorihm 1 in https://arxiv.org/pdf/2304.06140.pdf,
   #  based on the code in https://github.com/inbarhub/DDPM_inversion
-   
+
   #  returns wt, zs, wts:
   #  wt - inverted latent
   #  wts - intermediate inverted latents
@@ -50,7 +50,7 @@ def invert(x0, prompt_src="", num_diffusion_steps=100, cfg_scale_src = 3.5, eta 
 
   # vae encode image
   with inference_mode():
-      w0 = (sd_pipe.vae.encode(x0).latent_dist.mode() * 0.18215).float()
+    w0 = (sd_pipe.vae.encode(x0).latent_dist.mode() * 0.18215)
 
   # find Zs and wts - forward process
   wt, zs, wts = inversion_forward_process(sd_pipe, w0, etas=eta, prompt=prompt_src, cfg_scale=cfg_scale_src, prog_bar=True, num_inference_steps=num_diffusion_steps)
@@ -61,10 +61,10 @@ def sample(zs, wts, prompt_tar="", cfg_scale_tar=15, skip=36, eta = 1):
 
     # reverse process (via Zs and wT)
     w0, _ = inversion_reverse_process(sd_pipe, xT=wts[skip], etas=eta, prompts=[prompt_tar], cfg_scales=[cfg_scale_tar], prog_bar=True, zs=zs[skip:])
-    
+
     # vae decode image
     with inference_mode():
-        x0_dec = sd_pipe.vae.decode(1 / 0.18215 * w0).sample
+      x0_dec = sd_pipe.vae.decode(1 / 0.18215 * w0).sample
     if x0_dec.dim()<4:
         x0_dec = x0_dec[None,:,:,:]
     img = image_grid(x0_dec)
@@ -142,7 +142,7 @@ def edit(input_image,
          src_cfg_scale):
 
     if do_inversion or randomize_seed:
-        x0 = load_512(input_image, device=device)
+        x0 = load_512(input_image, device=device).to(torch.float16)
         # invert and retrieve noise maps and latent
         zs_tensor, wts_tensor = invert(x0 =x0 , prompt_src=src_prompt, num_diffusion_steps=steps, cfg_scale_src=src_cfg_scale)
         wts = gr.State(value=wts_tensor)

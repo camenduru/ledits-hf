@@ -418,7 +418,7 @@ with gr.Blocks(css="style.css") as demo:
           return STYLE_SEGA_CONCEPT_GUIDANCE_SCALE,STYLE_WARMUP_STEPS, STYLE_THRESHOLD
         elif dropdown =='object':
           return OBJECT_SEGA_CONCEPT_GUIDANCE_SCALE,OBJECT_WARMUP_STEPS, OBJECT_THRESHOLD
-        elif dropdown =='facial':
+        elif dropdown =='faces':
           return FACE_SEGA_CONCEPT_GUIDANCE_SCALE,FACE_WARMUP_STEPS, FACE_THRESHOLD
 
 
@@ -510,7 +510,7 @@ with gr.Blocks(css="style.css") as demo:
                                       placeholder="E.g.: Sunglasses",
                                   )
               with gr.Column(scale=2, min_width=100):
-                      dropdown1 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'facial'])
+                      dropdown1 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
     
 
               with gr.Column(scale=1, min_width=100, visible=False):
@@ -535,7 +535,7 @@ with gr.Blocks(css="style.css") as demo:
                       neg_guidance_2 = gr.Checkbox(
                           label='Remove Concept?')
             with gr.Column(scale=2, min_width=100):
-                      dropdown2 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'facial'])
+                      dropdown2 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
 
             with gr.Column(scale=1, min_width=100):
                       add_2 = gr.Button('Add')
@@ -554,7 +554,7 @@ with gr.Blocks(css="style.css") as demo:
                      neg_guidance_3 = gr.Checkbox(
                       label='Remove Concept?',visible=True)
           with gr.Column(scale=2, min_width=100):
-                     dropdown3 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'facial'])
+                     dropdown3 = gr.Dropdown(label = "Edit Type", value ='custom' , choices=['custom','style', 'object', 'faces'])
           with gr.Column(scale=1, min_width=100):
                      add_3 = gr.Button('Add')
                      remove_3 = gr.Button('Remove')

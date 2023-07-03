@@ -16,17 +16,17 @@ from transformers import AutoProcessor, BlipForConditionalGeneration
 # load pipelines
 sd_model_id = "stabilityai/stable-diffusion-2-1-base"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
+sd_pipe = StableDiffusionPipeline.from_pretrained(sd_model_id,torch_dtype=torch.float16).to(device)
 sd_pipe.scheduler = DDIMScheduler.from_config(sd_model_id, subfolder = "scheduler")
-sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id).to(device)
+sem_pipe = SemanticStableDiffusionPipeline.from_pretrained(sd_model_id, torch_dtype=torch.float16).to(device)
 blip_processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to(device)
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base",torch_dtype=torch.float16).to(device)
 
 
 
 ## IMAGE CPATIONING ##
 def caption_image(input_image):
-    inputs = blip_processor(images=input_image, return_tensors="pt").to(device)
+    inputs = blip_processor(images=input_image, return_tensors="pt").to(device, torch.float16)
     pixel_values = inputs.pixel_values
     
     generated_ids = blip_model.generate(pixel_values=pixel_values, max_length=50)

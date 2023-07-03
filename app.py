@@ -785,7 +785,7 @@ with gr.Blocks(css="style.css") as demo:
                      "", DEFAULT_SKIP_STEPS, DEFAULT_TARGET_GUIDANCE_SCALE, reconstruct_button.update(value="Show Reconstruction"),reconstruct_button.update(visible=False),
                      "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_1.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default", concept_1.update(visible=False),
                      "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_2.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default", concept_2.update(visible=False), row2.update(visible=False), row2_advanced.update(visible=False),
-                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default",concept_3.update(visible=False), row3.update(visible=False), row3_advanced.update(visible=False, row.update(visible=False), gr.State(0)),
+                     "", DEFAULT_SEGA_CONCEPT_GUIDANCE_SCALE,guidnace_scale_3.update(visible=False), DEFAULT_WARMUP_STEPS, DEFAULT_THRESHOLD, DEFAULT_NEGATIVE_GUIDANCE, "","default",concept_3.update(visible=False), row3.update(visible=False), row3_advanced.update(visible=False), row4.update(visible=False), gr.State(0),
                           box1.update(visible=False), box2.update(visible=False), box3.update(visible=False)]
 
 

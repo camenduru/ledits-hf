@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw ,ImageFont
 from matplotlib import pyplot as plt
 import torchvision.transforms as T
 import os
-import torch 
+import torch
 import yaml
 
 def show_torch_img(img):
@@ -20,14 +20,14 @@ def tensor_to_pil(tensor_imgs):
         tensor_imgs = torch.cat(tensor_imgs)
     tensor_imgs = (tensor_imgs / 2 + 0.5).clamp(0, 1)
     to_pil = T.ToPILImage()
-    pil_imgs = [to_pil(img) for img in tensor_imgs]    
+    pil_imgs = [to_pil(img) for img in tensor_imgs]
     return pil_imgs
 
 def pil_to_tensor(pil_imgs):
     to_torch = T.ToTensor()
     if type(pil_imgs) == PIL.Image.Image:
         tensor_imgs = to_torch(pil_imgs).unsqueeze(0)*2-1
-    elif type(pil_imgs) == list:    
+    elif type(pil_imgs) == list:
         tensor_imgs = torch.cat([to_torch(pil_imgs).unsqueeze(0)*2-1 for img in pil_imgs]).to(device)
     else:
         raise Exception("Input need to be PIL.Image or list of PIL.Image")
@@ -40,30 +40,30 @@ def pil_to_tensor(pil_imgs):
 # num_col = n // num_rows
 # num_col  = num_col + 1 if n % num_rows else num_col
 # num_col
-def add_margin(pil_img, top = 0, right = 0, bottom = 0, 
+def add_margin(pil_img, top = 0, right = 0, bottom = 0,
                     left = 0, color = (255,255,255)):
     width, height = pil_img.size
     new_width = width + right + left
     new_height = height + top + bottom
     result = Image.new(pil_img.mode, (new_width, new_height), color)
-    
+
     result.paste(pil_img, (left, top))
     return result
 
-def image_grid(imgs, rows = 1, cols = None, 
+def image_grid(imgs, rows = 1, cols = None,
                     size = None,
                    titles = None, text_pos = (0, 0)):
     if type(imgs) == list and type(imgs[0]) == torch.Tensor:
         imgs = torch.cat(imgs)
     if type(imgs) == torch.Tensor:
         imgs = tensor_to_pil(imgs)
-        
+
     if not size is None:
         imgs = [img.resize((size,size)) for img in imgs]
     if cols is None:
         cols = len(imgs)
     assert len(imgs) >= rows*cols
-    
+
     top=20
     w, h = imgs[0].size
     delta = 0
@@ -71,23 +71,23 @@ def image_grid(imgs, rows = 1, cols = None,
         delta = top
         h = imgs[1].size[1]
     if not titles is  None:
-        font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeMono.ttf", 
+        font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeMono.ttf",
                                     size = 20, encoding="unic")
-        h = top + h 
-    grid = Image.new('RGB', size=(cols*w, rows*h+delta))    
+        h = top + h
+    grid = Image.new('RGB', size=(cols*w, rows*h+delta))
     for i, img in enumerate(imgs):
-        
+
         if not titles is  None:
             img = add_margin(img, top = top, bottom = 0,left=0)
             draw = ImageDraw.Draw(img)
-            draw.text(text_pos, titles[i],(0,0,0), 
+            draw.text(text_pos, titles[i],(0,0,0),
             font = font)
         if not delta == 0 and i > 0:
            grid.paste(img, box=(i%cols*w, i//cols*h+delta))
         else:
             grid.paste(img, box=(i%cols*w, i//cols*h))
-        
-    return grid    
+
+    return grid
 
 
 """
